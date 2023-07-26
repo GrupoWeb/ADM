@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="ear" name="rug-ear:ear">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>rug-ear</module>
+        <packaging>ear</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="Rug.ear">
+      <element id="artifact" artifact-name="rug-ear:ear exploded" />
+    </root>
+  </artifact>
+</component>
