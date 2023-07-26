@@ -1,0 +1,68 @@
+<!-- <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading> -->
+<div class="section"></div>
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+        <h4>Reporte Trámites</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="card">
+        <div class="card-content">
+          <div class="row">
+            <div class="col">
+              <div class="card-title">Trámites</div>
+              <div class="card-body">
+                <div class="col hide-on-med-and-down"></div>
+                <form materialize (ngSubmit)="onSearchUser()" [formGroup]="searchUserForm" class="col s12 l12">
+                  <div class="input-group">
+                    <div class="input-field">
+                      <input
+                        type="text"
+                        class="validate"
+                        id="query"
+                        formControlName="query">
+                      <label for="query">Código de Persona</label>
+                    </div>
+                    <button type="submit" class="input-group-addon btn right-align">Buscar</button>
+                      <button
+                      *ngIf="btn_export"
+                        class="waves-effect waves-light btn right-align"
+                        type="button"
+                        (click)="exportData()">Exportar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" *ngIf="btn_export">
+      <table class="table" id="rReporte">
+        <thead>
+          <tr>
+            <th>Garantía</th>
+            <th>Trámite</th>
+            <th>Precio</th>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Año</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of tramites">
+            <td>{{ row.idGarantia }}</td>
+            <td>{{ row.idTramite }}</td>
+            <td>Q. {{ row.precio }}.00</td>
+            <td>{{ row.fecha }}</td>
+            <td>{{ row.descripcion }}</td>
+            <td>{{ row.anio }}</td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+  </div>
+  <skeleton-loading [state]="activate_loading"></skeleton-loading>
+</main>

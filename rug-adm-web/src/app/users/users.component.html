@@ -1,0 +1,109 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s2"></div>
+      <div class="col s8">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Usuarios del Módulo Administrativo</span>
+              </div>
+            </div>
+            <div class="row">
+              <a class="waves-effect waves-light btn-large" (click)="onAddUserClicked()">Agregar</a>
+              <table>
+                <thead>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Creado</th>
+                  <th>Estado</th>
+                  <th>Opciones</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users; let i = index">
+                    <td>{{ user.nombre }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.rol }}</td>
+                    <td>{{ user.creado }}</td>
+                    <td>{{ user.estado }}</td>
+                    <td>
+                      <a
+                        class="waves-effect waves-light btn indigo"
+                        (click)="onEditUserClicked(user, i)"><i class="material-icons">edit</i></a>
+                      <a
+                        class="waves-effect waves-light btn red darken-4"
+                        [swal]="{title: 'Eliminar usuario', text: '¿Está seguro de eliminar al usuario?', type: 'warning', showCancelButton: true}"
+                        (confirm)="onRemoveUserClicked(i)"><i class="material-icons">delete</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s2"></div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>
+<div id="modUser" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-content">
+    <h4>Usuario</h4>
+    <div class="card">
+      <div class="card-content">
+        <div class="row">
+          <form materialize class="col s12" (ngSubmit)="onSubmit()" [formGroup]="userForm">
+            <div class="row">
+              <div class="input-field col s12">
+                <input
+                  type="text"
+                  class="validate"
+                  id="nombre"
+                  formControlName="nombre">
+                <label for="nombre">Nombre</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input
+                type="email"
+                class="validate"
+                id="email"
+                formControlName="email">
+                <label for="email">Email</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <select
+                  id="rol"
+                  materialize="material_select"
+                  formControlName="rol">
+                  <option value="" disabled selected>Seleccione el rol</option>
+                  <option value="R">Registrador</option>
+                  <option value="V">Validador de cuentas</option>
+                  <option value="C">Contador</option>
+                </select>
+                <label for="rol">Rol</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s12 right-align">
+                <button
+                  class="waves-effect waves-light btn"
+                  type="submit"
+                  [disabled]="!userForm.valid">Guardar</button>
+                <a class="waves-effect waves-light btn red darken-4" (click)="onCancelClicked()">Cancelar</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

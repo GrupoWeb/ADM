@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "./",
+    "module": "es2015",
+    "types": []
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts",
+    "../node_modules/ngx-daterangepicker/**/*.spec.ts",
+    "../node_modules/ngx-daterangepicker/e2e/**/*.spec.ts",
+    "../node_modules/ngx-daterangepicker/src/main.aot.ts"
+  ],
+  "include": [
+    "**/*.ts",
+    "../node_modules/ngx-daterangepicker/src/**/**.ts"
+  ]
+}

@@ -1,0 +1,49 @@
+<div class="section"></div>
+<main>
+  <div class="container" *ngIf="!securedUrl">
+    <!-- <div class="row">
+      <div class="col s6 m4" *ngFor="let panel of panels">
+        <div class="card">
+          <div class="card-image waves-effect waves-block waves-light">
+            <img src="{{panel.img}}" class="activator">
+          </div>
+          <div class="card-conteint">
+            <span class="btn-floating halfway-fab waves-effect waves-light red">
+              <i class="material-icons">add</i>
+              <p>
+                {{ panel.title }}
+              </p>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="row">
+      <div class="col s6 m4" *ngFor="let panel of panels">
+        <div class="card">
+          <div class="card-image">
+            <img src="{{panel.img}}">
+            <span class="card-title">{{panel.title}}</span>
+            <a class="btn-floating halfway-fab waves-effect waves-light red" routerLink="{{panel.link}}"><i class="material-icons">visibility</i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" *ngIf="securedUrl">
+    <div class="row">
+      <div class="resp-container">
+        <iframe class="resp-iframe" [src]="securedUrl"></iframe>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="container-fluid" *ngIf="securedUrl">
+    <div class="row">
+      <div class="resp-container">
+        <iframe class="resp-iframe" [src]="securedUrl"></iframe>
+      </div>
+    </div>
+  </div> -->
+</main>
+<div class="section"></div>

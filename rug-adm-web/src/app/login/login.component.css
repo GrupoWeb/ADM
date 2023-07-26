@@ -1,0 +1,17 @@
+.brand-logo img {
+	max-height: 100px;
+}
+ul.menu {
+	display: inline-block;
+	margin-left: 266px;
+}
+.loading-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 120vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 5000 !important;
+	will-change: opacity;
+}

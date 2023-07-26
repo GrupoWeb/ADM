@@ -1,0 +1,77 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1 xl3"></div>
+      <div class="col s10 xl6">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Terminos</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6">
+                <input type="checkbox" id="incluirSinClasificar" [(ngModel)]="incluirSinClasificar" (change)="onSinClasificarChanged($event)" />
+                <label for="incluirSinClasificar">Sin clasificar</label>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Termino</th>
+                    <th>Frecuencia</th>
+                    <th>Categoria</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let term of terms | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
+                    <td>{{ term.termino }}</td>
+                    <td>{{ term.frecuencia }}</td>
+                    <td>
+                      <select
+                        materialize="material_select"
+                        [materializeSelectOptions]="categories"
+                        (change)="categoriaChanged($event.target.value, term.clasificacionTerminoId, i)">
+                        <option value="" disabled>Seleccione la categoria</option>
+                        <option
+                          value="{{category.categoriaInformacionId}}"
+                          [selected]="category.categoriaInformacionId === term.categoriaId"
+                          *ngFor="let category of categories">{{category.nombre}}</option>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-template #p="paginationApi"
+                id="server"
+                (pageChange)="onPageChange($event)">
+                <ul class="pagination custom-pagination">
+                  <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                    <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                  </li>
+                  <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value" [class.waves-effect]="p.getCurrent() !== page.value">
+                    <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                      {{ page.label }}
+                    </a>
+                    <a *ngIf="p.getCurrent() === page.value">
+                      {{ page.label }}
+                    </a>
+                  </li>
+                  <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                    <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                  </li>
+                </ul>
+              </pagination-template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1 xl3"></div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>

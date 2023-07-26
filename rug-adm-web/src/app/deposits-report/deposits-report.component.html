@@ -1,0 +1,177 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <h4>Depósitos</h4>
+        <!-- <div class="row">
+          <div class="col m3"></div>
+          <div class="col s12 m6">
+            <div class="card">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col s8">
+                    <span class="card-title">Resumen</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Tipo de pago</th>
+                        <th>Estado</th>
+                        <th>Monto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let deposit of depositsSum; let i = index">
+                        <td>{{ deposit.tipoPago | pago }}</td>
+                        <td><span class="badge" [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}">{{ deposit.usada | usada }}</span></td>
+                        <td>{{ deposit.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                        <td>{{ deposit.monto | currency:'Q' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col m3"></div>
+        </div> -->
+        <div class="row">
+          <div class="card">
+            <div class="card-content">
+              <div class="row">
+                <div class="col s8">
+                  <span class="card-title">Detalle</span>
+                </div>
+                <div class="col s4 right-align">
+                  <button
+                    class="waves-effect waves-light btn"
+                    type="button"
+                    (click)="exportData()">Exportar</button>
+                </div>
+              </div>
+              <div class="row">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Banco</th>
+                      <th>Boleta</th>
+                      <th>Contraloria</th>
+                      <th>Nombre</th>
+                      <th>Identificacion</th>
+                      <th>Monto</th>
+                      <th>Tipo de pago</th>
+                      <th class="center-align">Estado</th>
+                      <th>Revertir</th>
+                    </tr>
+                    <tr>
+                      <th></th>
+                      <th>
+                        <select materialize="material_select" #filBancoInput [(ngModel)]="filBanco" (ngModelChange)="filBancoChanged($event)">
+                          <option value="" selected>Todos</option>
+                          <option value="1">Banrural </option>
+                          <option value="2">CHN</option>
+                          <option value="BI3">Banco Industrial</option>
+                        </select>
+                      </th>
+                      <th><input type="text" #filBoletaInput [(ngModel)]="filBoleta" (ngModelChange)="filBoletaChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilBoleta()"></th>
+                      <th></th>
+                      <th><input type="text" #filPersonaInput [(ngModel)]="filPersona" (ngModelChange)="filPersonaChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilPersona()"></th>
+                      <th></th>
+                      <th></th>
+                      <th>
+                        <select materialize="material_select" #filTipoPagoInput [(ngModel)]="filTipoPago" (ngModelChange)="filTipoPagoChanged($event)">
+                          <option value="" selected>Todos</option>
+                          <option value="1">Efectivo</option>
+                          <option value="2">Cheque Propio</option>
+                          <option value="3">Cheque Otros Bancos</option>
+                          <option value="5">Ventanilla</option>
+                        </select>
+                      </th>
+                      <th>
+                        <select materialize="material_select" #filEstadoInput [(ngModel)]="filEstado" (ngModelChange)="filEstadoChanged($event)">
+                          <option value="" selected>Todos</option>
+                          <option value="1">Aprobada</option>
+                          <option value="-1">Rechazada</option>
+                          <option value="0">Pendiente de aprobación</option>
+                        </select>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let deposit of deposits | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
+                      <td>{{ deposit.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                      <td>{{ deposit.agencia | banco }}</td>
+                      <td>{{ deposit.numero }}</td>
+                      <td>{{ deposit.resolucion == 'N/A' ? '' : deposit.resolucion }}</td>
+                      <td>{{ deposit.externalUser ? deposit.externalUser.name : '' }}</td>
+                      <td>{{ deposit.externalUser ? deposit.externalUser.docId : '' }}</td>
+                      <td>{{ deposit.monto | currency:'Q' }}</td>
+                      <td>{{ deposit.tipoPago | pago }}</td>
+                      <td class="center-align">
+                        <span class="badge" [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}" style="float: none;">{{ deposit.usada | usada }}</span>
+                      </td>
+                      <td>
+                        <a *ngIf="deposit.usada == 1" class="waves-effect waves-amber btn-floating red" (click)="onRevertClicked(deposit)"><i class="material-icons">account_balance</i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-template #p="paginationApi"
+                  id="server"
+                  (pageChange)="onPageChange($event)">
+                  <ul class="pagination custom-pagination">
+                    <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                      <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                    </li>
+                    <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value" [class.waves-effect]="p.getCurrent() !== page.value">
+                      <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                        {{ page.label }}
+                      </a>
+                      <a *ngIf="p.getCurrent() === page.value">
+                        {{ page.label }}
+                      </a>
+                    </li>
+                    <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                      <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                    </li>
+                  </ul>
+                </pagination-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>
+<div id="modReject" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modRejectActions">
+  <div class="modal-content">
+    <h4>Escriba la causa de la reversión</h4>
+    <form (ngSubmit)="rejectDeposit()" #f="ngForm">
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea
+            id="causa"
+            class="materialize-textarea"
+            ngModel
+            name="causa"
+            required
+            #causa="ngModel"></textarea>
+          <label for="causa">Causa</label>
+        </div>
+      </div>
+      <div class="row right-align">
+        <button type="submit" class="waves-effect waves-green btn-flat">Aceptar</button>
+        <a class="waves-effect waves-green btn-flat" (click)="closeModalReject()">Cerrar</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+.input-group{
+  display:table;
+  width:100%;
+}
+.input-group .input-field,
+.input-group .input-group-addon{
+  display:table-cell;
+}
+.no-results {
+  font-size: 1.2em;
+}

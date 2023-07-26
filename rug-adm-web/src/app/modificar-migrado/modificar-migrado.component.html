@@ -1,0 +1,73 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Modificar Datos de Usuario Migrado</span>
+              </div>
+            </div>
+            <div class="row">
+              <form materialize (ngSubmit)="onSearchUserSubmit()" [formGroup]="searchUserForm">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input
+                      type="text"
+                      class="validate"
+                      id="solicitante"
+                      formControlName="solicitante">
+                    <label for="solicitante">Correo actual</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn">Buscar</button>
+                </div>
+              </form>
+              </div>
+              <div class="row" *ngIf="solicitante && solicitante.personaId">
+                <p class="note teal">Información del Usuario Migrado</p>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Correo</th>
+                      <th>NIT</th>
+                      <th>Documento de Identificación</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ solicitante.name }}</td>
+                      <td>{{ solicitante.email }}</td>
+                      <td>{{ solicitante.nit }}</td>
+                      <td>{{ solicitante.docId }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <form materialize (ngSubmit)="onModificarSubmit()" [formGroup]="modificarForm">
+                  <div class="input-field col s12">
+                    <textarea
+                      class="materialize-textarea"
+                      id="motivo"
+                      formControlName="motivo"></textarea>
+                    <label for="motivo">Motivo</label>
+                  </div>
+                  <div class="col s12 right-align">
+                    <button
+                      class="waves-effect waves-light btn"
+                      type="submit"
+                      [disabled]="disabledModificar()">Modificar</button>
+                    <a class="waves-effect waves-light btn red darken-4" (click)="onCancelClicked()">Cancelar</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>

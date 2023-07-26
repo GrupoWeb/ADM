@@ -1,0 +1,53 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s12">
+                <span class="card-title">Buscar por bien</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col l3 hide-on-med-and-down"></div>
+              <form materialize (ngSubmit)="onSearchAssetSubmit()" [formGroup]="searchAssetForm" class="col s12 l6">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input
+                      type="text"
+                      class="validate"
+                      id="query"
+                      formControlName="query">
+                    <label for="query">Identificador del bien</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn right-align">Buscar</button>
+                </div>
+              </form>
+              <div class="col l3 hide-on-med-and-down"></div>
+            </div>
+            <div class="row">
+              <h4 *ngIf="noResults" class="no-results red-text">No se encontraron resultados</h4>
+              <table *ngIf="guarantees">
+                <thead>
+                  <tr>
+                    <th>Garantía</th>
+                    <th>Fecha de inscripción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let guarantee of guarantees">
+                    <td>{{ guarantee.idGarantia }}</td>
+                    <td>{{ guarantee.fechaInscr | date: 'dd/MM/yyyy' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

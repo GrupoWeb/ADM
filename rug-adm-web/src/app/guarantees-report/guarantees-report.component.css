@@ -1,0 +1,9 @@
+.modal-content > .card > .card-title {
+  margin: 10px;
+}
+.modal-content > .card > .row:first-of-type {
+  margin-top: 20px;
+}
+.note {
+  padding: 5px;
+}

@@ -1,0 +1,79 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Resultados Encuesta</span>
+              </div>
+            </div>
+            <div class="row">
+              <ngx-daterangepicker [(ngModel)]="rangoFechas" (ngModelChange)="onRangeChanged($event)" [options]="options"></ngx-daterangepicker>
+            </div>    
+            <div class="row">
+                <div class="col s8">
+                  <span class="card-title">Pregunta: ¿Es un usuario del sistema RUG?</span>
+                </div>
+              </div>        
+            <div class="row" *ngIf="chart">
+              <canvas id="canvas">{{ chart }}</canvas>
+            </div>
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Pregunta: ¿Cuantos meses tiene de utilizar el sistema?</span>
+              </div>
+            </div>        
+            <div class="row" *ngIf="chart1">
+              <canvas id="canvas1">{{ chart1 }}</canvas>
+            </div>            
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Pregunta: ¿Cómo califica la facilidad en el proceso de registro?</span>
+              </div>
+            </div>        
+            <div class="row" *ngIf="chart2">
+              <canvas id="canvas2">{{ chart2 }}</canvas>
+            </div>
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Pregunta: ¿Cómo califica la facilidad para encontrar el trámite a realizar (Inscripción, Modificación, etc)?</span>
+              </div>
+            </div>        
+            <div class="row" *ngIf="chart3">
+              <canvas id="canvas3">{{ chart3 }}</canvas>
+            </div>
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Pregunta: ¿Utiliza pago en ventanilla o en linea?</span>
+              </div>
+            </div>        
+            <div class="row" *ngIf="chart4">
+              <canvas id="canvas4">{{ chart4 }}</canvas>
+            </div>
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Pregunta: ¿Utiliza sub usuarios?</span>
+              </div>
+            </div>        
+            <div class="row" *ngIf="chart5">
+              <canvas id="canvas5">{{ chart5 }}</canvas>
+            </div>
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Pregunta: Value de 0 a 10 su satisfacción global del servicio</span>
+              </div>
+            </div>        
+            <div class="row" *ngIf="chart6">
+              <canvas id="canvas6">{{ chart6 }}</canvas>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+</main>

@@ -1,0 +1,168 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <h4>Usuarios del RUG</h4>
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Detalle</span>
+              </div>
+              <div class="col s4 right-align">
+                <button
+                  class="waves-effect waves-light btn"
+                  type="button"
+                  (click)="exportData()">Exportar</button>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Documento de identificación</th>
+                    <th>NIT</th>
+                    <th>Fecha de registro</th>
+                    <th>Registro del RGM</th>
+                    <th>Estado</th>
+                    <th>Correos</th>
+                    <th>Respuesta</th>
+                    <th>Saldo</th>
+                    <th>Dar de baja</th>
+                  </tr>
+                  <tr>
+                    <th><input type="text" #filNombreInput [(ngModel)]="filNombre" (ngModelChange)="filNombreChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilNombre()"></th>
+                    <th><input type="text" #filCorreoInput [(ngModel)]="filCorreo" (ngModelChange)="filCorreoChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilCorreo()"></th>
+                    <th><input type="text" #filDocIdInput [(ngModel)]="filDocId" (ngModelChange)="filDocIdChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilDocId()"></th>
+                    <th><input type="text" #filNitInput [(ngModel)]="filNit" (ngModelChange)="filNitChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilNit()"></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                      <select materialize="material_select" #filStatusInput [(ngModel)]="filStatus" (ngModelChange)="filStatusChanged($event)">
+                        <option value="" selected>Todos</option>
+                        <option value="AC">Activos</option>
+                        <option value="PA">Pendientes de aprobación</option>
+                        <option value="IN">Pendientes de activación</option>
+                        <option value="RE">Rechazados</option>
+                        <option value="HO">Homologados</option>
+                        <option value="CA">De baja</option>
+                      </select>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.docId }}</td>
+                    <td>{{ user.nit }}</td>
+                    <td>{{ user.registered | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ user.registryCode ? user.registryCode : 'Subusuario' }}</td>
+                    <td>{{ user.status | sitUsuario }}</td>
+                    <td class="center-align">
+                      <a class="waves-effect waves-amber btn-floating amber" (click)="onViewMailsClicked(user)"><i class="material-icons">email</i></a>
+                    </td>
+                    <td class="center-align">
+                      <a *ngIf="user.status == 'AC' && user.registryCode" class="waves-effect waves-amber btn-floating teal" (click)="onViewAnswerClicked(user)"><i class="material-icons">vpn_key</i></a>
+                    </td>
+                    <td class="center-align">
+                      <a *ngIf="user.status == 'AC' && user.registryCode" class="waves-effect waves-amber btn-floating teal" (click)="onViewSaldoClicked(user)"><i class="material-icons">attach_money</i></a>
+                    </td>
+                    <td class="center-align">
+                      <a
+                        class="waves-effect waves-amber btn-floating red"
+                        [swal]="{title: 'Dar de baja', text: '¿Está seguro de darle de baja al usuario?', type: 'warning', showCancelButton: true}"
+                        (confirm)="onRemoveUserClicked(user, i)"
+                        *ngIf="user.status == 'AC' && user.registryCode"><i class="material-icons">delete</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-template #p="paginationApi"
+                id="server"
+                (pageChange)="onPageChange($event)">
+                <ul class="pagination custom-pagination">
+                  <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                    <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                  </li>
+                  <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value" [class.waves-effect]="p.getCurrent() !== page.value">
+                    <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                      {{ page.label }}
+                    </a>
+                    <a *ngIf="p.getCurrent() === page.value">
+                      {{ page.label }}
+                    </a>
+                  </li>
+                  <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                    <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                  </li>
+                </ul>
+              </pagination-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>
+<div id="modal1" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-content">
+    <h4>Correos</h4>
+    <div *ngIf="!viewMessage">
+      <table *ngIf="modalUser">
+        <thead>
+          <tr>
+            <th>Asunto</th>
+            <th>Mensaje</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mail of mails; let i = index">
+            <td>{{ mail.asunto }}</td>
+            <td>
+              <a class="waves-effect waves-green btn-floating" (click)="onViewMessageClicked(mail)"><i class="material-icons left">visibility</i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="viewMessage">
+      <a class="waves-effect waves-green btn-floating" (click)="onBackClicked()"><i class="material-icons left">arrow_back</i></a>
+      <div class="mail-content" [innerHTML]="htmlMail"></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
+  </div>
+</div>
+<div id="modalAnswer" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalAnswerActions">
+  <div class="modal-content">
+    <h4>Respuesta seguridad</h4>
+    <div *ngIf="modalUser">
+      <p>{{ modalUser.respuesta }}</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalAnswer()">Cerrar</a>
+  </div>
+</div>
+<div id="modalSaldo" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalSaldoActions">
+  <div class="modal-content">
+    <h4>Saldo de la cuenta principal</h4>
+    <div *ngIf="saldo || saldo === 0">
+      <p>{{ saldo | currency: 'Q' }}</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalSaldo()">Cerrar</a>
+  </div>
+</div>

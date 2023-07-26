@@ -1,0 +1,400 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Corregir garantía</span>
+              </div>
+            </div>
+            <div class="row">
+              <form materialize (ngSubmit)="onSearchGuaranteeSubmit()" [formGroup]="searchGuaranteeForm">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input type="number" class="validate" id="garantia" formControlName="garantia">
+                    <label for="garantia">Número de Garantía</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn">Buscar</button>
+                </div>
+              </form>
+            </div>
+            <div class="row" *ngIf="tramites">
+              <p class="note teal">Información de la Garantía</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tramite</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Solicitante</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let tramite of tramites; let i = index">
+                    <td>{{ tramite.idTramite }}</td>
+                    <td>{{ tramite.descripcion }}</td>
+                    <td>{{ tramite.fechaCreacion }}</td>
+                    <td>{{ tramite.guarantee.solicitante ? tramite.guarantee.solicitante.name : '' }}</td>
+                    <td>
+                      <button class="btn" (click)="onViewPartsClicked(i)">Modificar</button>
+                      <a class="btn"
+                        [swal]="{title: 'Generar PDF', text: '¿Está seguro de generar el PDF? El PDF generado quedará como el PDF del trámite', type: 'warning', showCancelButton: true}"
+                        (confirm)="onGeneratePDFClicked(i)"><i class="material-icons">file_download</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="card" *ngIf="modalTransaction">
+        <div class="card-content">
+          <form materialize (ngSubmit)="onSaveGarantiaSubmit()" [formGroup]="guaranteeForm">
+            <span class="card-title blue-text text-darken-2">Detalle de la Garantía Mobiliaria</span>
+            <div class="row">
+              <div class="col s12">
+                <span class="blue-text text-darken-2">Garantía Mobiliaria No.
+                </span><span>{{ modalTransaction.idGarantia }}</span>
+              </div>
+            </div>
+            <div class="row" *ngIf="!fechaInscripcionEdit">
+              <div class="col s6">
+                <span class="blue-text text-darken-2">Fecha de inscripción
+                </span><span>{{ modalTransaction.fechaInscripcion }}</span>
+              </div>
+              <div class="col s6">
+                <button class="btn" (click)="onEditFechaInscripcionClicked()"><i
+                    class="material-icons">edit</i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="fechaInscripcionEdit">
+              <div class="input-field col s4">
+                <input type="text" class="validate" id="fechaCreacion" formControlName="fechaCreacion">
+                <label for="fechaCreacion" class="active">Fecha de inscripcion</label>
+              </div>
+              <div class="col s2">
+                <button class="btn" (click)="onSaveFechaInscripcionClicked()"><i
+                    class="material-icons">save</i></button>
+                <button class="btn red darken-4" (click)="onCancelFechaInscripcionClicked()"><i
+                    class="material-icons">cancel</i></button>
+              </div>
+            </div>
+            <div class="row note teal">
+              <span class="white-text">Datos de la inscripción</span>
+            </div>
+            <div class="row">
+              <div class="col s12">
+                <span class="blue-text text-darken-2">Vigencia: </span><span>{{ modalTransaction.vigencia }} Años</span>
+              </div>
+            </div>
+            <div class="row">
+              <table class="bordered striped centered">
+                <thead>
+                  <tr>
+                    <th colspan="3">Deudor (es) Garante (s)</th>
+                  </tr>
+                  <tr *ngIf="modificarPersonas">
+                    <th colspan="3">
+                      <a class="waves-effect waves-light btn-large" (click)="onAddDeudorClicked()">Agregar</a>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Nombre, Denominación o Razón Social</th>
+                    <th>No. Identificación \ No. Identificación Tributaria</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let deudor of deudores; let i = index">
+                    <td>{{ deudor.name }}</td>
+                    <td>{{ deudor.docId ? deudor.docId : deudor.nit }}</td>
+                   
+                    <td>
+                      <a class="waves-effect waves-light btn" (click)="onEditDeudorClicked(deudor, i)"
+                        *ngIf="modificarPersonas"><i class="material-icons">edit</i></a>
+                      <a class="waves-effect waves-light btn red darken-4"
+                        [swal]="{title: 'Eliminar deudor', text: '¿Está seguro de eliminar al deudor?', type: 'warning', showCancelButton: true}"
+                        (confirm)="onRemoveDeudorClicked(i)" *ngIf="modificarPersonas"><i
+                          class="material-icons">delete</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <table class="bordered striped centered">
+                <thead>
+                  <tr>
+                    <th colspan="3">Acreedor (es) Garantizado (s)</th>
+                  </tr>
+                  <tr *ngIf="modificarPersonas">
+                    <th colspan="3">
+                      <a class="waves-effect waves-light btn-large" (click)="onAddAcreedorClicked()">Agregar</a>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>Nombre, Denominación o Razón Social</th>
+                    <th>No. Identificación \ No. Identificación Tributaria</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let acreedor of acreedores; let i = index">
+                    <td>{{ acreedor.name }}</td>
+                    <td>{{ acreedor.docId ? acreedor.docId : acreedor.nit }}</td>
+                    <td>
+                      <a class="waves-effect waves-light btn" (click)="onEditAcreedorClicked(acreedor, i)"
+                        *ngIf="modificarPersonas"><i class="material-icons">edit</i></a>
+                      <a class="waves-effect waves-light btn red darken-4"
+                        [swal]="{title: 'Eliminar articulo', text: '¿Está seguro de eliminar al acreedor?', type: 'warning', showCancelButton: true}"
+                        (confirm)="onRemoveAcreedorClicked(i)" *ngIf="modificarPersonas"><i
+                          class="material-icons">delete</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="row note teal">
+              <span class="white-text">Representante(s)</span>
+            </div>
+
+            
+              <div class="row" *ngIf="!representanteInfo" >
+                <div class="col s12">
+                  <span class="blue-text text-darken-2">Representante(s):</span>
+                  <p>
+                    {{ modalTransaction.otrosTerminosR }}
+                  </p>
+                  <button class="btn" (click)="onEditRepresentanteClicked()"><i class="material-icons">edit</i></button>
+                </div>
+              </div>
+            
+
+            <div class="row" *ngIf="representanteInfo">
+              <div class="input-field col s10">
+                <textarea id="otrosTerminos" formControlName="otrosTerminosR" class="materialize-textarea"></textarea>
+                <label for="otrosTerminos" class="active">Descripción de Representante:</label>
+              </div>
+              <div class="col s2">
+                <button class="btn" (click)="onSaveRepresentanteClicked()"><i class="material-icons">save</i></button>
+                <button class="btn red darken-4" (click)="onCancelRepresentanteClicked()"><i
+                    class="material-icons">cancel</i></button>
+              </div>
+            </div>
+
+            <div class="row note teal">
+              <span class="white-text">Objeto de la Operación</span>
+            </div>
+            <div class="row" *ngIf="!ContratoEdit">
+              <div class="col s12">
+                <span class="blue-text text-darken-2">Objeto de la Operación:</span>
+                <p>
+                  {{ modalTransaction.contrato }}
+                </p>
+                <button class="btn" (click)="onEditContratoClicked()"><i class="material-icons">edit</i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="ContratoEdit">
+              <div class="input-field col s10">
+                <textarea id="desContrato" formControlName="desContrato" class="materialize-textarea"></textarea>
+                <label for="desContrato" class="active">Descripción de Contrato</label>
+              </div>
+              <div class="col s2">
+                <button class="btn" (click)="onSaveContratoClicked()"><i class="material-icons">save</i></button>
+                <button class="btn red darken-4" (click)="onCancelContratoClicked()"><i
+                    class="material-icons">cancel</i></button>
+              </div>
+            </div>
+
+            <div class="row note teal">
+              <span class="white-text">Información de la Garantía Mobiliaria</span>
+            </div>
+            <div class="row" *ngIf="!descGarantiaEdit">
+              <div class="col s12">
+                <span class="blue-text text-darken-2">Descripción de los Bienes Muebles objeto de la Garantía
+                  Mobiliaria:</span>
+                <p>
+                  {{ modalTransaction.descbienes }}
+                </p>
+                <button class="btn" (click)="onEditDescGarantiaClicked()"><i class="material-icons">edit</i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="descGarantiaEdit">
+              <div class="input-field col s10">
+                <textarea id="descGarantia" formControlName="descGarantia" class="materialize-textarea"></textarea>
+                <label for="descGarantia" class="active">Descripción general</label>
+              </div>
+              <div class="col s2">
+                <button class="btn" (click)="onSaveDescGarantiaClicked()"><i class="material-icons">save</i></button>
+                <button class="btn red darken-4" (click)="onCancelDescGarantiaClicked()"><i
+                    class="material-icons">cancel</i></button>
+              </div>
+            </div>
+            <div class="row note teal">
+              <span class="white-text">Información Específica de la Garantía Mobiliaria</span>
+            </div>
+            <div class="row" *ngIf="!instrumentoPublicoEdit">
+              <div class="col s12">
+                <span class="blue-text text-darken-2">Información General del Contrato de la Garantía:</span>
+                <p>
+                  {{ modalTransaction.instrumento }}
+                </p>
+                <button class="btn" (click)="onEditInstrumentoPublicoClicked()"><i
+                    class="material-icons">edit</i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="instrumentoPublicoEdit">
+              <div class="input-field col s10">
+                <textarea id="instrumentoPublico" formControlName="instrumentoPublico"
+                  class="materialize-textarea"></textarea>
+                <label for="instrumentoPublico" class="active">Datos generales del contrato de la garantía</label>
+              </div>
+              <div class="col s2">
+                <button class="btn" (click)="onSaveInstrumentoPublicoClicked()"><i
+                    class="material-icons">save</i></button>
+                <button class="btn red darken-4" (click)="onCancelInstrumentoPublicoClicked()"><i
+                    class="material-icons">cancel</i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="!otrosTerminosGarantiaEdit">
+              <div class="col s12">
+                <span class="blue-text text-darken-2">Observaciones adicionales de la Garantía:</span>
+                <p>
+                  {{ modalTransaction.otrosgarantia }}
+                </p>
+                <button class="btn" (click)="onEditOtrosTerminosGarantiaClicked()"><i
+                    class="material-icons">edit</i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="otrosTerminosGarantiaEdit">
+              <div class="input-field col s10">
+                <textarea id="otrosTerminos" formControlName="otrosTerminos" class="materialize-textarea"></textarea>
+                <label for="otrosTerminos" class="active">Datos adicionales</label>
+              </div>
+              <div class="col s2">
+                <button class="btn" (click)="onSaveOtrosTerminosGarantiaClicked()"><i
+                    class="material-icons">save</i></button>
+                <button class="btn red darken-4" (click)="onCancelOtrosTerminosGarantiaClicked()"><i
+                    class="material-icons">cancel</i></button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s12 right-align">
+                <button class="waves-effect waves-light btn" type="submit">Guardar</button>
+                <a class="waves-effect waves-light btn" (click)="onNewSearchClicked()">Nueva consulta</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="modPerson" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modalActions">
+  <div class="modal-content">
+    <h4>{{personFormTitle}}</h4>
+    <div class="card">
+      <div class="card-content">
+        <div class="row">
+          <form materialize (ngSubmit)="onSavePersonSubmit()" [formGroup]="personForm">
+            <div class="row">
+              <div class="input-field col s12">
+                <select id="tipo" materialize="material_select" id="personType" formControlName="personType">
+                  <option value="" disabled selected>Seleccione el tipo</option>
+                  <option value="PF">Persona individual</option>
+                  <option value="PM">Persona jurídica</option>
+                </select>
+                <label for="tipo">Tipo de persona</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <select id="tipo" materialize="material_select" [materializeSelectOptions]="countries" id="nationality"
+                  formControlName="nationality">
+                  <option value="" disabled selected>Seleccione la nacionalidad</option>
+                  <option *ngFor="let country of countries" value="{{country.idNacionalidad}}">
+                    {{country.descNacionalidad}}</option>
+                </select>
+                <label for="tipo">Nacionalidad</label>
+              </div>
+            </div>
+            <div class="row" *ngIf="personForm.value.personType == 'PF'">
+              <div class="input-field col s12">
+                <input type="text" class="validate" id="name" formControlName="name">
+                <label for="nombre" class="active">Nombre completo</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s6" *ngIf="personForm.value.personType == 'PF'">
+                <input type="text" class="validate" id="docId" formControlName="docId">
+                <label for="docId"
+                  class="active">{{personForm.value.nationality === '1' ? 'Documento de Identificación' : 'Pasaporte'}}</label>
+              </div>
+              <div class="input-field col s6">
+                <input type="text" class="validate" id="nit" formControlName="nit">
+                <label for="nit"
+                  class="active">{{personForm.value.nationality === '1' ? 'NIT' : (personForm.value.personType == 'PF' ? 'NIT' : 'Número de registro tributario')}}</label>
+              </div>
+            </div>
+            <div class="div" *ngIf="personForm.value.personType == 'PM'">
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" class="validate" id="name" formControlName="name">
+                  <label for="name" class="active">Razón o denominación social</label>
+                </div>
+              </div>
+              <div *ngIf="personFormType != 4">
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input type="text" class="validate" id="legalInscription" formControlName="legalInscription">
+                    <label for="legalInscription" class="active">Información de la inscripción de la persona
+                      jurídica</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input type="text" class="validate" id="representativeInfo" formControlName="representativeInfo">
+                    <label for="representativeInfo" class="active">Datos del representante</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input type="text" class="validate" id="email" formControlName="email">
+                <label for="email" class="active">Correo electrónico</label>
+              </div>
+            </div>
+            <div class="row" *ngIf="personFormType != 4">
+              <div class="input-field col s12">
+                <textarea class="materialize-textarea" id="address" formControlName="address"></textarea>
+                <label for="address" class="active">Domicilio</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s12 right-align">
+                <button class="waves-effect waves-light btn" type="submit"
+                  [disabled]="disabledPerson()">Guardar</button>
+                <a class="waves-effect waves-light btn red darken-4" (click)="onCancelClicked()">Cancelar</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<swal #swalSearchGuarantee title="Buscar garantía" text="Debe ingresar el número de garantía a buscar." type="error">
+</swal>
+<swal #swalNoChanges title="Guardar cambios" text="No se han hecho cambios al trámite." type="error">
+</swal>

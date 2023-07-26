@@ -1,0 +1,129 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Usuarios pendientes de aprobar</span>
+              </div>
+            </div>
+            <div class="row">
+            
+
+
+
+
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Documento de identificación</th>
+                    <th>NIT</th>
+                    <th>Fecha de registro</th>
+                    <th>Opciones</th>
+                  </tr>
+                  <tr>
+                    <th><input type="text" #filNombreInput [(ngModel)]="filNombre" (ngModelChange)="filNombreChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilNombre()"></th>
+                    <th><input type="text" #filCorreoInput [(ngModel)]="filCorreo" (ngModelChange)="filCorreoChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilCorreo()"></th>
+                    <th><input type="text" #filDocIdInput [(ngModel)]="filDocId" (ngModelChange)="filDocIdChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilDocId()"></th>
+                    <th><input type="text" #filNitInput [(ngModel)]="filNit" (ngModelChange)="filNitChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilNit()"></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users  | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.docId }}</td>
+                    <td>{{ user.nit }}</td>
+                    <td>{{ user.registered | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>
+                      <a
+                        *ngIf="user.files"
+                        class="waves-effect waves-light btn"
+                        (click)="onViewAttachmentClicked(user)"><i class="material-icons">attachment</i></a>
+                      <a
+                        class="waves-effect waves-light btn indigo"
+                        [swal]="{title: 'Aprobar cuenta', text: '¿La persona cumplió con los requisitos documentales autenticados?', type: 'warning', showCancelButton: true}"
+                        (confirm)="onAproveUserClicked(user, i)"><i class="material-icons">check_circle</i></a>
+                      <a
+                        class="waves-effect waves-light btn red darken-4"
+                        (click)="onRejectUserClicked(user, i)"><i class="material-icons">cancel</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-template #p="paginationApi"
+                id="server"
+                (pageChange)="onPageChange($event)">
+                <ul class="pagination custom-pagination">
+                  <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                    <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                  </li>
+                  <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value" [class.waves-effect]="p.getCurrent() !== page.value">
+                    <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                      {{ page.label }}
+                    </a>
+                    <a *ngIf="p.getCurrent() === page.value">
+                      {{ page.label }}
+                    </a>
+                  </li>
+                  <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                    <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                  </li>
+                </ul>
+              </pagination-template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>
+<div id="modal1" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-content">
+    <h4>Ver adjuntos</h4>
+    <ul *ngIf="modalUser">
+      <li
+        *ngFor="let file of modalUser.files; let i = index">
+        <a href="{{file.url}}" target="_blank">Adjunto {{i + 1}}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
+  </div>
+</div>
+<div id="modReject" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modRejectActions">
+  <div class="modal-content">
+    <h4>Escriba la causa del rechazo</h4>
+    <form (ngSubmit)="rejectUser()" #f="ngForm">
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea
+            id="causa"
+            class="materialize-textarea"
+            ngModel
+            name="causa"
+            required
+            #causa="ngModel"></textarea>
+          <label for="causa">Causa</label>
+        </div>
+      </div>
+      <div class="row right-align">
+        <button type="submit" class="waves-effect waves-green btn-flat">Aceptar</button>
+        <a class="waves-effect waves-green btn-flat" (click)="closeModalReject()">Cerrar</a>
+      </div>
+    </form>
+  </div>
+</div>

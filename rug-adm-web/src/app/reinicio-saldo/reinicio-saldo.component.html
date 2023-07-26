@@ -1,0 +1,41 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s12">
+                <span class="card-title">Reinicio de Saldo</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col l3 hide-on-med-and-down"></div>
+              <form materialize (ngSubmit)="onSearchUserSubmit()" [formGroup]="searchUserForm" class="col s12 l6">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input
+                      type="text"
+                      class="validate"
+                      id="query"
+                      formControlName="query">
+                    <label for="query">Código de Persona</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn right-align">Buscar</button>
+                </div>
+              </form>
+              <div class="col l3 hide-on-med-and-down"></div>
+            </div>
+            <div class="row" *ngIf="flag">
+              <div class="alert">
+                {{ result }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

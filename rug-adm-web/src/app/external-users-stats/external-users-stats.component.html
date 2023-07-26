@@ -1,0 +1,165 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <div class="card-title">Distribución de usuarios del RUG</div>
+              </div>
+            </div>
+            <div class="row">
+              <ngx-daterangepicker [(ngModel)]="rangoFechas" (ngModelChange)="onRangeChanged($event)" [options]="options"></ngx-daterangepicker>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <select id="periodoTiempo" materialize="material_select" (change)="onPeriodChanged($event)">
+                  <option value="D">Por día</option>
+                  <option value="S" selected>Por semana</option>
+                  <option value="M">Por mes</option>
+                  <option value="A">Por año</option>
+                </select>
+                <label for="periodoTiempo">Agrupar por</label>
+              </div>
+              <div class="input-field col s6">
+                <select id="inicioSemana" materialize="material_select" (change)="onDiaChanged($event)">
+                  <option value="7">Domingo</option>
+                  <option value="1">Lunes</option>
+                  <option value="2">Martes</option>
+                  <option value="3">Miércoles</option>
+                  <option value="4" selected>Jueves</option>
+                  <option value="5">Viernes</option>
+                  <option value="6">Sábado</option>
+                </select>
+                <label for="inicioSemana">Agrupar por</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6">
+                <input type="checkbox" id="incluirMigracion" [(ngModel)]="incluirMigracion" (change)="onMigracionChanged($event)" />
+                <label for="incluirMigracion">¿Incluir migrados?</label>
+              </div>
+            </div>
+            <div class="row" *ngIf="chart">
+              <canvas id="canvas">{{ chart }}</canvas>
+            </div>
+            <div class="row" *ngIf="chart">
+              <div class="col s12 right-align">
+                <button
+                  class="waves-effect waves-light btn"
+                  type="button"
+                  (click)="exportData()">Exportar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Resumen</span>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Estado</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of usersCount">
+                    <td>{{ user.descripcion | sitUsuario}}</td>
+                    <td>{{ user.total }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+    <!--div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Detalle</span>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Identificación</th>
+                    <th>NIT</th>
+                    <th>Fecha de registro</th>
+                    <th>Registro del RGM</th>
+                    <th>Estado</th>
+                  </tr>
+                  <tr>
+                    <th><input type="text" #filNombreInput [(ngModel)]="filNombre" (ngModelChange)="filNombreChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilNombre()"></th>
+                    <th><input type="text" #filCorreoInput [(ngModel)]="filCorreo" (ngModelChange)="filCorreoChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilCorreo()"></th>
+                    <th><input type="text" #filDocIdInput [(ngModel)]="filDocId" (ngModelChange)="filDocIdChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilDocId()"></th>
+                    <th><input type="text" #filNitInput [(ngModel)]="filNit" (ngModelChange)="filNitChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilNit()"></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.docId }}</td>
+                    <td>{{ user.nit }}</td>
+                    <td>{{ user.registered | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ user.registryCode }}</td>
+                    <td>{{ user.status | sitUsuario }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-template #p="paginationApi"
+                id="server"
+                (pageChange)="onPageChange($event)">
+                <ul class="pagination custom-pagination">
+                  <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                    <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                  </li>
+                  <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value" [class.waves-effect]="p.getCurrent() !== page.value">
+                    <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                      {{ page.label }}
+                    </a>
+                    <a *ngIf="p.getCurrent() === page.value">
+                      {{ page.label }}
+                    </a>
+                  </li>
+                  <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                    <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                  </li>
+                </ul>
+              </pagination-template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div-->
+  </div>
+</main>

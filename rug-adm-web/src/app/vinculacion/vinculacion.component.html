@@ -1,0 +1,111 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Vinculación de Garantía</span>
+              </div>
+            </div>
+            <div class="row">
+              <form materialize (ngSubmit)="onSearchGuaranteeSubmit()" [formGroup]="searchGuaranteeForm">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input
+                      type="number"
+                      class="validate"
+                      id="garantia"
+                      formControlName="garantia">
+                    <label for="garantia">Número de Garantía</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn">Buscar</button>
+                </div>
+              </form>
+            </div>
+            <div class="row" *ngIf="garantia">
+              <p class="note teal">Información de la Garantía</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Garantía</th>
+                    <th>Solicitante Original</th>
+                    <th>Acreedor (es)</th>
+                    <th>Deudor (es)</th>
+                    <th>Descripción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ garantia.idGarantia }}</td>
+                    <td>{{ garantia.solicitante ? garantia.solicitante.name : '' }}</td>
+                    <td>{{ garantia.acreedores ? (garantia.acreedores | serialize) : '' }}</td>
+                    <td>{{ garantia.deudores ? (garantia.deudores | serialize) : '' }}</td>
+                    <td>{{ garantia.descGarantia }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <form materialize (ngSubmit)="onSearchUserSubmit()" [formGroup]="searchUserForm">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input
+                      type="text"
+                      class="validate"
+                      id="solicitante"
+                      formControlName="solicitante">
+                    <label for="solicitante">Nuevo Solicitante</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn">Buscar</button>
+                </div>
+              </form>
+            </div>
+            <div class="row" *ngIf="solicitante && solicitante.personaId">
+              <p class="note teal">Información del Solicitante Nuevo</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>NIT</th>
+                    <th>Documento de Identificación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ solicitante.name }}</td>
+                    <td>{{ solicitante.email }}</td>
+                    <td>{{ solicitante.nit }}</td>
+                    <td>{{ solicitante.docId }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <form materialize (ngSubmit)="onVincularSubmit()" [formGroup]="vincularForm">
+                <div class="input-field col s12">
+                  <textarea
+                    class="materialize-textarea"
+                    id="motivo"
+                    formControlName="motivo"></textarea>
+                  <label for="motivo">Motivo</label>
+                </div>
+                <div class="col s12 right-align">
+                  <button
+                    class="waves-effect waves-light btn"
+                    type="submit"
+                    [disabled]="disabledVincular()">Vincular</button>
+                  <a class="waves-effect waves-light btn red darken-4" (click)="onCancelClicked()">Cancelar</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

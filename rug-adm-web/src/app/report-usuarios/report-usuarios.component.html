@@ -1,0 +1,977 @@
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s12">
+        <h4 style="text-align: center; color:#0D47A1;">Reporte de Usuarios</h4>
+        <div class="row">
+          <div class="card">
+            <div class="card-content">
+              <div class="row">
+                <div class="col s4 ">
+                  <div class="input-field">
+                    <input type="text" class="validate" [(ngModel)]="textob">
+                    <label for="textob">Texto de busqueda</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s4">
+                  <button class="waves-effect waves-light btn" type="button" (click)="refreshData()">Buscar</button>
+                </div>
+                <div class="col s4 ">
+                  <button class="waves-effect waves-light btn" type="button"
+                    (click)="exportDataUser()">Exportar</button>
+                </div>
+              </div>
+
+              <div class="row">
+                <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_usuarios | number:'1.0-0'}}</label>
+                <table class="responsive-table centered striped" id="datatable">
+                  <thead>
+                    <tr>
+                      <th>Identificacion</th>
+                      <th>Nit</th>
+                      <th>Nombre Completo</th>
+                      <th>Tipo de <br>Persona</th>
+                      <th>Nacionalidad</th>
+                      <th>Correo electronico</th>
+                      <!--<th>Domicilio</th>-->
+                      <th>Garantias</th>
+                      <th class="center-align">Vigentes</th>
+                      <th>No Vigentes</th>
+                      <th>Canceladas</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="let usuario of usuarios | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
+                      <td>{{usuario.idPersona}}</td>
+                      <td>{{usuario.rfc}}</td>
+                      <td>{{usuario.nombrePersona}}</td>
+                      <td>{{usuario.perJuridica}}</td>
+                      <td>{{usuario.nomNacionalidad}}</td>
+                      <td>{{usuario.email}}</td>
+                      <!--  <td>{{deudor.direccion}}</td>-->
+                      <td class="center-align">{{usuario.cGarantias}}</td>
+                      <td class="center-align">{{usuario.cVigentes}}</td>
+                      <td class="center-align">{{usuario.cnVigentes}}</td>
+                      <td class="center-align">{{usuario.cCanceladas}}</td>
+                      <td>
+                        <select id="select_r" #select_y materialize="material_select" #filoperaciones [(ngModel)]="operacionSeleccionado"
+                          (ngModelChange)="Operaciones(usuario)">
+                          <option value="" selected>Seleccione una operación</option>
+                          <option value="1"> Detalles</option>
+                          <option value="2">Garantias</option>
+                          <option value="3">Deudores</option>
+                          <option value="4">Acreedores</option>
+                          <option value="5">Historial de pagos</option>
+                          <option value="6">Historial de pagos aprobados</option>
+                          <option value="7">Historial de pagos rechazados</option>
+                          <option value="8">Historial de pagos pendientes</option>
+
+                        </select>
+                        <!--   <a class="waves-effect waves-amber btn-floating blue" (click)="onDetalles(usuario)"><i
+                            class="material-icons">remove_red_eye</i></a>
+                        <a class="waves-effect waves-amber btn-floating red " (click)="onGarantias(usuario)"><i
+                            class="material-icons">import_contacts</i></a>
+                        <a class="waves-effect waves-amber btn-floating red " (click)="onAcreedores_b(usuario)"><i
+                            class="material-icons">account_box</i></a>
+                        <a class="waves-effect waves-amber btn-floating red " (click)="onDeudores(usuario)"><i
+                            class="material-icons">people</i></a>-->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-template #p="paginationApi" id="server" (pageChange)="onPageChange($event)">
+                  <ul class="pagination custom-pagination">
+                    <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                      <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                    </li>
+                    <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value"
+                      [class.waves-effect]="p.getCurrent() !== page.value">
+                      <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                        {{ page.label }}
+                      </a>
+                      <a *ngIf="p.getCurrent() === page.value">
+                        {{ page.label }}
+                      </a>
+                    </li>
+                    <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                      <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                    </li>
+                  </ul>
+                </pagination-template>
+                <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_usuarios | number:'1.0-0'}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>
+
+<div id="modDetalle" class="modal modal-fixed-footer" materialize="modal" style="min-height:450px;"
+  [materializeParams]="[{dismissible: true}]" [materializeActions]="modDetallesActions">
+
+  <div class="modal-content">
+    <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+      <h5 class="modal-title">Detalle del Usuario</h5>
+    </div>
+    <form #f="ngForm">
+      <div class="row">
+        <div class="input-field inline col s12">
+          Identificación:
+          <input name="m_identificacion" type="text" class="validate" [(ngModel)]="m_identificacion">
+        </div>
+        <div class="input-field inline col s12">
+          Nit:
+          <input name="m_nit" type="text" class="validate" [(ngModel)]="m_nit">
+        </div>
+        <div class="input-field inline col s12">
+          Nombre Completo:
+          <input name="m_nombre" type="text" class="validate" [(ngModel)]="m_nombre">
+        </div>
+        <div class="input-field inline col s12">
+          Tipo de Persona:
+          <input name="m_tipo" type="text" class="validate" [(ngModel)]="m_tipo">
+        </div>
+        <div class="input-field inline col s12">
+          Nacionalidad:
+          <input name="m_nacionalidad" type="text" class="validate" [(ngModel)]="m_nacionalidad">
+        </div>
+        <div class="input-field inline col s12">
+          Correo Electrónico:
+          <input name="m_correo" type="text" class="validate" [(ngModel)]="m_correo">
+        </div>
+        <div class="input-field inline col s12">
+          Domicilio:
+          <input name="m_domicilio" type="text" class="validate" [(ngModel)]="m_domicilio">
+        </div>
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="row right-align">
+
+      <a class="waves-effect waves-green btn-flat" (click)="closeModalDetalles()">Cerrar</a>
+    </div>
+  </div>
+
+</div>
+<div id="modGarantia" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modGarantiasActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Lista de Garantías</h5>
+  </div>
+  <div class="modal-content">
+    <h6 style="color:#0D47A1;">Garantías por Usuario </h6>
+    <div class="row">
+
+      <div class="col s3 ">
+        <label for="identi_garantia">Identificación:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="identi_garantia">
+      </div>
+      <div class="col s3 ">
+        <label for="nit_garantia">Nit:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nit_garantia">
+
+
+      </div>
+      <div class="col s6 ">
+        <label for="nomrec_garantia">Nombre Completo:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nomrec_garantia">
+
+
+      </div>
+      <div class="col s3">
+        <div class="input-field">
+          <input type="text" class="validate" [(ngModel)]="nume_garantia">
+          <label for="nume_garantia">No Garantía:</label>
+        </div>
+      </div>
+      <div class="col s3">
+        <div class="input-field">
+
+          <ngx-daterangepicker [(ngModel)]="rangoFechas" (ngModelChange)="onRangeChanged($event)"
+            [options]="options"></ngx-daterangepicker>
+        </div>
+      </div>
+      <div class="col s3">
+        <label for="filDeudores">Deudores:</label>
+        
+          <input type="text" class="validate" [(ngModel)]="textob_deudor">
+
+      <!--  <select  materialize="material_select" #filDeudorInput [(ngModel)]="filDeudores"
+          (ngModelChange)="filDeudoresChanged($event)">
+          <option value="" selected>Todos</option>
+          <option *ngFor="let deudor of deudores_filtro let i = index" [value]="deudor.value">{{ i + 1 }}.{{
+            deudor.label }}</option>
+        </select>-->
+
+
+      </div>
+      <div class=" col s3">
+        <label for="filAcreedores">Acreedores:</label>
+        <input type="text" class="validate" [(ngModel)]="textob_acreedor">
+       <!-- <select materialize="material_select" #filAcreedorInput [(ngModel)]="filAcreedores"
+          (ngModelChange)="filAcreedorChanged($event)">
+          <option value="" selected>Todos</option>
+          <option *ngFor="let acreedor of acreedores_filtro let i = index" [value]="acreedor.value">{{ i + 1 }}.{{
+            acreedor.label }}</option>
+        </select>-->
+
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="BuscarData()">Buscar</button>
+      </div>
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="exportDataG()">Exportar</button>
+      </div>
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="LimpiarData()">Limpiar</button>
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modGarantia | number:'1.0-0'}}</label>
+      <table class="responsive-table centered striped" id="datatable">
+        <thead>
+          <tr>
+            <th>No.Gar.</th>
+            <th>Movs.</th>
+            <th>Inscr.</th>
+            <th>Cert.</th>
+            <th>Mod.</th>
+            <th>Canc.</th>
+            <th>Ejec.</th>
+            <th>Prorr.</th>
+            <th>F.Inscrip.</th>
+            
+            <th>Operación</th>
+            <th>Vigencia</th>
+            
+            <th>Deudor</th>
+            <th>Acreedor</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+            
+            <th>Sol.Original</th>
+            <th>Acciones</th>
+          </tr>
+       
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let garantia of garantias | paginate: { id: 'server2', itemsPerPage: pageSize2, currentPage: currentPage2, totalItems: total2 }; let i = index">
+            <td>{{garantia.idGarantia}}</td>
+            <td>{{garantia.movs}}</td>
+            <td>{{garantia.inscr}}</td>
+            <td>{{garantia.cert}}</td>
+            <td>{{garantia.modif}}</td>
+            <td>{{garantia.cancelado}}</td>
+            <td>{{garantia.ejec}}</td>
+            <td>{{garantia.prorr}}</td>
+            <td>{{garantia.fInscr | date: 'dd/MM/yyyy'}}</td>
+            
+            <td>{{garantia.dTramite}}</td>
+            <td>{{garantia.vigencia}}</td>
+            
+            <td>{{garantia.nDeudor}}</td>
+            <td>{{garantia.nAcreedor}}</td>
+            <td>{{garantia.nUsuario}}</td>
+            <td>{{garantia.gStatus}}</td>
+            
+            <td>{{garantia.sOriginal}}</td>
+            <td><a class="waves-effect waves-amber btn-floating blue" (click)="onDetallesG(garantia)"><i
+                  class="material-icons">remove_red_eye</i></a>
+             <!-- <a class="waves-effect waves-amber btn-floating blue" (click)="onDescargaPDF(garantia)"><i
+                  class="material-icons">file_download</i></a>-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <pagination-template #p2="paginationApi" id="server2" (pageChange)="onPageChangeG($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="p2.isFirstPage()">
+            <a *ngIf="!p2.isFirstPage()" (click)="p2.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of p2.pages" [class.active]="p2.getCurrent() === page.value"
+            [class.waves-effect]="p2.getCurrent() !== page.value">
+            <a (click)="p2.setCurrent(page.value)" *ngIf="p2.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="p2.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="p2.isLastPage()">
+            <a *ngIf="!p2.isLastPage()" (click)="p2.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modGarantia | number:'1.0-0'}}</label>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalGarantia()">Cerrar</a>
+  </div>
+</div>
+<div id="modDetalleG" class="modal modal-fixed-footer" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modDetallesGActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Detalle de la Garantia</h5>
+  </div>
+  <div class="modal-content">
+
+    <form #f="ngForm">
+      <div class="row">
+        <div class="input-field inline col s12">
+          No. Garantia:
+          <input name="mg_numero" type="text" class="validate" [(ngModel)]="mg_numero">
+        </div>
+        <div class="input-field inline col s12">
+          Movs:
+          <input name="mg_movs" type="text" class="validate" [(ngModel)]="mg_movs">
+        </div>
+        <div class="input-field inline col s12">
+          Inscr:
+          <input name="mg_inscr" type="text" class="validate" [(ngModel)]="mg_inscr">
+        </div>
+        <div class="input-field inline col s12">
+          Cert:
+          <input name="mg_cert" type="text" class="validate" [(ngModel)]="mg_cert">
+        </div>
+        <div class="input-field inline col s12">
+          Mod:
+          <input name="mg_mod" type="text" class="validate" [(ngModel)]="mg_mod">
+        </div>
+        <div class="input-field inline col s12">
+          Canc:
+          <input name="mg_canc" type="text" class="validate" [(ngModel)]="mg_canc">
+        </div>
+        <div class="input-field inline col s12">
+          Ejec:
+          <input name="mg_ejec" type="text" class="validate" [(ngModel)]="mg_ejec">
+        </div>
+        <div class="input-field inline col s12">
+          Prorr:
+          <input name="mg_prorr" type="text" class="validate" [(ngModel)]="mg_prorr">
+        </div>
+        <div class="input-field inline col s12">
+          F.Inscrip:
+          <input name="mg_finscr" type="text" class="validate" [(ngModel)]="mg_finscr">
+        </div>
+       
+        <div class="input-field inline col s12">
+          Operación:
+          <input name="mg_operacion" type="text" class="validate" [(ngModel)]="mg_operacion">
+        </div>
+        <div class="input-field inline col s12">
+          Vigencia:
+          <input name="mg_vigencia" type="text" class="validate" [(ngModel)]="mg_vigencia">
+        </div>
+      
+        <div class="input-field inline col s12">
+          Deudor:
+          <input name="mg_deudor" type="text" class="validate" [(ngModel)]="mg_deudor">
+        </div>
+        <div class="input-field inline col s12">
+          Acreedor:
+          <input name="mg_acreedor" type="text" class="validate" [(ngModel)]="mg_acreedor">
+        </div>
+        <div class="input-field inline col s12">
+          Usuario:
+          <input name="mg_usuario" type="text" class="validate" [(ngModel)]="mg_usuario">
+        </div>
+        <div class="input-field inline col s12">
+          Estado:
+          <input name="mg_estado" type="text" class="validate" [(ngModel)]="mg_estado">
+        </div>
+      
+        <div class="input-field inline col s12">
+          Sol.Original:
+          <input name="mg_soriginal" type="text" class="validate" [(ngModel)]="mg_soriginal">
+        </div>
+        <div class="input-field inline col s12">
+          Detalle de Garantia:
+          <input name="mg_detalle" type="text" class="validate" [(ngModel)]="mg_detalle">
+
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+
+
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalDetallesG()">Cerrar</a>
+
+  </div>
+</div>
+<div id="modAcreedores" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modDetallesAcreActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Lista de Acreedores</h5>
+  </div>
+  <div class="modal-content">
+    <h6 style="color:#0D47A1;">Acreedores relacionados al Usuario </h6>
+    <div class="row">
+      <div class="col s3 ">
+        <label for="identificador_Macreedor">Identificación:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="identificador_Macreedor">
+      </div>
+      <div class="col s3 ">
+        <label for="nit_gMacreedor">Nit:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nit_gMacreedor">
+      </div>
+      <div class="col s3 ">
+        <label for="nomrec_Macreedor">Nombre Completo:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nomrec_Macreedor">
+      </div>
+      <div class="col s3 ">
+        <button class="waves-effect waves-light btn" type="button" (click)="exportDataAcre()">Exportar</button>
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modAcreedores | number:'1.0-0'}}</label>
+      <table class="responsive-table centered striped" id="datatable">
+        <thead>
+          <tr>
+            <th>Identificación</th>
+            <th>Nit.</th>
+            <th>Nombre Completo</th>
+            <th>Correo Elctrónico.</th>
+
+            <th>Garantias</th>
+            <th>Vigentes</th>
+            <th>No Vigentes.</th>
+            <th>Canceladas</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let acreedor of acreedores_b | paginate: { id: 'server_acr', itemsPerPage: pageSize_acr, currentPage: currentPage_acr, totalItems: total_acr }; let i = index">
+
+            <td>{{acreedor.idPersona}}</td>
+            <td>{{acreedor.rfc}}</td>
+            <td>{{acreedor.nombrePersona}}</td>
+            <td>{{acreedor.email}}</td>
+
+            <td>{{acreedor.cGarantias}}</td>
+            <td>{{acreedor.cVigentes}}</td>
+            <td>{{acreedor.cnVigentes}}</td>
+            <td>{{acreedor.cCanceladas}}</td>
+
+          </tr>
+        </tbody>
+      </table>
+      <pagination-template #ac="paginationApi" id="server_acr" (pageChange)="onPageChangeAcr($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="ac.isFirstPage()">
+            <a *ngIf="!ac.isFirstPage()" (click)="ac.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of ac.pages" [class.active]="ac.getCurrent() === page.value"
+            [class.waves-effect]="ac.getCurrent() !== page.value">
+            <a (click)="ac.setCurrent(page.value)" *ngIf="ac.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="ac.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="ac.isLastPage()">
+            <a *ngIf="!ac.isLastPage()" (click)="ac.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modAcreedores | number:'1.0-0'}}</label>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalAcreedores()">Cerrar</a>
+  </div>
+</div>
+<div id="modDeudores" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modDetallesDeudorActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Lista de Deudores</h5>
+  </div>
+  <div class="modal-content">
+    <h6 style="color:#0D47A1;">Deudores relacionados al Usuario </h6>
+    <div class="row">
+      <div class="col s3 ">
+        <label for="identificador_Mdeudores">Identificación:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="identificador_Mdeudores">
+      </div>
+      <div class="col s3 ">
+        <label for="nit_gMacreedor">Nit:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nit_gMacreedor">
+      </div>
+      <div class="col s3 ">
+        <label for="nomrec_Macreedor">Nombre Completo:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nomrec_Macreedor">
+      </div>
+      <div class="col s3 ">
+        <!--<button class="waves-effect waves-light btn" type="button" (click)="exportDataDeudor()">Exportar</button>-->
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modDeudores | number:'1.0-0'}}</label>
+      <table class="responsive-table centered striped" id="datatable">
+        <thead>
+          <tr>
+            <th>Identificación</th>
+            <th>Nit.</th>
+            <th>Nombre Completo</th>
+            <th>Correo Elctrónico.</th>
+
+            <th>Garantias</th>
+            <th>Vigentes</th>
+            <th>No Vigentes.</th>
+            <th>Canceladas</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let deudor of deudores_b | paginate: { id: 'server_deu', itemsPerPage: pageSize_deu, currentPage: currentPage_deu, totalItems: total_deu }; let i = index">
+
+            <td>{{deudor.idPersona}}</td>
+            <td>{{deudor.rfc}}</td>
+            <td>{{deudor.nombrePersona}}</td>
+            <td>{{deudor.email}}</td>
+
+            <td>{{deudor.cGarantias}}</td>
+            <td>{{deudor.cVigentes}}</td>
+            <td>{{deudor.cnVigentes}}</td>
+            <td>{{deudor.cCanceladas}}</td>
+
+          </tr>
+        </tbody>
+      </table>
+      <pagination-template #deu="paginationApi" id="server_deu" (pageChange)="onPageChangeDeu($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="deu.isFirstPage()">
+            <a *ngIf="!deu.isFirstPage()" (click)="deu.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of deu.pages" [class.active]="deu.getCurrent() === page.value"
+            [class.waves-effect]="deu.getCurrent() !== page.value">
+            <a (click)="deu.setCurrent(page.value)" *ngIf="deu.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="deu.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="deu.isLastPage()">
+            <a *ngIf="!deu.isLastPage()" (click)="deu.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modDeudores | number:'1.0-0'}}</label>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalDeudores()">Cerrar</a>
+  </div>
+</div>
+<div id="modHistorialPago" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modHistorialPagoActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Historial de pagos realizados</h5>
+  </div>
+  <div class="modal-content">
+    <div class="row">
+      <div class="col s3 ">
+        <label for="identi_historial">Identificación:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="identi_historial">
+      </div>
+      <div class="col s6 ">
+        <label for="nomusuario_historial">Nombre Completo:</label>
+        <input type="text" readonly class="validate" [(ngModel)]="nomusuario_historial">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s2">
+        <label for="monto_historial">Monto:</label>
+        <div class="input-field">
+          <input type="text" class="validate" [(ngModel)]="monto_historial">
+        </div>
+      </div>
+      <div class="col s6">
+        <div class="input-field">
+          <ngx-daterangepicker [(ngModel)]="rangoFechasHistorial" (ngModelChange)="onRangeChangedHistorial($event)"
+            [options]="options"></ngx-daterangepicker>
+        </div>
+      </div>
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="BuscarDataH()">Buscar</button>
+        <button class="waves-effect waves-light btn" type="button" (click)="exportDataH()">Exportar</button>
+        <p><button class="waves-effect waves-light btn" type="button" (click)="LimpiarDataH()">Limpiar</button></p>
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPago | number:'1.0-0'}}</label>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Banco</th>
+            <th>Boleta</th>
+            <th>Nombre</th>
+            <th>Identificacion</th>
+            <th>Monto</th>
+            <th>Tipo de pago</th>
+            <th class="center-align">Estado</th>
+
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let deposit of deposits | paginate: { id: 'serverHistorial', itemsPerPage: pageSizeH, currentPage: currentPageH, totalItems: totalH }; let i = index">
+            <td>{{ deposit.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ deposit.agencia | banco }}</td>
+            <td>{{ deposit.numero }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.name : '' }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.docId : '' }}</td>
+            <td>{{ deposit.monto | currency:'Q' }}</td>
+            <td>{{ deposit.tipoPago | pago }}</td>
+            <td class="center-align">
+              <span class="badge"
+                [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}"
+                style="float: none;">{{ deposit.usada | usada }}</span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+      <pagination-template #ph="paginationApi" id="serverHistorial" (pageChange)="onPageChangeH($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="ph.isFirstPage()">
+            <a *ngIf="!ph.isFirstPage()" (click)="ph.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of ph.pages" [class.active]="ph.getCurrent() === page.value"
+            [class.waves-effect]="ph.getCurrent() !== page.value">
+            <a (click)="ph.setCurrent(page.value)" *ngIf="ph.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="ph.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="ph.isLastPage()">
+            <a *ngIf="!ph.isLastPage()" (click)="ph.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPago | number:'1.0-0'}}</label>
+    </div>
+
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalHistorialPago()">Cerrar</a>
+  </div>
+</div>
+<div id="modHistorialPagoA" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modHistorialPagoAcActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Historial de pagos aprobados</h5>
+  </div>
+  <div class="modal-content">
+    <div class="row">
+      <div class="col s12 " style="text-align: center;">
+        <label style=" color:#000000;"><b>{{ nomusuario_historial_a }}</b></label>
+        <!--<input type="number" readonly class="validate" [(ngModel)]="nomusuario_historial">-->
+      </div>
+      <div class="col s2">
+        <label for="monto_historial_a">Monto:</label>
+        <div class="input-field">
+          <input type="text" class="validate" [(ngModel)]="monto_historial_a">
+        </div>
+      </div>
+      <div class="col s6">
+        <div class="input-field">
+          <ngx-daterangepicker [(ngModel)]="rangoFechasHistorial_a" (ngModelChange)="onRangeChangedHistorial_a($event)"
+            [options]="options"></ngx-daterangepicker>
+        </div>
+      </div>
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="BuscarData_a()">Buscar</button>
+        <button class="waves-effect waves-light btn" type="button" (click)="exportData_a()">Exportar</button>
+        <p><button class="waves-effect waves-light btn" type="button" (click)="LimpiarData_a()">Limpiar</button></p>
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPagoA | number:'1.0-0'}}</label>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Banco</th>
+            <th>Boleta</th>
+            <th>Nombre</th>
+            <th>Identificacion</th>
+            <th>Monto</th>
+            <th>Tipo de pago</th>
+            <th class="center-align">Estado</th>
+
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let deposit of depositsa | paginate: { id: 'serverHistorialA', itemsPerPage: pageSizeHA, currentPage: currentPageHA, totalItems: totalHA }; let i = index">
+            <td>{{ deposit.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ deposit.agencia | banco }}</td>
+            <td>{{ deposit.numero }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.name : '' }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.docId : '' }}</td>
+            <td>{{ deposit.monto | currency:'Q' }}</td>
+            <td>{{ deposit.tipoPago | pago }}</td>
+            <td class="center-align">
+              <span class="badge"
+                [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}"
+                style="float: none;">{{ deposit.usada | usada }}</span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+      <pagination-template #pha="paginationApi" id="serverHistorialA" (pageChange)="onPageChangeHA($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="pha.isFirstPage()">
+            <a *ngIf="!pha.isFirstPage()" (click)="pha.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of pha.pages" [class.active]="pha.getCurrent() === page.value"
+            [class.waves-effect]="pha.getCurrent() !== page.value">
+            <a (click)="pha.setCurrent(page.value)" *ngIf="pha.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="pha.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="pha.isLastPage()">
+            <a *ngIf="!pha.isLastPage()" (click)="pha.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPagoA | number:'1.0-0'}}</label>
+    </div>
+
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalHistorialPagoA()">Cerrar</a>
+  </div>
+</div>
+<div id="modHistorialPagoR" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modHistorialPagoRActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Historial de pagos rechazados</h5>
+  </div>
+  <div class="modal-content">
+    <div class="row">
+      <div class="col s12 " style="text-align: center;">
+        <label style=" color:#000000;"><b>{{ nomusuario_historial_r }}</b></label>
+        <!--<input type="number" readonly class="validate" [(ngModel)]="nomusuario_historial">-->
+      </div>
+      <div class="col s2">
+        <label for="monto_historial_r">Monto:</label>
+        <div class="input-field">
+          <input type="text" class="validate" [(ngModel)]="monto_historial_r">
+        </div>
+      </div>
+      <div class="col s6">
+        <div class="input-field">
+          <ngx-daterangepicker [(ngModel)]="rangoFechasHistorial_r" (ngModelChange)="onRangeChangedHistorial_r($event)"
+            [options]="options"></ngx-daterangepicker>
+        </div>
+      </div>
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="BuscarData_r()">Buscar</button>
+        <button class="waves-effect waves-light btn" type="button" (click)="exportData_r()">Exportar</button>
+        <p><button class="waves-effect waves-light btn" type="button" (click)="LimpiarData_r()">Limpiar</button></p>
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPagoR | number:'1.0-0'}}</label>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Banco</th>
+            <th>Boleta</th>
+            <th>Nombre</th>
+            <th>Identificacion</th>
+            <th>Monto</th>
+            <th>Tipo de pago</th>
+            <th class="center-align">Estado</th>
+
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let deposit of depositsr | paginate: { id: 'serverHistorialR', itemsPerPage: pageSizeHR, currentPage: currentPageHR, totalItems: totalHR }; let i = index">
+            <td>{{ deposit.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ deposit.agencia | banco }}</td>
+            <td>{{ deposit.numero }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.name : '' }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.docId : '' }}</td>
+            <td>{{ deposit.monto | currency:'Q' }}</td>
+            <td>{{ deposit.tipoPago | pago }}</td>
+            <td class="center-align">
+              <span class="badge"
+                [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}"
+                style="float: none;">{{ deposit.usada | usada }}</span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+      <pagination-template #phr="paginationApi" id="serverHistorialR" (pageChange)="onPageChangeHR($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="phr.isFirstPage()">
+            <a *ngIf="!phr.isFirstPage()" (click)="phr.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of phr.pages" [class.active]="phr.getCurrent() === page.value"
+            [class.waves-effect]="phr.getCurrent() !== page.value">
+            <a (click)="phr.setCurrent(page.value)" *ngIf="phr.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="phr.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="phr.isLastPage()">
+            <a *ngIf="!phr.isLastPage()" (click)="phr.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPagoR | number:'1.0-0'}}</label>
+    </div>
+
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalHistorialPagoR()">Cerrar</a>
+  </div>
+</div>
+<div id="modHistorialPagoP" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modHistorialPagoPActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Historial de pagos pendientes</h5>
+  </div>
+  <div class="modal-content">
+    <div class="row">
+      <div class="col s12 " style="text-align: center;">
+        <label style=" color:#000000;"><b>{{ nomusuario_historial_p }}</b></label>
+        <!--<input type="number" readonly class="validate" [(ngModel)]="nomusuario_historial">-->
+      </div>
+      <div class="col s2">
+        <label for="monto_historial_p">Monto:</label>
+        <div class="input-field">
+          <input type="text" class="validate" [(ngModel)]="monto_historial_p">
+        </div>
+      </div>
+      <div class="col s6">
+        <div class="input-field">
+          <ngx-daterangepicker [(ngModel)]="rangoFechasHistorial_p" (ngModelChange)="onRangeChangedHistorial_p($event)"
+            [options]="options"></ngx-daterangepicker>
+        </div>
+      </div>
+      <div class="col s4">
+        <button class="waves-effect waves-light btn" type="button" (click)="BuscarData_p()">Buscar</button>
+        <button class="waves-effect waves-light btn" type="button" (click)="exportData_p()">Exportar</button>
+        <p><button class="waves-effect waves-light btn" type="button" (click)="LimpiarData_p()">Limpiar</button></p>
+      </div>
+    </div>
+    <div class="row">
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPagoP | number:'1.0-0'}}</label>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Banco</th>
+            <th>Boleta</th>
+            <th>Nombre</th>
+            <th>Identificacion</th>
+            <th>Monto</th>
+            <th>Tipo de pago</th>
+            <th class="center-align">Estado</th>
+
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let deposit of depositsp | paginate: { id: 'serverHistorialP', itemsPerPage: pageSizeHP, currentPage: currentPageHP, totalItems: totalHP }; let i = index">
+            <td>{{ deposit.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ deposit.agencia | banco }}</td>
+            <td>{{ deposit.numero }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.name : '' }}</td>
+            <td>{{ deposit.externalUser ? deposit.externalUser.docId : '' }}</td>
+            <td>{{ deposit.monto | currency:'Q' }}</td>
+            <td>{{ deposit.tipoPago | pago }}</td>
+            <td class="center-align">
+              <span class="badge"
+                [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}"
+                style="float: none;">{{ deposit.usada | usada }}</span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+      <pagination-template #php="paginationApi" id="serverHistorialP" (pageChange)="onPageChangeHR($event)">
+        <ul class="pagination custom-pagination">
+          <li class="pagination-previous" [class.disabled]="php.isFirstPage()">
+            <a *ngIf="!php.isFirstPage()" (click)="php.previous()"><i class="material-icons">chevron_left</i></a>
+          </li>
+          <li *ngFor="let page of php.pages" [class.active]="php.getCurrent() === page.value"
+            [class.waves-effect]="php.getCurrent() !== page.value">
+            <a (click)="php.setCurrent(page.value)" *ngIf="php.getCurrent() !== page.value">
+              {{ page.label }}
+            </a>
+            <a *ngIf="php.getCurrent() === page.value">
+              {{ page.label }}
+            </a>
+          </li>
+          <li class="pagination-next" [class.disabled]="php.isLastPage()">
+            <a *ngIf="!php.isLastPage()" (click)="php.next()"><i class="material-icons">chevron_right</i></a>
+          </li>
+        </ul>
+      </pagination-template>
+      <label style="color:#000000; font-size: medium;"> Cantidad total de registros: {{totalu_modHistorialPagoP | number:'1.0-0'}}</label>
+    </div>
+
+
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalHistorialPagoP()">Cerrar</a>
+  </div>
+</div>

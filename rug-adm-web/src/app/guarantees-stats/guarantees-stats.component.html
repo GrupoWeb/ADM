@@ -1,0 +1,133 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Distribución de operaciones</span>
+              </div>
+            </div>
+            <div class="row">
+              <ngx-daterangepicker [(ngModel)]="rangoFechas" (ngModelChange)="onRangeChanged($event)" [options]="options"></ngx-daterangepicker>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <select id="periodoTiempo" materialize="material_select" (change)="onPeriodChanged($event)">
+                  <option value="D">Por día</option>
+                  <option value="S" selected>Por semana</option>
+                  <option value="M">Por mes</option>
+                  <option value="A">Por año</option>
+                </select>
+                <label for="periodoTiempo">Agrupar por</label>
+              </div>
+              <div class="input-field col s6">
+                <select id="inicioSemana" materialize="material_select" (change)="onDiaChanged($event)">
+                  <option value="7">Domingo</option>
+                  <option value="1">Lunes</option>
+                  <option value="2">Martes</option>
+                  <option value="3">Miércoles</option>
+                  <option value="4" selected>Jueves</option>
+                  <option value="5">Viernes</option>
+                  <option value="6">Sábado</option>
+                </select>
+                <label for="inicioSemana">Agrupar por</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6">
+                <input type="checkbox" id="incluirMigracion" [(ngModel)]="incluirMigracion" (change)="onMigracionChanged($event)" />
+                <label for="incluirMigracion">¿Incluir migrados?</label>
+              </div>
+            </div>
+            <div class="row" *ngIf="chart">
+              <canvas id="canvas">{{ chart }}</canvas>
+            </div>
+            <div class="row" *ngIf="chart">
+              <div class="col s12 right-align">
+                <button
+                  class="waves-effect waves-light btn"
+                  type="button"
+                  (click)="exportData()">Exportar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Operaciones realizadas</span>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Operación</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let guarantee of guaranteesCount">
+                    <td>{{ guarantee.descripcion }}</td>
+                    <td>{{ guarantee.total }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Operaciones realizadas por tipo de persona (deudor)</span>
+              </div>
+              <div class="col s4 right-align" *ngIf="guaranteesCountType">
+                <button
+                  class="waves-effect waves-light btn"
+                  type="button"
+                  (click)="exportDataDeudores()">Exportar</button>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Operación</th>
+                    <th>Tipo de persona</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let guarantee of guaranteesCountType">
+                    <td>{{ guarantee.descripcion }}</td>
+                    <td>{{ guarantee.subdescripcion | persona }}</td>
+                    <td>{{ guarantee.total }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+  </div>
+</main>

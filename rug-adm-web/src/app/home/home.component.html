@@ -1,0 +1,27 @@
+<div class="section"></div>
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col s1 m2"></div>
+      <div class="col s12 m8">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title center-align">Bienvenido(a) {{ this.user.nombre }}</span>
+            <div class="row">
+              <p>Este es el módulo administrativo del sistema RUG-RGM</p>
+              <p>En este módulo podrá realizar</p>
+              <div class="collection">
+                <a *ngIf="user.rol === 'R' || user.rol === 'V'" [routerLink]="['/approval']" class="collection-item">Aprobaciones de cuentas</a>
+                <a *ngIf="user.rol === 'R' || user.rol === 'C'" [routerLink]="['/deposits']" class="collection-item">Aprobaciones de depósitos</a>
+                <a *ngIf="user.rol === 'R' || user.rol === 'V'" [routerLink]="['/external-users']" class="collection-item">Ver usuarios aprobados del RUG</a>
+                <a *ngIf="user.rol === 'R'" [routerLink]="['/users']" class="collection-item">Administrar los usuarios del módulo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1 m2"></div>
+    </div>
+  </div>
+</main>
+<div class="section"></div>

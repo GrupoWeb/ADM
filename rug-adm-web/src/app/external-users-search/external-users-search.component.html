@@ -1,0 +1,91 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s12">
+                <span class="card-title">Buscar persona</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col l3 hide-on-med-and-down"></div>
+              <form materialize (ngSubmit)="onSearchUserSubmit()" [formGroup]="searchUserForm" class="col s12 l6">
+                <div class="input-group">
+                  <div class="input-field">
+                    <input
+                      type="text"
+                      class="validate"
+                      id="query"
+                      formControlName="query">
+                    <label for="query">Nombre, correo, nit o documento de identificación</label>
+                  </div>
+                  <button type="submit" class="input-group-addon btn right-align">Buscar</button>
+                </div>
+              </form>
+              <div class="col l3 hide-on-med-and-down"></div>
+            </div>
+            <div class="row">
+              <h4 *ngIf="noResults" class="no-results red-text">No se encontraron resultados</h4>
+              <table *ngIf="docs">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>NIT</th>
+                    <th>Documento de identificación</th>
+                    <th>Tipo de persona</th>
+                    <th>Trámites</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let doc of docs">
+                    <td>{{ doc.nombre }}</td>
+                    <td>{{ doc.email }}</td>
+                    <td>{{ doc.nit }}</td>
+                    <td>{{ doc.docid }}</td>
+                    <td>{{ doc.tipo }}</td>
+                    <td>
+                      <a class="waves-effect waves-amber btn-floating teal" (click)="onViewTransactionsClicked(doc)"><i class="material-icons left">visibility</i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="modal1" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-content" *ngIf="modalDoc">
+    <h4>Trámites de {{ modalDoc.nombre }}</h4>
+    <div>
+      <table *ngIf="parts">
+        <thead>
+          <tr>
+            <th>Trámite</th>
+            <th>Garantía</th>
+            <th>Tipo de persona</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let part of parts; let i = index">
+            <td>{{ part.idTramite }}</td>
+            <td>{{ part.idGarantia }}</td>
+            <td>{{ part.perJuridica | persona }}</td>
+            <td>{{ part.idParte | parte }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
+  </div>
+</div>

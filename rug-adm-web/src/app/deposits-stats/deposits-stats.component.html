@@ -1,0 +1,90 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Distribución de depósitos</span>
+              </div>
+            </div>
+            <div class="row">
+              <ngx-daterangepicker [(ngModel)]="rangoFechas" (ngModelChange)="onRangeChanged($event)" [options]="options"></ngx-daterangepicker>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <select id="periodoTiempo" materialize="material_select" (change)="onPeriodChanged($event)">
+                  <option value="D">Por día</option>
+                  <option value="S" selected>Por semana</option>
+                  <option value="M">Por mes</option>
+                  <option value="A">Por año</option>
+                </select>
+                <label for="periodoTiempo">Agrupar por</label>
+              </div>
+              <div class="input-field col s6">
+                <select id="inicioSemana" materialize="material_select" (change)="onDiaChanged($event)">
+                  <option value="7">Domingo</option>
+                  <option value="1">Lunes</option>
+                  <option value="2">Martes</option>
+                  <option value="3">Miércoles</option>
+                  <option value="4" selected>Jueves</option>
+                  <option value="5">Viernes</option>
+                  <option value="6">Sábado</option>
+                </select>
+                <label for="inicioSemana">Agrupar por</label>
+              </div>
+            </div>
+            <div class="row" *ngIf="chart">
+              <canvas id="canvas">{{ chart }}</canvas>
+            </div>
+            <div class="row" *ngIf="chart">
+              <div class="col s12 right-align">
+                <button
+                  class="waves-effect waves-light btn"
+                  type="button"
+                  (click)="exportData()">Exportar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s10">
+        <div class="card">
+          <div class="card-content">
+            <div class="row">
+              <div class="col s8">
+                <span class="card-title">Resumen</span>
+              </div>
+            </div>
+            <div class="row">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo de pago</th>
+                    <th>Estado</th>
+                    <th class="right-align">Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let deposit of depositsSum; let i = index">
+                    <td>{{ deposit.descripcion | pago }}</td>
+                    <td class="float-left"><span class="badge" [ngClass]="{'amber': deposit.subdescripcion === '0', 'green accent-2': deposit.subdescripcion === '1', 'red darken-3 white-text': deposit.subdescripcion === '-1'}">{{ deposit.subdescripcion | usada }}</span></td>
+                    <td class="right-align">{{ deposit.total | currency:'Q' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col m3"></div>
+    </div>
+  </div>
+</main>
