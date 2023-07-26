@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	 http://www.directwebremoting.org/schema/spring-dwr
+            http://www.directwebremoting.org/schema/spring-dwr-2.0.xsd">
+
+    <bean id="rugPermisosService" class="gt.gob.rgm.service.RugPermisosServiceImp" scope="prototype">
+        <property name="privilegioDao" ref="rugRelGrupoPrivilegioRepository" />
+        <property name="acreedorDao" ref="rugRelGrupoAcreedorRepository" />
+        <property name="rugprivilegioDao" ref="rugPrivilegioRepository" />
+        <property name="grupoDao" ref="rugGrupoRepository" />
+        <property name="garantiaPermisoDao" ref="rugGarantiasPermisosRepository" />
+        <property name="garantiasDao" ref="rugGarantiasRespository" />
+    </bean>
+
+    <bean id="usuariosService" class="gt.gob.rgm.service.UsuariosServiceImp" scope="prototype">
+        <property name="grupoDao" ref="rugGrupoRepository" />
+        <property name="grupoPrivilegioDao" ref="rugRelGrupoPrivilegioRepository" />
+        <property name="rugRelGrupoAcreedorDao" ref="rugRelGrupoAcreedorRepository" />
+    </bean>
+
+
+</beans>

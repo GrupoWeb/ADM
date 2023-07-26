@@ -1,0 +1,1 @@
+# Esta carpeta contiene los scripts con las modificaciones a la Base de datos
