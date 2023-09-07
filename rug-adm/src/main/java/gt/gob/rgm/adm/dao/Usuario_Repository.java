@@ -140,7 +140,7 @@ public class Usuario_Repository {
               }else{
                    usuario.setcCanceladas(0);
               }  
-              
+              usuario.setDpi((String) row[13]);
               
             
               

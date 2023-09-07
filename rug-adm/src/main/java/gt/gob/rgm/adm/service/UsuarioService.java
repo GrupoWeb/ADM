@@ -9,6 +9,7 @@ public interface UsuarioService {
     List<Usuario> listUsuarios(String estado);
     
     Usuario getUsuario(Long id);
+    int getUsuarioMail(String email, Usuario usuario);
     
     Usuario save(Usuario usuario) throws EntityAlreadyExistsException;
     

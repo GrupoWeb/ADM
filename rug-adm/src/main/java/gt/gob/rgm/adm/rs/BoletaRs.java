@@ -55,10 +55,12 @@ public class BoletaRs {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@SecuredResource
-	public ResponseRs getBoletas(@QueryParam(value = "status") Integer status, @QueryParam(value = "page") Integer page,
-			@QueryParam(value = "size") Integer size, @QueryParam(value = "agencia") String agencia,
-			@QueryParam(value = "numero") String numero, @QueryParam(value = "externalUser") String persona,
-			@QueryParam(value = "tipoPago") String tipoPago) {
+	public ResponseRs getBoletas(@QueryParam(value = "status") Integer status, 
+                        @QueryParam(value = "page") Integer page,@QueryParam(value = "size") Integer size, 
+                        @QueryParam(value = "agencia") String agencia,@QueryParam(value = "numero") String numero, 
+                        @QueryParam(value = "externalUser") String persona,@QueryParam(value = "tipoPago") String tipoPago, 
+                        @QueryParam(value="externalUserId") Long personaId, @QueryParam(value="monto") Double monto,
+                        @QueryParam(value="fechaInicio") String fechaInicio,@QueryParam(value="fechaFin") String fechaFin) {
 		ResponseRs response = new ResponseRs();
 		List<Deposit> deposits = new ArrayList<>();
 		List<Boleta> boletas;
@@ -74,11 +76,18 @@ public class BoletaRs {
 		depositFilter.setUsada(status);
 		depositFilter.setAgencia(agencia);
 		depositFilter.setNumero(numero);
+                depositFilter.setMonto(monto);
+                depositFilter.setFechaInicio(fechaInicio);
+                depositFilter.setFechaFin(fechaFin);
 		ExternalUser externalUserFilter = null;
 		if (persona != null) {
-			externalUserFilter = new ExternalUser();
-			externalUserFilter.setName(persona);
+                    externalUserFilter = new ExternalUser();
+                    externalUserFilter.setName(persona);
 		}
+                if(personaId != null) {
+                    externalUserFilter = new ExternalUser();
+                    externalUserFilter.setPersonaId(personaId);
+                }
 		depositFilter.setExternalUser(externalUserFilter);
 		depositFilter.setTipoPago(tipoPago);
 		boletas = boletaService.listBoletas(depositFilter, page, size);
@@ -100,6 +109,7 @@ public class BoletaRs {
 			deposit.setResolucion(boleta.getResolucion());
 			deposit.setSerie(boleta.getSerie());
 			deposit.setUsada(boleta.getUsada().intValue());
+                        deposit.setCause(boleta.getCausa());
 			if (status != null && status.intValue() == 0 && boletas.size() <= 10) {
 				deposit.setTieneArchivo(boleta.getBytes() != null);
 			}

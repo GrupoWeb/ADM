@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Usuario implements Serializable {
     
     private Integer idPersona;
+    private String Dpi;
     private String Rfc;
     private String nombrePersona;
     private String perJuridica;
@@ -142,5 +143,12 @@ public class Usuario implements Serializable {
     public void setcCanceladas(Integer cCanceladas) {
         this.cCanceladas = cCanceladas;
     }
-        
+       
+    public String getDpi() {
+        return Dpi;
+    }
+
+    public void setDpi(String Dpi) {
+        this.Dpi = Dpi;
+    }
 }

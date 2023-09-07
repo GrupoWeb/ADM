@@ -22,7 +22,8 @@ public class Deposit implements Serializable {
 	private String tipoPago;
 	private String cause;
 	private ExternalUser externalUser;
-	
+	private String fechaInicio;
+        private String fechaFin;
 	public Deposit() {
 	}
 
@@ -177,4 +178,20 @@ public class Deposit implements Serializable {
 	public void setMontoOtrosBancos(Double montoOtrosBancos) {
 		this.montoOtrosBancos = montoOtrosBancos;
 	}
+        
+        public String getFechaInicio() {
+            return fechaInicio;
+        }
+        
+        public void setFechaInicio(String fechaInicio) {
+            this.fechaInicio = fechaInicio;
+        }
+        
+        public String getFechaFin() {
+            return fechaFin;
+        }
+        
+        public void setFechaFin(String fechaFin) {
+            this.fechaFin = fechaFin;
+        }
 }

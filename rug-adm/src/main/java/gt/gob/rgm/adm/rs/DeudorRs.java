@@ -39,6 +39,7 @@ public class DeudorRs {
             @QueryParam(value = "idDeudor_b") String idDeudor_b, @QueryParam(value = "textobusqueda") String textobusqueda,
             @QueryParam(value = "page") Integer page, @QueryParam(value = "size") Integer size,
             @QueryParam(value = "dusuarios") Integer dusuarios) {
+        
         ResponseRs response = new ResponseRs();
         List<Deudo> deudos = new ArrayList<>();
         List<VRepListadoDeudores> deudores = null;
@@ -82,6 +83,7 @@ public class DeudorRs {
             for (VRepListadoDeudores deudor : deudores) {
                 Deudo deudo = new Deudo();
                 deudo.setIdPersona(deudor.getIdPersona());
+                deudo.setDpi(deudor.getDpi());
                 deudo.setRfc(deudor.getRfc());
                 deudo.setNombrePersona(deudor.getNombrePersona());
                 deudo.setPerJuridica(deudor.getPerJuridica());
