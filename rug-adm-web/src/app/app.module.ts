@@ -85,6 +85,11 @@ import { DeudoresService } from './shared/deudores.service';
 import { AcreedoresService } from './shared/acreedores.service';
 import { UsuariosService } from './shared/usuarios.service';
 import { GarantiasService } from './shared/garantias.service';
+import { SubirImagenComponent } from './subir-imagen/subir-imagen.component';
+import { ImagenService } from './shared/imagen.service';
+import { MenusService } from './shared/menus.service';
+import { PermisosMenuComponent } from './permisos-menu/permisos-menu.component';
+import { NuevoRolMenuComponent } from './nuevo-rol-menu/nuevo-rol-menu.component';
 
 @NgModule({
   declarations: [
@@ -139,6 +144,9 @@ import { GarantiasService } from './shared/garantias.service';
     ReportDeudoresComponent,
     ReportAcreedoresComponent,
     ReportUsuariosComponent,
+    SubirImagenComponent,
+    PermisosMenuComponent,
+    NuevoRolMenuComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -176,6 +184,9 @@ import { GarantiasService } from './shared/garantias.service';
     GuaranteesService,
     LoadingService,
     ExcelService,
+    ImagenService,
+    MenusService,
+    
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

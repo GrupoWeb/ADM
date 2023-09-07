@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   db: 'pro',
   api_oracle: 'https://operaciones.rgm.gob.gt/api',
-  api_url: '/rug-adm/rs',
+  api_url: '/rug-adm/rs',  
   base_url: '/rug-adm',
   signature_api: 'https://operaciones.rgm.gob.gt/api',
   pentaho_url: 'http://128.5.9.5:28080/pentaho/api/repos',

@@ -6,7 +6,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { LoadingService } from '../shared/loading.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from '../../environments/environment';
-
+import { MenusService } from '../shared/menus.service';
+import { Menu } from '../shared/menus.model'
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
@@ -26,13 +27,19 @@ export class LayoutComponent implements OnInit {
   sidenavActions = new EventEmitter<any>();
   sidenavParams = [{edge:'left', closeOnClick:true}];
   loadingSubscription: Subscription;
+  httpSubscription: Subscription;
+  total: number;
+  menus: Menu[];
+  nombreTemp = '';
+  pageSize = 10;
 
   constructor(
               private usersService: UsersService,
               private loadingService: LoadingService,
               private sanitizer: DomSanitizer, //add dashboard
               private route_dash: ActivatedRoute,
-              private router: Router){ }
+              private router: Router,
+              private menuService: MenusService){ }
 
   ngOnInit() {
 
@@ -63,7 +70,22 @@ export class LayoutComponent implements OnInit {
       (isLoading: boolean) => {
         this.loading = isLoading;
       }
+
+      
     );
+    this.httpSubscription = this.menuService.fetchData(null,null).subscribe(
+      res => {
+        console.log(res.data);
+        this.menus = res.data;
+        this.total = res.total;
+        
+      },
+      err => console.error(err),
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    ); 
   }
 
   initPanels(){

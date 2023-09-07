@@ -51,7 +51,7 @@
   </div>
 </main>
 <div class="section"></div>
-<div id="modUser" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+<div id="modUser" class="modal" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
   <div class="modal-content">
     <h4>Usuario</h4>
     <div class="card">
@@ -80,7 +80,17 @@
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <select
+                <select 
+                id="rol" 
+                materialize="material_select"  
+                formControlName="rol"
+                [(ngModel)]="filRoles" >
+                  <option [value]="0" disabled selected>Seleccione el rol</option>
+                  <option *ngFor="let rol of roles" [value]="rol.tipoRol">
+                    {{ rol.nomRol}}({{rol.tipoRol}})
+                  </option>              
+                </select>
+                <!--<select
                   id="rol"
                   materialize="material_select"
                   formControlName="rol">
@@ -89,7 +99,25 @@
                   <option value="V">Validador de cuentas</option>
                   <option value="C">Contador</option>
                 </select>
-                <label for="rol">Rol</label>
+                <label for="rol">Rol</label>-->
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <input
+                type="password"
+                class="validate"
+                id="password1"
+                formControlName="password1">
+                <label for="password1">Contraseña</label>
+              </div>
+              <div class="input-field col s6">
+                <input
+                type="password"
+                class="validate"
+                id="password2"
+                formControlName="password2">
+                <label for="password2">Ingrese de nuevo la contraseña</label>
               </div>
             </div>
             <div class="row">
@@ -102,6 +130,62 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modUser" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions_p">
+  <div class="modal-content">
+    <h4>{{mensaje_titulo}}</h4>
+    <div class="card center-align" >
+      <div class="card-content">
+        <div class="row">
+          <div class="col s12 center-align">
+            <i class="material-icons" style="font-size: 80px; opacity: 0.5;" [style.color]="logo_modal_color"> {{logo_modal}}</i> 
+          </div>
+        </div>
+        <div class="row center-align"  >        
+          <h5>{{mensaje_modal1}}</h5>
+        </div>
+        <a class="waves-effect waves-light btn {{logo_modal_color}} darken-4" (click)="onCancel_Clicked_()">Cerrar</a>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div id="modUser" class="modal" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions_ac">
+  <div class="modal-content">
+    <h5>{{mensaje_titulo}}</h5>
+    <div class="card">
+      <div class="card-content">
+     
+        <div class="row">
+          <div class="col s12 center-align">
+            <i class="material-icons" style="font-size: 80px; color: rgb(242, 255, 0); opacity: 0.5;">warning</i> 
+          </div>
+        </div>
+        <div class="row center-align">          
+          <h6>{{mensaje_modal1}}</h6>
+          <h6>{{mensaje_modal2}}</h6>
+        </div>
+      </div>
+      
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col s12 right-align">
+
+          <button
+            #btnSi
+            id="btn_si"
+            class="waves-effect waves-light btn"
+            type="button"
+            [disabled]="!userForm.valid" (click)="reactivar()">Si</button>
+          
+          <a class="waves-effect waves-light btn red darken-4" (click)="onCancel_Clicked()">No</a>
         </div>
       </div>
     </div>

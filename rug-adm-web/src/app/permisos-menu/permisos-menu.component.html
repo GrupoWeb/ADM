@@ -1,0 +1,103 @@
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s12">
+        <h3 style="text-align: center; color:#0D47A1;">ASIGNACIÓN DE PERMISOS</h3>    
+        <h5>Aquí podra asignar el permiso al rol para los diferentes submenus</h5>
+      </div> 
+      <div class="col s6">
+        <div class="input-field">
+          <select materialize="material_select"  [(ngModel)]="filMenus" (ngModelChange)="filMenuChanged($event)">
+            <option *ngFor="let menu of menus" [value]="menu.menuId" [disabled]="!menu.rol">
+              {{ menu.nomSubMenu ? menu.nomSubMenu : menu.nomMenu }}
+            </option>
+          </select>
+          <label for="menuSelector">Seleccionar submenú:</label>
+        </div>
+      </div>
+      <div class="col s6">
+        <div class="input-field">
+          <select materialize="material_select"  [(ngModel)]="filRoles" multiple (ngModelChange)="filRolChanged($event)">
+            <option *ngFor="let rol of roles" [value]="rol.tipoRol">
+              {{ rol.nomRol}} ({{rol.tipoRol}})
+            </option>
+          </select>
+          <label for="menuSelector">Seleccionar rol:</label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col s2" style="text-align: center; ">
+      <button class="waves-effect waves-light btn" (click)="asignarRole()">Asignar permisos</button>
+    </div>
+
+    <div class="row">
+      <div class="col s12">
+        <table class="responsive-table centered striped" id="datatable">
+          <thead>
+            <tr>              
+              <th>Menú/SubMenú</th>
+              <th>Roles Asignados</th>            
+            </tr>
+           
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let menu of tmenus | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: ttotal }; let i = index">
+                       
+              <td [style.background-color]="menu.rol ? '' : 'blue'" [style.color]="menu.rol ? '' : 'white'">
+                <ng-container *ngIf="menu.rol; else nomMenu">{{ menu.nomSubMenu }}</ng-container>
+                <ng-template #nomMenu><strong>{{ menu.nomMenu }}</strong></ng-template>
+              </td>   
+              <td [style.background-color]="menu.rol ? '' : 'blue'" [style.color]="menu.rol ? '' : 'white'">{{getMenuRolesNames(menu.rol)}}</td>          
+            </tr>
+          </tbody>
+        </table>
+        <pagination-template #p="paginationApi"
+                  id="server"
+                  (pageChange)="onPageChange($event)">
+                  <ul class="pagination custom-pagination">
+                    <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                      <a *ngIf="!p.isFirstPage()" (click)="p.previous()"><i class="material-icons">chevron_left</i></a>
+                    </li>
+                    <li *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value" [class.waves-effect]="p.getCurrent() !== page.value">
+                      <a (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">
+                        {{ page.label }}
+                      </a>
+                      <a *ngIf="p.getCurrent() === page.value">
+                        {{ page.label }}
+                      </a>
+                    </li>
+                    <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                      <a *ngIf="!p.isLastPage()" (click)="p.next()"><i class="material-icons">chevron_right</i></a>
+                    </li>
+                  </ul>
+                </pagination-template>
+      </div>
+    </div>
+  </div>
+  <div id="modalAviso" class="modal modal-fixed-footer" materialize="modal" style="height:225px;"
+  [materializeParams]="[{dismissible: false}]" [materializeActions]="modalAviso">
+
+    <div class="modal-content">
+      <div class="modal-header " [ngClass]="isSuccess ? 'success-header' : 'error-header'" >
+        <h5 class="modal-title">{{tituloModal}}</h5>
+      </div>
+      <br>
+          <h5 style="text-align: center;">{{mensajeModal}}</h5>
+    </div>
+    <div class="modal-footer">
+      <div class="row right-align">
+
+        <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+  
+  
+
+
+

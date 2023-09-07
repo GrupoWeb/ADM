@@ -31,6 +31,7 @@
                   <thead>
                     <tr>
                       <th>Identificacion</th>
+                      <th>DPI</th>
                       <th>Nit</th>
                       <th>Nombre Completo</th>
                       <th>Tipo de <br>Persona</th>
@@ -48,6 +49,7 @@
                     <tr
                       *ngFor="let deudor of deudores | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
                       <td>{{deudor.idPersona}}</td>
+                      <td>{{deudor.dpi}}</td>
                       <td>{{deudor.rfc}}</td>
                       <td>{{deudor.nombrePersona}}</td>
                       <td>{{deudor.perJuridica}}</td>
@@ -424,6 +426,7 @@
         <thead>
           <tr>
             <th>Identificación</th>
+            <th>DPI</th>
             <th>Nit.</th>
             <th>Nombre Completo</th>
             <th>Correo Elctrónico.</th>
@@ -440,6 +443,7 @@
             *ngFor="let acreedor of acreedores_b | paginate: { id: 'server_acr', itemsPerPage: pageSize_acr, currentPage: currentPage_acr, totalItems: total_acr }; let i = index">
 
             <td>{{acreedor.idPersona}}</td>
+            <td>{{acreedor.dpi}}</td>
             <td>{{acreedor.rfc}}</td>
             <td>{{acreedor.nombrePersona}}</td>
             <td>{{acreedor.email}}</td>
@@ -511,6 +515,7 @@
           <thead>
             <tr>
               <th>Identificación</th>
+              <th>DPI</th>
               <th>Nit.</th>
               <th>Nombre Completo</th>
               <th>Correo Elctrónico.</th>
@@ -521,37 +526,7 @@
               <th>Canceladas</th>
 
             </tr>
-            <!--   <tr>
-              <th></th>
-              <th>
-                <div class="input-field">
-                  <input type="text" id="myInput" class="validate" [(ngModel)]="myValue">
-                  <label for="myInput">Texto de entrada</label>
-                </div>
-              </th>
-              <th><input type="text" #filBoletaInput [(ngModel)]="filBoleta" (ngModelChange)="filBoletaChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilBoleta()"></th>
-              <th></th>
-              <th><input type="text" #filPersonaInput [(ngModel)]="filPersona" (ngModelChange)="filPersonaChanged($event)" [ngModelOptions]="{updateOn: 'blur'}" (keyup.enter)="onFilPersona()"></th>
-              <th></th>
-              <th></th>
-              <th>
-                <select materialize="material_select" #filTipoPagoInput [(ngModel)]="filTipoPago" (ngModelChange)="filTipoPagoChanged($event)">
-                  <option value="" selected>Todos</option>
-                  <option value="1">Efectivo</option>
-                  <option value="2">Cheque Propio</option>
-                  <option value="3">Cheque Otros Bancos</option>
-                  <option value="5">Ventanilla</option>
-                </select>
-              </th>
-              <th>
-                <select materialize="material_select" #filEstadoInput [(ngModel)]="filEstado" (ngModelChange)="filEstadoChanged($event)">
-                  <option value="" selected>Todos</option>
-                  <option value="1">Aprobada</option>
-                  <option value="-1">Rechazada</option>
-                  <option value="0">Pendiente de aprobación</option>
-                </select>
-              </th>
-            </tr>-->
+           
           </thead>
           <tbody>
 
@@ -559,6 +534,7 @@
               *ngFor="let usuario of usuarios | paginate: { id: 'server_usr', itemsPerPage: pageSize_usr, currentPage: currentPage_usr, totalItems: total_usr }; let i = index">
 
               <td>{{usuario.idPersona}}</td>
+              <td>{{usuario.dpi}}</td>  
               <td>{{usuario.rfc}}</td>
               <td>{{usuario.nombrePersona}}</td>
               <td>{{usuario.email}}</td>

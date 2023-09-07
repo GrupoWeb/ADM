@@ -32,6 +32,7 @@
                   <thead>
                     <tr>
                       <th>Identificacion</th>
+                      <th>DPI</th>
                       <th>Nit</th>
                       <th>Nombre Completo</th>
                       <th>Tipo de <br>Persona</th>
@@ -49,6 +50,7 @@
                     <tr
                       *ngFor="let usuario of usuarios | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">
                       <td>{{usuario.idPersona}}</td>
+                      <td>{{usuario.dpi}}</td>
                       <td>{{usuario.rfc}}</td>
                       <td>{{usuario.nombrePersona}}</td>
                       <td>{{usuario.perJuridica}}</td>
@@ -71,7 +73,7 @@
                           <option value="6">Historial de pagos aprobados</option>
                           <option value="7">Historial de pagos rechazados</option>
                           <option value="8">Historial de pagos pendientes</option>
-
+                          <option value="9">Operaciones</option>
                         </select>
                         <!--   <a class="waves-effect waves-amber btn-floating blue" (click)="onDetalles(usuario)"><i
                             class="material-icons">remove_red_eye</i></a>
@@ -452,9 +454,10 @@
         <thead>
           <tr>
             <th>Identificación</th>
+            
             <th>Nit.</th>
             <th>Nombre Completo</th>
-            <th>Correo Elctrónico.</th>
+            <th>Correo Electrónico.</th>
 
             <th>Garantias</th>
             <th>Vigentes</th>
@@ -468,6 +471,7 @@
             *ngFor="let acreedor of acreedores_b | paginate: { id: 'server_acr', itemsPerPage: pageSize_acr, currentPage: currentPage_acr, totalItems: total_acr }; let i = index">
 
             <td>{{acreedor.idPersona}}</td>
+            
             <td>{{acreedor.rfc}}</td>
             <td>{{acreedor.nombrePersona}}</td>
             <td>{{acreedor.email}}</td>
@@ -538,9 +542,10 @@
         <thead>
           <tr>
             <th>Identificación</th>
+            
             <th>Nit.</th>
             <th>Nombre Completo</th>
-            <th>Correo Elctrónico.</th>
+            <th>Correo Electrónico.</th>
 
             <th>Garantias</th>
             <th>Vigentes</th>
@@ -554,6 +559,7 @@
             *ngFor="let deudor of deudores_b | paginate: { id: 'server_deu', itemsPerPage: pageSize_deu, currentPage: currentPage_deu, totalItems: total_deu }; let i = index">
 
             <td>{{deudor.idPersona}}</td>
+            
             <td>{{deudor.rfc}}</td>
             <td>{{deudor.nombrePersona}}</td>
             <td>{{deudor.email}}</td>
@@ -829,6 +835,7 @@
             <th>Identificacion</th>
             <th>Monto</th>
             <th>Tipo de pago</th>
+            <th>Causa</th>
             <th class="center-align">Estado</th>
 
           </tr>
@@ -844,6 +851,7 @@
             <td>{{ deposit.externalUser ? deposit.externalUser.docId : '' }}</td>
             <td>{{ deposit.monto | currency:'Q' }}</td>
             <td>{{ deposit.tipoPago | pago }}</td>
+            <td>{{ deposit.cause }}</td>
             <td class="center-align">
               <span class="badge"
                 [ngClass]="{'amber': deposit.usada === 0, 'green accent-2': deposit.usada === 1, 'red darken-3 white-text': deposit.usada === -1}"
@@ -973,5 +981,310 @@
   </div>
   <div class="modal-footer">
     <a class="waves-effect waves-green btn-flat" (click)="closeModalHistorialPagoP()">Cerrar</a>
+  </div>
+</div>
+<div id="modOperaciones" class="modal modal-fixed-footer modal-fixed-header" materialize="modal"
+  style="width:95%;min-height:450px; z-index: 999!important;" [materializeParams]="[{dismissible: true}]"
+  [materializeActions]="modOperacionesActions">
+  <div class="modal-header " style="text-align: center; background-color:#0D47A1; color:#ffffff;">
+    <h5 class="modal-title">Operaciones</h5>
+  </div>
+  <div class="modal-content">
+   
+    <main>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col s1"></div>
+          <div class="col s12">
+            
+            <div class="card">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col s8">
+                    <span class="card-title">Detalle</span>
+                  </div>
+                  <div class="col s4 right-align">
+                    <button
+                      class="waves-effect waves-light btn"
+                      type="button"
+                      (click)="exportDataOp()">Exportar</button>
+                      <button
+                      class="waves-effect waves-light btn"
+                      type="button"
+                      (click)="limpiarDataOp()">Limpiar</button>
+                  </div>
+                </div>
+                <div class="row">
+                  <ngx-daterangepicker [(ngModel)]="rangoFechasOp" (ngModelChange)="onRangeChangedOp($event)" [options]="options"></ngx-daterangepicker>
+                </div>
+                <!--<div class="row">
+                  <div class="col s6">
+                    <input type="checkbox" id="incluirTodos" [(ngModel)]="incluirTodos" (change)="onTodosChanged($event)" />
+                    <label for="incluirTodos">Todos</label>
+                  </div>
+                </div>-->
+                <div class="row">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Número garantía</th>
+                        <th>Trámite</th>
+                        <th>Fecha</th>
+                        <th>Solicitante</th>
+                        <th>Solicitante Original</th>
+                        <th class="hide-on-med-and-down">Descripción</th>
+                        <th>Identificador</th>
+                        <th>Descripción B</th>
+                        <th>Ver</th>
+                        <th>PDF</th>
+                      </tr>                     
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let transaction of guarantees | paginate: { id: 'serverOpe', itemsPerPage: pageSizeOpe, currentPage: currentPageOpe, totalItems: totalOpe }; let i = index">
+                        <td>{{ transaction.guarantee ? transaction.guarantee.idGarantia : '' }}</td>
+                        <td>{{ transaction.descripcion }}</td>
+                        <td>{{ transaction.fechaCreacion | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                        <td>{{ transaction.solicitante ? transaction.solicitante.name : '' }}</td>
+                        <td>{{ transaction.guarantee.original }}</td>
+                        <td class="hide-on-med-and-down">{{ transaction.guarantee ? (transaction.guarantee.descGarantia | truncate) : '' }}</td>
+                        <td>{{ transaction.bienLista ? (transaction.bienLista.identificador | truncate): '' }}</td>
+                        <td>{{ transaction.bienLista ? (transaction.bienLista.descripcion | truncate): '' }}</td>
+                        <td></td>
+                        <td>
+                          <a
+                            *ngIf="transaction.idTipoTramite != 5 && transaction.idTipoTramite != 18"
+                            class="waves-effect waves-green btn-floating"
+                            (click)="onViewPartsClicked(transaction)"><i class="material-icons left">visibility</i></a>
+                        </td>
+                        <td>
+                          <a
+                             *ngIf="transaction.idTipoTramite != 5 && transaction.idTipoTramite != 18"
+                             class="waves-effect waves-green btn-floating"
+                             href="{{ baseUrl + '/rugboletap?tramite=' + transaction.idTramiteTemp + '&garantia=' + transaction.guarantee.idGarantia }}" target="_blank"><i class="material-icons left">file_download</i>
+                        </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination-template #pop="paginationApi"
+                    id="serverOpe"
+                    (pageChange)="onPageChangeOpe($event)">
+                    <ul class="pagination custom-pagination">
+                      <li class="pagination-previous" [class.disabled]="pop.isFirstPage()">
+                        <a *ngIf="!pop.isFirstPage()" (click)="pop.previous()"><i class="material-icons">chevron_left</i></a>
+                      </li>
+                      <li *ngFor="let page of pop.pages" [class.active]="pop.getCurrent() === page.value" [class.waves-effect]="pop.getCurrent() !== page.value">
+                        <a (click)="pop.setCurrent(page.value)" *ngIf="pop.getCurrent() !== page.value">
+                          {{ page.label }}
+                        </a>
+                        <a *ngIf="pop.getCurrent() === page.value">
+                          {{ page.label }}
+                        </a>
+                      </li>
+                      <li class="pagination-next" [class.disabled]="pop.isLastPage()">
+                        <a *ngIf="!pop.isLastPage()" (click)="pop.next()"><i class="material-icons">chevron_right</i></a>
+                      </li>
+                    </ul>
+                  </pagination-template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col s1"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModalonOperaciones()">Cerrar</a>
+  </div>
+</div>
+
+<div id="modalDetalle" class="modal" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-content">
+    <div class="card" *ngIf="modalTransaction">
+      <div class="card-content">
+        <span class="card-title blue-text text-darken-2">Detalle de la Garantía Mobiliaria</span>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Garantía Mobiliaria No. </span><span>{{ modalTransaction.idGarantia }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s6">
+            <span class="blue-text text-darken-2">Fecha de inscripción </span><span>{{ modalTransaction.fechaInscripcion }}</span>
+          </div>
+          <div class="col s6">
+            <span class="blue-text text-darken-2">Fecha de la última actualización </span><span>{{ modalTransaction.fechaUltAsiento }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s6">
+            <span class="blue-text text-darken-2">Tipo de Operación </span><span>{{ modalTransaction.tipoAsiento }}</span>
+            <span *ngIf="modalTransaction.tipoAsiento == 'Inscripción'"> {{ modalTransaction.textos[9] }}</span>
+          </div>
+          <div class="col s6">
+            <span class="blue-text text-darken-2">Fecha </span><span>{{ modalTransaction.fechaAsiento }}</span>
+          </div>
+        </div>
+        <div class="row note teal">
+          <span class="white-text">Datos de la inscripción</span>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Vigencia: </span><span>{{ modalTransaction.vigencia }} Años</span>
+          </div>
+        </div>
+        <div class="row">
+          <table class="bordered striped centered">
+            <thead>
+              <tr>
+                <th colspan="2">{{ modalTransaction.textos[1] }}</th>
+              </tr>
+              <tr>
+                <th>Nombre, Denominación o Razón Social</th>
+                <th>No. Identificación \ No. Identificación Tributaria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let deudor of modalTransaction.deudorTOs">
+                <td>{{ deudor.nombre }}</td>
+                <td>{{ deudor.perJuridica == 'PM' ? deudor.rfc : deudor.curp }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <table class="bordered striped centered">
+            <thead>
+              <tr>
+                <th colspan="2">{{ modalTransaction.textos[2] }}</th>
+              </tr>
+              <tr>
+                <th>Nombre, Denominación o Razón Social</th>
+                <th>No. Identificación \ No. Identificación Tributaria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let acreedor of modalTransaction.acreedorTOs">
+                <td>{{ acreedor.nombre }}</td>
+                <td>{{ acreedor.perJuridica == 'PM' ? acreedor.rfc : acreedor.curp }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row" *ngIf="modalTransaction.textos[3]">
+          <table class="bordered striped centered">
+            <thead>
+              <tr>
+                <th colspan="2">{{ modalTransaction.textos[3] }}</th>
+              </tr>
+              <tr>
+                <th>Nombre, Denominación o Razón Social</th>
+                <th>No. Identificación \ No. Identificación Tributaria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let otorgante of modalTransaction.otorganteTOs">
+                <td>{{ otorgante.nombre }}</td>
+                <td>{{ otorgante.perJuridica == 'PM' ? otorgante.rfc : otorgante.curp }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row note teal">
+          <span class="white-text">Información de la Garantía Mobiliaria</span>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">{{ modalTransaction.textos[4] }}</span>
+            <p>
+              {{ modalTransaction.descbienes }}
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Bienes en garantía si estos tienen número de serie:</span>
+            <table class="bordered striped centered">
+              <thead>
+                <tr>
+                  <th>Tipo Bien Especial</th>
+                  <th>Tipo Identificador</th>
+                  <th>Identificador</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let bien of modalTransaction.bienesEspTOs">
+                  <td>{{ bien.tipoBien }}</td>
+                  <td>{{ bien.tipoIdentificador }}</td>
+                  <td>{{ bien.identificador }}</td>
+                  <td>{{ bien.descripcion }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row note teal">
+          <span class="white-text">Información Específica de la Garantía Mobiliaria</span>
+        </div>
+        <div class="row" *ngIf="modalTransaction.aBooleanNoGaraOt">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Declaro que de conformidad con el contrato de garantía, el deudor declaró que sobre los bienes en garantía no existen otro gravamen, anotación o limitación previa.</span>
+          </div>
+        </div>
+        <div class="row" *ngIf="modalTransaction.aBoolean">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Los atribuibles y derivados no esta afectos a la Garantía Mobiliaria.</span>
+          </div>
+        </div>
+        <div class="row" *ngIf="modalTransaction.aPrioridad">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">La garantía es prioritaria.</span>
+          </div>
+        </div>
+        <div class="row" *ngIf="modalTransaction.aRegistro">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">El bien se encuentra inscrita en el registro Registro de la propiedad.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">{{ modalTransaction.textos[7] }}</span>
+            <p>
+              {{ modalTransaction.instrumento }}
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Datos del Representante(s):</span>
+            <p>
+              {{ modalTransaction.otroscontrato }}
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">{{ modalTransaction.textos[8] }}</span>
+            <p>
+              {{ modalTransaction.otrosgarantia }}
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <span class="blue-text text-darken-2">Anotación de la operación</span>
+            <p>
+              {{ modalTransaction.otrosterminos }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
   </div>
 </div>

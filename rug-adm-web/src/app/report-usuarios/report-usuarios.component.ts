@@ -24,7 +24,9 @@ import { BancoPipe } from '../shared/banco.filter';
 import { TipoPagoPipe } from '../shared/tipo-pago.filter';
 import { EstadoPipe } from '../shared/estado.filter';
 import { UsadaPipe } from '../shared/usada.filter';
-
+import { Transaction } from '../shared/transaction.model';
+import { GuaranteesService } from '../shared/guarantees.service';
+import { TransactionPreview } from '../shared/transaction-preview.model';
 @Component({
   selector: 'app-report-usuarios',
   templateUrl: './report-usuarios.component.html',
@@ -41,6 +43,8 @@ export class ReportUsuariosComponent implements OnInit {
   garantias_acre: Garantias[];
   garantias_usu: Garantias[];
   garantias_deu: Garantias[];
+
+  partsHttpSubscripcion: Subscription;
   
   deposits: Deposit[];
   depositsa: Deposit[];
@@ -69,6 +73,9 @@ export class ReportUsuariosComponent implements OnInit {
   exportHistorial_a: Deposit[];
   exportHistorial_r: Deposit[];
   exportHistorial_p: Deposit[];
+  exportGuarantees: Transaction[];
+  guarantees: Transaction[];
+
   acreedor_budqueda:String;
   usuario_busqueda:String;
   deudor_busqueda:String;
@@ -81,6 +88,9 @@ export class ReportUsuariosComponent implements OnInit {
   totalHA: number;
   totalHR: number;
   totalHP: number;
+  totalOpe: number;
+  
+  
   
   currentPage: number = 1;
   currentPage2: number = 1;
@@ -92,7 +102,9 @@ export class ReportUsuariosComponent implements OnInit {
   currentPageHA: number = 1;
   currentPageHR: number = 1;
   currentPageHP: number = 1;
-
+  currentPageOpe: number = 1;
+  
+  
   pageSize: number = 10;
   pageSize2: number = 10;
   pageSize_acr: number = 10;
@@ -102,7 +114,8 @@ export class ReportUsuariosComponent implements OnInit {
   pageSizeHA: number = 10;
   pageSizeHR: number = 10;
   pageSizeHP: number = 10;
-  
+  pageSizeOpe: number = 10;
+
   httpSubscription: Subscription;
   httpSubscription2: Subscription;
   httpSubscription_s: Subscription;
@@ -113,6 +126,7 @@ export class ReportUsuariosComponent implements OnInit {
   filtroa: Acreedor;
   filtrod: Deudor;
   filtrou: Usuario;
+  filtrot: Transaction;
   localSubscription: Subscription;
   modRejectActions = new EventEmitter<string|MaterializeAction>();
   modDetallesActions = new EventEmitter<string|MaterializeAction>();
@@ -125,6 +139,10 @@ export class ReportUsuariosComponent implements OnInit {
   modHistorialPagoAcActions = new EventEmitter<string|MaterializeAction>();
   modHistorialPagoRActions = new EventEmitter<string|MaterializeAction>();
   modHistorialPagoPActions = new EventEmitter<string|MaterializeAction>();
+  modOperacionesActions = new EventEmitter<string|MaterializeAction>();
+  modalActions = new EventEmitter<string|MaterializeAction>();
+  modalTransaction: TransactionPreview;
+
   modalDeposit: Deudor;
   modalIndex: number;
   fechaInicioH: string;
@@ -182,6 +200,7 @@ export class ReportUsuariosComponent implements OnInit {
   rangoFechasHistorial_a: string | any;
   rangoFechasHistorial_r: string | any;
   rangoFechasHistorial_p: string | any;
+  rangoFechasOp: string | any;
   manualDate: string;
 
   nomusuario_historial: string;
@@ -209,6 +228,9 @@ export class ReportUsuariosComponent implements OnInit {
   totalu_modHistorialPagoR = '';
   totalu_modHistorialPagoP = '';
 
+  fechaInicio: string;
+  fechaFin: string;
+
   constructor(private deudorService: DeudoresService,
     private loadingService: LoadingService,
     private excelService: ExcelService,
@@ -219,7 +241,8 @@ export class ReportUsuariosComponent implements OnInit {
     private depositsService: DepositsService,
     private bancoPipe: BancoPipe,
     private tipoPagoPipe: TipoPagoPipe,
-    private usadaPipe: UsadaPipe
+    private usadaPipe: UsadaPipe,
+    private guaranteesService: GuaranteesService,
     
     ) { }
 
@@ -245,6 +268,10 @@ export class ReportUsuariosComponent implements OnInit {
     };
     
     this.rangoFechasHistorial_p = {
+      from: new Date(today.getFullYear(), today.getMonth(), 1),
+      to: new Date(today.getFullYear(), today.getMonth(), 1)
+    };
+    this.rangoFechasOp = {
       from: new Date(today.getFullYear(), today.getMonth(), 1),
       to: new Date(today.getFullYear(), today.getMonth(), 1)
     };
@@ -385,7 +412,7 @@ export class ReportUsuariosComponent implements OnInit {
     //this.modGarantiasActions.emit({action:"modal", params:['open']});
   }
   onPageChangeAcr(pageac: number) {    
-    console.log("onAcreedores");
+    //console.log("onAcreedores");
     this.modalIndex = 1;
     //this.filtrog = new Garantias;
     //this.filtrog.idDeudor = String(deudor.idPersona);
@@ -466,7 +493,7 @@ export class ReportUsuariosComponent implements OnInit {
   }
   onPageChangeUsr(pageusr: number) 
   {
-    console.log("onUsuarios");
+    //console.log("onUsuarios");
     this.modalIndex = 1;
     /*this.filtrog = new Garantias;
     this.filtrog.idDeudor = String(deudor.idPersona);*/
@@ -515,7 +542,7 @@ export class ReportUsuariosComponent implements OnInit {
 
   }
   onPageChangeDeu(pageac: number) {    
-    console.log("onDeudores");
+    //console.log("onDeudores");
 
     //this.filtrog = new Garantias;
     //this.filtrog.idDeudor = String(deudor.idPersona);
@@ -659,6 +686,29 @@ export class ReportUsuariosComponent implements OnInit {
         this.depositsService.addDeposits(this.depositsp);
       },
       err => console.error(err),
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    );
+  }
+  onPageChangeOpe(page: number) {
+    this.guarantees = [];
+    this.loading = true;
+    this.loadingService.changeLoading(this.loading);
+    this.fechaInicio = '2008-01-01';
+    this.fechaFin = moment().endOf('month').format('YYYY-MM-DD');
+    this.httpSubscription = this.guaranteesService.fetchData(page, this.pageSizeOpe, this.filtrot, this.fechaInicio, this.fechaFin).subscribe(
+      res => {
+        this.guarantees = res.data;
+        this.totalOpe = res.total;
+        this.currentPageOpe = page;
+      },
+      err => {
+        console.error(err);
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      },
       () => {
         this.loading = false;
         this.loadingService.changeLoading(this.loading);
@@ -907,12 +957,45 @@ export class ReportUsuariosComponent implements OnInit {
       }
     );
   }
+  exportDataOp(){
+    this.exportGuarantees = [];
+    this.loading = true;   
+    this.loadingService.changeLoading(this.loading);
+    this.httpSubscription = this.guaranteesService.fetchData(null, null, this.filtrot, this.fechaInicio, this.fechaFin).subscribe(
+      res => {
+        this.exportGuarantees = res.data;
+        //console.log(res.data);
+        const temp = this.exportGuarantees.map(el => ({
+          "Número garantía": el.guarantee ? el.guarantee.idGarantia : '',
+          "Trámite": el.descripcion,
+          "Fecha": moment(el.fechaCreacion, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss'),
+          "Solicitante": el.solicitante ? el.solicitante.name : '',
+          "Solicitante Original": el.guarantee ? el.guarantee.original : '',
+          "Acreedor": el.acreedores ? el.acreedores.map(e => e.name).join(";") : '',
+          "Deudor": el.deudores ? el.deudores.map(e => e.name).join(";") : '',
+          "Descripción": el.guarantee ? el.guarantee.descGarantia : '',
+          "Identificador": el.bienLista ? el.bienLista.identificador : '',
+          "Bien": el.bienLista ? el.bienLista.descripcion : '',
+        }));
+        this.excelService.export(temp, 'operaciones');
+      },
+      err => {
+        console.error(err);
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      },
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    );
+  }
   /* Terminan funciones para exportar a excel*/
   /* Funcion 1que determina la accion de cada operacion seleccionada en el select*/
   Operaciones(usuario: Usuario, i: number) {
     //this.select_y.nativeElement.selectedIndex = 0;
 //    this.select_y.nativeElement.disabled = true;
-    console.log("ENTRA OPERACIONES");
+    //console.log("ENTRA OPERACIONES");
     if(this.operacionSeleccionado=="1"){
       this.onDetalles(usuario,Number(this.operacionSeleccionado));
     }
@@ -937,6 +1020,9 @@ export class ReportUsuariosComponent implements OnInit {
     else if(this.operacionSeleccionado=="8"){
       this.onHistorialPagoP(usuario,Number(this.operacionSeleccionado));
     }
+    else if(this.operacionSeleccionado=="9"){
+      this.onOperaciones(usuario,Number(this.operacionSeleccionado));
+    }
   }
   /* Terminan funcion Operaciones*/
   /* Funciones que realizan la logica y levantan los modal de cada una de las operaciones*/
@@ -959,7 +1045,7 @@ export class ReportUsuariosComponent implements OnInit {
     this.modDetallesActions.emit({action:"modal", params:['open']});
   }
   onGarantias(usuario: Usuario, i: number) {
-    console.log("ENTRA A ONGARANTIAS");
+    //console.log("ENTRA A ONGARANTIAS");
     this.filtrog = new Garantias;
     this.filtrog.idUsuario = String(usuario.idPersona);      
     this.modalIndex = 1;    
@@ -1012,7 +1098,7 @@ export class ReportUsuariosComponent implements OnInit {
     this.modGarantiasActions.emit({action:"modal", params:['open']});
   }
   onDeudores(usuario: Usuario, i: number) {
-    console.log("onDeudores");
+    //console.log("onDeudores");
     this.identificador_Mdeudores = String(usuario.idPersona);
     //this.nit_gMacreedor = String(usuario.rfc);
     this.nit_gMacreedor = usuario.rfc !== null && usuario.rfc !== undefined ? String(usuario.rfc) : '';   
@@ -1042,7 +1128,7 @@ export class ReportUsuariosComponent implements OnInit {
     /*this.httpSubscription = this.garantiaService.fetchData(null, 1, this.pageSize_deu, this.filtrog)
     .pipe(
       finalize(() => {
-        console.log(String(this.deudor_busqueda));
+        //console.log(String(this.deudor_busqueda));
         this.modalIndex = 1;
         
         const ultimoCaracter = this.deudor_busqueda.slice(-1);
@@ -1088,7 +1174,7 @@ export class ReportUsuariosComponent implements OnInit {
     this.modDetallesDeudorActions.emit({action:"modal", params:['open']});
   }
   onAcreedores_b(usuario: Usuario, i: number) {
-    console.log("onAcreedores :"+String(usuario.idPersona));
+    //console.log("onAcreedores :"+String(usuario.idPersona));
     this.identificador_Macreedor = String(usuario.idPersona);
     //this.nit_gMacreedor = String(usuario.rfc);
     this.nit_gMacreedor = usuario.rfc !== null && usuario.rfc !== undefined ? String(usuario.rfc) : '';   
@@ -1196,7 +1282,7 @@ export class ReportUsuariosComponent implements OnInit {
     this.modDetallesGActions.emit({action:"modal", params:['open']});
   }
   onHistorialPago(usuario: Usuario, i: number){
-    console.log(usuario);    
+    //console.log(usuario);    
     this.filtro_d = new Deposit;
     this.depositsService.deposits = [];
     let persona = new ExternalUser;
@@ -1206,7 +1292,7 @@ export class ReportUsuariosComponent implements OnInit {
     
     this.httpSubscription = this.depositsService.fetchData(null, this.currentPageH, this.pageSizeH, this.filtro_d).subscribe(
       res => {
-        console.log(res);
+        //console.log(res);
         this.deposits = res.data;
         this.totalH = res.total;
         this.totalu_modHistorialPago = String(res.total);
@@ -1224,8 +1310,8 @@ export class ReportUsuariosComponent implements OnInit {
     this.modHistorialPagoActions.emit({action:"modal", params:['open']});
   }
   onHistorialPagoA(usuario: Usuario, i: number){
-    console.log("onHistorialPagoA");
-    console.log(usuario.idPersona);
+    //console.log("onHistorialPagoA");
+    //console.log(usuario.idPersona);
     
     this.filtro_da = new Deposit;
     this.depositsService.deposits = [];
@@ -1253,8 +1339,8 @@ export class ReportUsuariosComponent implements OnInit {
     this.modHistorialPagoAcActions.emit({action:"modal", params:['open']});
   }
   onHistorialPagoR(usuario: Usuario, i: number){
-    console.log("onHistorialPagoR");
-    console.log(usuario.idPersona);
+    //console.log("onHistorialPagoR");
+    //console.log(usuario.idPersona);
     
     this.filtro_dr = new Deposit;
     this.depositsService.deposits = [];
@@ -1266,7 +1352,7 @@ export class ReportUsuariosComponent implements OnInit {
     
     this.httpSubscription = this.depositsService.fetchData(null, this.currentPageHR, this.pageSizeHR, this.filtro_dr).subscribe(
       res => {
-        console.log(res.data);
+        
         this.depositsr = res.data;
         this.totalHR = res.total;
         this.totalu_modHistorialPagoR = String(res.total);
@@ -1283,8 +1369,8 @@ export class ReportUsuariosComponent implements OnInit {
     this.modHistorialPagoRActions.emit({action:"modal", params:['open']});
   }
   onHistorialPagoP(usuario: Usuario, i: number){
-    console.log("onHistorialPagoP");
-    console.log(usuario.idPersona);
+    //console.log("onHistorialPagoP");
+    //console.log(usuario.idPersona);
     
     this.filtro_dp = new Deposit;
     this.depositsService.deposits = [];
@@ -1311,6 +1397,40 @@ export class ReportUsuariosComponent implements OnInit {
     this.nomusuario_historial_p = "Usuario: "+usuario.nombrePersona;
 
     this.modHistorialPagoPActions.emit({action:"modal", params:['open']});
+  }
+  onOperaciones(usuario: Usuario, i: number){
+    this.filtrot= new Transaction;
+    let solicitante = new ExternalUser;
+    //console.log("OnOperaciones: "+usuario.idPersona);
+    solicitante.personaId = usuario.idPersona;
+    this.filtrot.solicitante = solicitante;
+    //console.log("filtrot: "+this.filtrot);
+    //this.refreshData();fgfhjkhg
+    this.fechaInicio = '2008-01-01';
+    this.fechaFin = moment().endOf('month').format('YYYY-MM-DD');
+    this.guarantees = [];
+    this.loading = true;
+    this.loadingService.changeLoading(this.loading);
+    this.httpSubscription = this.guaranteesService.fetchData(1, this.pageSizeOpe, this.filtrot, this.fechaInicio, this.fechaFin).subscribe(
+      res => {
+        //console.log(res.data);
+        this.guarantees = res.data;
+        
+        this.totalOpe = res.total;
+        this.currentPageOpe = 1;
+      },
+      err => {
+        console.error(err);
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      },
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    );
+    this.modOperacionesActions.emit({action:"modal", params:['open']});
+    
   }
   /* Termina funciones que realizan la logica y levantan los modal de cada una de las operaciones*/
   /* Funciones que cierran los modal de cada operacion*/
@@ -1365,6 +1485,14 @@ export class ReportUsuariosComponent implements OnInit {
     this.modHistorialPagoPActions.emit({action:"modal",params:['close']});        
     
   }
+  closeModalonOperaciones() {
+    this.modOperacionesActions.emit({action:"modal",params:['close']});        
+    
+  }
+  closeModal() {
+    this.modalActions.emit({action:"modal",params:['close']});
+    
+  }
    /* Terminan funciones que cierran los modal de cada operacion*/
    /*Funcion que campura el cambio en el filtro de rango de fecha*/
    onRangeChanged(event) {
@@ -1414,6 +1542,34 @@ export class ReportUsuariosComponent implements OnInit {
       this.filtro_dp.fechaFin = event.to
       this.fechaInicioH = event.from;
       this.fechaFinH = event.to;
+      //this.refreshData();
+    }
+  }
+  onRangeChangedOp(event) {
+    if (this.fechaInicio !== event.from || this.fechaFin !== event.to) {
+      this.fechaInicio = event.from;
+      this.fechaFin = event.to;
+      this.guarantees = [];
+    this.loading = true;
+    this.loadingService.changeLoading(this.loading);
+    this.httpSubscription = this.guaranteesService.fetchData(1, this.pageSize, this.filtrot, this.fechaInicio, this.fechaFin).subscribe(
+      res => {
+        //console.log(res.data);
+        this.guarantees = res.data;
+        
+        this.total = res.total;
+        this.currentPage = 1;
+      },
+      err => {
+        console.error(err);
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      },
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    );
       //this.refreshData();
     }
   }
@@ -1499,7 +1655,7 @@ export class ReportUsuariosComponent implements OnInit {
     }
   }
   BuscarDataH(){
-    console.log("BUSCAR Historico completo");     
+    //console.log("BUSCAR Historico completo");     
     //this.filtro_d = new Deposit;
     this.depositsService.deposits = [];
     let persona = new ExternalUser;
@@ -1509,7 +1665,7 @@ export class ReportUsuariosComponent implements OnInit {
     this.filtro_d.monto = Number(this.monto_historial);
     this.httpSubscription = this.depositsService.fetchData(null, this.currentPageH, this.pageSizeH, this.filtro_d).subscribe(
       res => {
-        console.log(res.data); 
+        //console.log(res.data); 
         this.deposits = res.data;
         this.totalH = res.total;
         this.currentPageH = 1;
@@ -1523,7 +1679,7 @@ export class ReportUsuariosComponent implements OnInit {
     );
   }  
   BuscarData_a(){
-    console.log("BUSCAR Historico aprobada");     
+    //console.log("BUSCAR Historico aprobada");     
     //this.filtro_d = new Deposit;
     this.depositsService.deposits = [];
     let persona = new ExternalUser;
@@ -1546,7 +1702,7 @@ export class ReportUsuariosComponent implements OnInit {
     );
   }
   BuscarData_r(){
-    console.log("BUSCAR Historico rechazado");     
+    //console.log("BUSCAR Historico rechazado");     
     //this.filtro_d = new Deposit;
     this.depositsService.deposits = [];
     let persona = new ExternalUser;
@@ -1570,7 +1726,7 @@ export class ReportUsuariosComponent implements OnInit {
     );
   }  
   BuscarData_p(){
-    console.log("BUSCAR Historico pendientes");     
+    //console.log("BUSCAR Historico pendientes");     
     //this.filtro_d = new Deposit;
     this.depositsService.deposits = [];
     let persona = new ExternalUser;
@@ -1600,10 +1756,10 @@ export class ReportUsuariosComponent implements OnInit {
     this.fechaInicioH = '';
     this.fechaFinH = '';    
     const today = moment().toDate();
-    this.filDeudorInput.nativeElement.selectedIndex = 0;
-    this.filAcreedorInput.nativeElement.selectedIndex = 0;
+    //this.filDeudorInput.nativeElement.selectedIndex = 0;
+    //this.filAcreedorInput.nativeElement.selectedIndex = 0;
     this.filtrog = new Garantias; 
-    console.log(this.identi_garantia);
+    //console.log(this.identi_garantia);
     this.filtrog.idUsuario=this.identi_garantia;
     this.rangoFechas = {
       from: new Date(today.getFullYear(), today.getMonth(), 1),
@@ -1666,7 +1822,7 @@ export class ReportUsuariosComponent implements OnInit {
     
     this.httpSubscription = this.depositsService.fetchData(null, this.currentPageH, this.pageSizeH, this.filtro_d).subscribe(
       res => {
-        console.log(res);
+        //console.log(res);
         this.deposits = res.data;
         this.totalH = res.total;
         this.depositsService.addDeposits(this.deposits);
@@ -1779,6 +1935,31 @@ export class ReportUsuariosComponent implements OnInit {
     );
     
   }
+  limpiarDataOp(){
+    this.fechaInicio = '2008-01-01';
+    this.fechaFin = moment().endOf('month').format('YYYY-MM-DD');  
+    const today = moment().toDate();
+    this.loading = true;
+    this.loadingService.changeLoading(this.loading);
+    this.httpSubscription = this.guaranteesService.fetchData(1, this.pageSizeOpe, this.filtrot, this.fechaInicio, this.fechaFin).subscribe(
+      res => {
+        //console.log(res.data);
+        this.guarantees = res.data;
+        
+        this.totalOpe = res.total;
+        this.currentPageOpe = 1;
+      },
+      err => {
+        console.error(err);
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      },
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    );
+  }
   /*Termina funcion que limpia los filtros seleccionados y muestra todos los datos en la tabla de Garantias*/
   /*Funciones que detecta el cambio en los filtros en la tabla de Garantias*/
   filAcreedorChanged(filAcreedor: String) {
@@ -1795,7 +1976,7 @@ export class ReportUsuariosComponent implements OnInit {
   /*Terminan funciones que detecta el cambio en los filtros en la tabla de Garantias*/
   /*Funciones que llenan los datos de los filtros en la tabla de Garantias*/
   llenar_select_deu(){
-    console.log("Entra a llenar");
+    //console.log("Entra a llenar");
     
     this.httpSubscription_s = this.garantiaService.fetchData(null, null, null, this.filtrog)
       .pipe(
@@ -1881,4 +2062,33 @@ export class ReportUsuariosComponent implements OnInit {
   
   }
   /*Terminan funciones que llenan los datos de los filtros en la tabla de Garantias*/
+
+  onViewPartsClicked(guarantee: Transaction) {
+    this.loading = true;
+    this.loadingService.changeLoading(this.loading);
+    /*this.partsHttpSubscripcion = this.guaranteesService.fetchPartData(guarantee.idTramite).subscribe(
+      res => {
+        this.parts = res;
+        this.modalActions.emit({action:"modal",params:['open']});
+      },
+      err => console.error(err),
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+      }
+    );*/
+    this.partsHttpSubscripcion = this.guaranteesService.fetchDetailData(guarantee.idTramite, guarantee.guarantee.idGarantia).subscribe(
+      res => {
+        this.modalTransaction = res;
+      },
+      err => console.error(err),
+      () => {
+        this.loading = false;
+        this.loadingService.changeLoading(this.loading);
+        this.modalActions.emit({action:"modal",params:['open']});
+      }
+    );
+    /*this.modalTransaction = guarantee;
+    this.modalActions.emit({action:"modal",params:['open']});*/
+  }
 }

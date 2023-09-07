@@ -193,7 +193,7 @@ export class ReportDeudoresComponent implements OnInit {
       (deposits: Deudor[]) => {
         this.deudores = deposits;
 
-        this.closeModalReject();
+        
         this.loading = false;
         this.loadingService.changeLoading(this.loading);
       }
@@ -635,8 +635,7 @@ export class ReportDeudoresComponent implements OnInit {
     }
     this.modGarantiasActions.emit({ action: "modal", params: ['open'] });
   }
-  onAcreedores_b(deudor: Deudor, i: number) {
-    console.log("onAcreedores");
+  onAcreedores_b(deudor: Deudor, i: number) {    
     this.identificador_Macreedor = String(deudor.idPersona);
     //this.nit_gMacreedor = String(deudor.rfc);
     this.nit_gMacreedor = deudor.rfc !== null && deudor.rfc !== undefined ? String(deudor.rfc) : '';   
@@ -650,8 +649,7 @@ export class ReportDeudoresComponent implements OnInit {
     this.loadingService.changeLoading(this.loading);
     this.httpSubscription = this.garantiaService.fetchData(null, null, null, this.filtrog)
       .pipe(
-        finalize(() => {
-          console.log("this.acreedor_budqueda: " + this.acreedor_budqueda);
+        finalize(() => {          
           this.modalIndex = 1;
           const ultimoCaracter = this.acreedor_budqueda.slice(-1);
           if(ultimoCaracter==","){this.acreedor_budqueda = this.acreedor_budqueda.slice(0, -1);}
@@ -660,7 +658,7 @@ export class ReportDeudoresComponent implements OnInit {
           this.loading = true;
           this.loadingService.changeLoading(this.loading);
           this.httpSubscription = this.acreedorService.fetchData_b(null, 1, this.pageSize_acr, this.filtroa).subscribe(
-            res => {
+            res => {              
               this.totald_modAcreedor= String(res.total);
               this.acreedores_b = res.data;
               this.total_acr = res.total;
@@ -676,7 +674,7 @@ export class ReportDeudoresComponent implements OnInit {
         })
       )
       .subscribe(
-        res => {
+        res => {          
           this.acreedor_budqueda = '';
           this.garantias_acre = res.data;
           this.garantias_acre.forEach(garantiaAcr => {
@@ -781,11 +779,7 @@ export class ReportDeudoresComponent implements OnInit {
 
     this.modDetallesUsuActions.emit({ action: "modal", params: ['open'] });
   }
-  closeModalReject() {
-    this.modRejectActions.emit({ action: "modal", params: ['close'] });
-    this.modalDeposit = new Deudor;
-    this.modalIndex = -1;
-  }
+ 
   closeModalDetalles() {
     this.modDetallesActions.emit({ action: "modal", params: ['close'] });
     this.modalDeposit = new Deudor;

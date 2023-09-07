@@ -45,7 +45,19 @@
 			<a href="#"><span class="white-text email">{{ user.email }}</span></a>
 		</div>
 	</li>
-  <li class="bold">
+  <li *ngFor="let menu of menus">
+    <a *ngIf="!menu.rol" class="collapsible-header waves-effect waves-indigo">{{menu.nomMenu}} <i class="material-icons right">arrow_drop_down</i></a>
+    <div *ngIf="!menu.rol || menu.rol.includes(user.rol)" class="collapsible-body">
+      <ul>
+        <li *ngFor="let subMenu of menus">
+          <a *ngIf="subMenu.nomMenu === menu.nomMenu && (!subMenu.rol || subMenu.rol.includes(user.rol))" 
+            routerLinkActive="submenu-active" [routerLink]="subMenu.link">{{subMenu.nomSubMenu}}</a>
+        </li>
+      </ul>
+    </div>
+  </li>
+  
+  <!--<li class="bold">
     <a class="collapsible-header waves-effect waves-indigo">Aprobaciones <i class="material-icons right">arrow_drop_down</i></a>
     <div class="collapsible-body">
       <ul>
@@ -74,6 +86,7 @@
         <li *ngIf="user.rol === 'R' || user.rol === 'C'"><a routerLinkActive="submenu-active" [routerLink]="['/report-deudores']">Deudores</a></li>
         <li *ngIf="user.rol === 'R' || user.rol === 'C'"><a routerLinkActive="submenu-active" [routerLink]="['/report-acreedores']">Acreedores</a>
         <li *ngIf="user.rol === 'R' || user.rol === 'C'"><a routerLinkActive="submenu-active" [routerLink]="['/report-usuarios']">Usuarios</a></li>       
+        <li *ngIf="user.rol === 'R' || user.rol === 'C'"><a routerLinkActive="submenu-active" [routerLink]="['/subir-imagen']">Cambiar Imagen</a></li>
       </ul>
     </div>
   </li>
@@ -134,7 +147,8 @@
         <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/users']">Usuarios</a></li>
         <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/categorias']">Categorias</a></li>
         <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/terminos']">Terminos</a></li>
-        <!-- <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/users']">Bitácora de uso</a></li> -->
+        
+        
       </ul>
     </div>
   </li>
@@ -144,10 +158,10 @@
       <ul>
         <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/incidents']">Incidentes</a></li>
         <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/changes']">Control de Cambios</a></li>
-        <!-- <li *ngIf="user.rol === 'R'"><a routerLinkActive="submenu-active" [routerLink]="['/users']">Bitácora de uso</a></li> -->
+        
       </ul>
     </div>
-  </li>
+  </li>-->
 </ul>
 <router-outlet></router-outlet>
 <div style="opacity: 1;" class="loading-overlay" *ngIf="loading"></div>

@@ -38,6 +38,7 @@
                   <thead>
                     <tr>
                       <th>Identificacion</th>
+                      <th>DPI</th>
                       <th>Nit</th>
                       <th>Nombre Completo</th>
                       <th>Tipo de <br>Persona</th>
@@ -54,6 +55,7 @@
                   <tbody>
                    <tr *ngFor="let acreedor of acreedores | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; let i = index">                      
                       <td>{{acreedor.idPersona}}</td>
+                      <td>{{acreedor.dpi}}</td>
                       <td>{{acreedor.rfc}}</td>
                       <td>{{acreedor.nombrePersona}}</td>
                       <td>{{acreedor.perJuridica}}</td>
@@ -493,6 +495,7 @@
         <thead>
           <tr>
             <th>Identificación</th>
+            <th>DPI</th>
             <th>Nit.</th>
             <th>Nombre Completo</th>
             <th>Correo Elctrónico.</th>
@@ -509,6 +512,7 @@
             *ngFor="let deudor of deudores_b | paginate: { id: 'server_deu', itemsPerPage: pageSize_deu, currentPage: currentPage_deu, totalItems: total_deu }; let i = index">
 
             <td>{{deudor.idPersona}}</td>
+            <td>{{deudor.dpi}}</td>
             <td>{{deudor.rfc}}</td>
             <td>{{deudor.nombrePersona}}</td>
             <td>{{deudor.email}}</td>
@@ -580,6 +584,7 @@
           <thead>
             <tr>
               <th>Identificación</th>
+              <th>DPI</th>
               <th>Nit.</th>
               <th>Nombre Completo</th>
               <th>Correo Elctrónico.</th>
@@ -597,6 +602,7 @@
               *ngFor="let usuario of usuarios | paginate: { id: 'server_usr', itemsPerPage: pageSize_usr, currentPage: currentPage_usr, totalItems: total_usr }; let i = index">
 
               <td>{{usuario.idPersona}}</td>
+              <td>{{usuario.dpi}}</td>
               <td>{{usuario.rfc}}</td>
               <td>{{usuario.nombrePersona}}</td>
               <td>{{usuario.email}}</td>

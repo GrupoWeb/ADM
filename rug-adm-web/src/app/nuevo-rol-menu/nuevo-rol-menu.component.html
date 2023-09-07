@@ -1,0 +1,159 @@
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s8">
+        <div class="col s12">
+          <h3 style="text-align: center; color:#0D47A1;">CREAR MENÚ</h3>    
+          <h5>Aquí podra crear los nuevos menús y submenús</h5>
+        </div> 
+        <div class="col s4">
+          <div class="input-field">      
+            <select #menuselect materialize="material_select" required  [(ngModel)]="filMenus" (ngModelChange)="filMenuChanged($event)">
+              <option [value]="0" disabled selected>Seleccione Menú</option>  
+              <ng-container *ngFor="let menu of menus">                  
+                    <option *ngIf="!menu.rol" [value]="menu.nomMenu">
+                        {{ menu.nomMenu }}
+                    </option>
+                </ng-container>
+                <option value="otro">OTRO</option>
+            </select>
+            <label for="menuSelector">Seleccionar Menú:</label>
+          </div>
+        </div>
+        <div class="col s4" *ngIf="OtroB">
+          <div class="input-field">
+            <input type="text" class="validate" [(ngModel)]="OtroMenu">
+            <label for="OtroMenu">Ingrese el nuevo nombre del menú</label>
+          </div>
+        </div>
+        <div class="col s4">
+          <div class="input-field">
+            <select #rolselect materialize="material_select"  [(ngModel)]="filRoles" multiple (ngModelChange)="filRolChanged($event)">
+              <option [value]="0" disabled selected>Seleccione Rol/Roles</option>
+              <option *ngFor="let rol of roles" [value]="rol.tipoRol">
+                {{ rol.nomRol}}({{rol.tipoRol}})
+              </option>              
+            </select>
+            <label for="menuSelector">Seleccionar rol:</label>
+          </div>
+        </div>
+        <div class="col s4">
+          <div class="input-field">
+            <input  type="text" class="validate" [(ngModel)]="nomSunMenu">
+            <label for="nomSunMenu">Ingrese el nombre del Submenú</label>
+          </div>
+        </div>
+        <div class="col s4">
+          <div class="input-field">
+            <input  type="text" class="validate" [(ngModel)]="linkSunMenu ">
+            <label for="linkSunMenu">Ingrese el link del Submenú (Ej. /link)</label>
+          </div>
+        </div>
+        <div class="col s12" style="text-align: center; ">
+          <button class="waves-effect waves-light btn" (click)="crearMenu()">Crear Menú</button>
+        </div>
+      </div>
+      <div class="col s4">
+        <h3 style="text-align: center; color:#0D47A1;">ELIMINAR MENÚ</h3>  
+        <div class="input-field">      
+          <select #delselect materialize="material_select"  [(ngModel)]="filMenus" (ngModelChange)="delMenuChanged($event)">
+            <option value="0" disabled>Seleccióne Menú/Submenu</option>
+            <option *ngFor="let menu of menus" [value]="menu.menuId" [ngClass]="{'custom-style': !menu.rol}">
+              {{ menu.nomSubMenu ? menu.nomSubMenu : menu.nomMenu }}{{ menu.nomSubMenu ? '' : ' (Cabecera de Menú)' }}
+            </option>
+          </select>
+          <label for="menuSelector">Seleccionar Menú:</label>
+        </div>
+        <button class="waves-effect waves-light btn" (click)="eliminarMenu()">Eliminar Menú</button>
+      </div>
+     
+
+    </div>
+    
+   
+
+    <div class="row">
+      <div class="col s8">
+        <div class="col s12">
+          <h3 style="text-align: center; color:#0D47A1;">CREAR ROL</h3>    
+          <h5>Aquí podra crear los roles</h5>
+        </div> 
+        
+        <div class="col s4">
+          <div class="input-field">
+            <input type="text" class="validate" [(ngModel)]="nomRol">
+            <label for="nomRol">Ingrese el nombre del Rol</label>
+          </div>
+        </div>
+        <div class="col s4">
+          <div class="input-field">
+            <input type="text" class="validate" [(ngModel)]="LetraRol">
+            <label for="LetraRol">Ingrese la letra que asignara al rol. (Ej. Registrador  R)</label>
+          </div>
+        </div>
+        <div class="col s2" style="text-align: center; ">
+          <button class="waves-effect waves-light btn" (click)="crearRol()">Crear rol</button>
+        </div>
+
+      </div>
+      <div class="col s4">
+        <h3 style="text-align: center; color:#0D47A1;">ELIMINAR ROL</h3>  
+        <div class="input-field">      
+         <select #delrolselect materialize="material_select"  [(ngModel)]="filRoles"  (ngModelChange)="delRolChanged($event)">
+            <option [value]="0" disabled selected>Seleccione Rol/Roles</option>
+            <option *ngFor="let rol of roles" [value]="rol.rolId">
+              {{ rol.nomRol}}({{rol.tipoRol}})
+            </option>              
+          </select>
+          <label for="menuSelector">Seleccionar Menú:</label>
+        </div>
+        <button class="waves-effect waves-light btn" (click)="eliminarRol()">Eliminar Rol</button>
+
+      </div>
+     
+    </div>
+    
+    
+  </div>
+  <div id="modalAviso" class="modal modal-fixed-footer" materialize="modal" style="height:225px;"
+  [materializeParams]="[{dismissible: false}]" [materializeActions]="modalAviso">
+
+    <div class="modal-content">
+      <div class="modal-header " [ngClass]="isSuccess ? 'success-header' : 'error-header'" >
+        <h5 class="modal-title">{{tituloModal}}</h5>
+      </div>
+      <br>
+          <h5 style="text-align: center;">{{mensajeModal}}</h5>
+    </div>
+    <div class="modal-footer">
+      <div class="row right-align">
+
+        <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
+      </div>
+    </div>
+  </div>
+  <div id="modalAviso2" class="modal modal-fixed-footer" materialize="modal" style="height:250px;"
+  [materializeParams]="[{dismissible: false}]" [materializeActions]="modalAviso2">
+
+    <div class="modal-content">
+      <div class="modal-header " [ngClass]="isSuccess ? 'success-header' : 'error-header'" >
+        <h5 class="modal-title">{{tituloModal}}</h5>
+      </div>
+      <br>
+          <h5 style="text-align: center;">{{mensajeModal}}</h5>
+    </div>
+    <div class="modal-footer">
+      <div class="row right-align">
+
+        <a class="waves-effect waves-green btn-flat" (click)="closeModal2()">Aceptar</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+  
+  
+
+
+
