@@ -55,7 +55,7 @@ public class ValidateDataType {
 		Constants constants = new Constants();
 		String maxTramites = constants.getParamValue(Constants.VAL_MAX_TRAMITES);
 		if(nRegistros>new Integer(maxTramites)){
-			throw new CargaMasivaExceptionMaxNumber("No se pueden procesar mas de "+ maxTramites+ "tramites");
+			throw new CargaMasivaExceptionMaxNumber("No se pueden procesar mas de "+ maxTramites+ " tramites");
 		}
 	}
 

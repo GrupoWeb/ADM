@@ -3,4 +3,5 @@ function replaceValue(idValue){
 	var text='';
 	text=cadena.replace(/“/g, "\"").replace(/”/g, "\"").replace(/’/g, "\'").replace(/‘/g, "\'").replace(/	/,"    		");
 	getObject(idValue).value = text;
+        localStorage.setItem('descripcionId', text);
 }

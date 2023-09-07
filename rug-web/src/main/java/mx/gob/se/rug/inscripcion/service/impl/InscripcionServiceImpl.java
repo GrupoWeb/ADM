@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.json.JsonObject;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import mx.gob.se.rug.acreedores.dao.AcreedoresDAO;
 import mx.gob.se.rug.acreedores.dao.impl.AcreedoresDaoJdbcImpl;
 import mx.gob.se.rug.acreedores.service.impl.AcreedoresServiceImpl;
@@ -169,7 +170,11 @@ public class InscripcionServiceImpl implements InscripcionService{
 	
 	public boolean getSaldoMasivoByUsuario(String idUsuario, Integer idTipoTramite, Integer idTramite, Integer cantidad) {
 		// si es subcuenta, utilizar idUsuario de cuenta maestra
+                	 Date date5 = new Date();
+                        System.out.println("SEXTO_1: "+date5);
 		long idUsuarioMaestro = acreedoresDAO.getCuentaMaestra(Integer.valueOf(idUsuario));
+                Date date6 = new Date();
+                        System.out.println("SEXTO_2: "+date6);
 		return garantiasDAO.getSaldoMasivoByUsuario(String.valueOf(idUsuarioMaestro), idTipoTramite, idTramite, cantidad);
 	}
 	public AcreedorTO getByID(Integer idAcreedor){

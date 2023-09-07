@@ -219,6 +219,7 @@ function cargaParteDeudor(elementId, idTramite, idPersona, idPersonaModificar,
 	elementIDDeudor = elementId;
 }
 
+
 function validaRfc(rfcStr) {
 
 	var strCorrecta;
@@ -1631,10 +1632,212 @@ function resultadoBuscaFolioAcreedor(mensaje) {
 		alert('Error: Folio Electronico no encontrado.');
 	}
 }
+function buscaDocumentoDeudorInstitucion(opcion)
+{
+    var tipo="";
+    if(opcion==1){
+        tipo = getObject('tipoPersonaD').value;    
+    }else{
+        tipo = getObject('tipoPersonaA').value;    
+    }
+    
+    var id = '';
+    
+   if(tipo=='PF') {
+       if(opcion==1){
+           id = getObject('nitDF').value;
+       }else if(opcion==2){
+           id = getObject('nitAF').value;
+       }
+   } else if(tipo=='PM') {
+       if(opcion==1){
+           id = getObject('nitD').value;
+       }
+       else if(opcion==2){
+           id = getObject('nitA').value;
+       }
+   }
+		
+	if(!noVacio(id)){	
+		alertMaterialize('Debe ingresar el N&uacute;mero de nit. Sin este dato no es posible validarlo.');				
+		return false;
+	}
+        MaterialDialog.alert(
+		'<p style="text-align: justify; text-justify: inter-word;">Recuerde: debe verificar ' +
+		'que los datos encontrados sean los correctos. </p>',
+		{
+			title:'Busqueda', // Modal title
+			buttons:{ // Receive buttons (Alert only use close buttons)
+				close:{
+					text:'aceptar', //Text of close button
+					className:'green', // Class of the close button
+					callback:function(){ // Function for modal click
+						ParteDwrAction.buscaPersonaByFolioElectronicoInst(id, tipo, function(resultado) {
+            try {
+                if(resultado=="Datos no encontrados."){
+                    usarDatos(null,null,null,null,null,null,null,null,null);
+                }else{
+                    const parsedResult = JSON.parse(resultado);                
+                    usarDatos(parsedResult.nit,unescape(parsedResult.nombre),parsedResult.ema,parsedResult.zon,parsedResult.dir,parsedResult.nc,parsedResult.col,tipo,opcion);                    
+                }
+                
+              } catch (error) {
+                  MaterialDialog.alert(
+		'<p style="text-align: justify; text-justify: inter-word;">Ocurrio un problema al consultar los datos ('+error+'). Intente de nuevo </p>',
+		{
+			title:'Alerta', // Modal title
+			buttons:{ // Receive buttons (Alert only use close buttons)
+				close:{
+					text:'Cerrar', //Text of close button
+					className:'red', // Class of the close button					
+				}
+			}
+		}
+	);
+              console.error("Error al analizar el JSON:", error);
+            }
+          });
+					}
+				}
+			}
+		}
+	);
+        
+}
 
-function buscaDocumentoDeudor() {
+function usarDatos(nit,nombre,ema,zon,dir,nc,col,tipo,opcion) {
+    if(nombre==null){
+        MaterialDialog.alert(
+                        '<p style="width:100%; text-align: center;" >Datos no encontrados.</p>',
+				{				
+					//title:'<table><tr><td width="10%"><i class="medium icon-green material-icons">check_circle</i></td><td style="vertical-align: middle; text-align:left;">Confirmar</td></tr></table>', // Modal title
+                                        title: '<p style="background-color:#012060; color:#ffffff; text-align: center;" >Consulta Datos en SAT</p>',
+					buttons:{
+						// Use by default close and confirm buttons
+						close:{
+							className:"red",
+							text:"Cerrar",
+                                                    }
+					}
+				}
+			);
+        
+    }else{
+            try {
+                let newText = nombre.replace(/,,/g, ", ").replace(/,/g, " ").replace(/  /g, ", ");
+                var dire="";
+                if(zon==""){
+                  dire = dir+" "+nc+" "+zon+" "+col;
+              }else{
+                  dire = dir+" "+nc+" "+" ZONA "+zon+" "+col;
+              }
+              
+              
+                MaterialDialog.dialog(
+                        '<table style="width:100%;">' +
+                        '<tr><td><b>NIT:</b></td><td style="text-align: right;">'+nit+'</td></tr>' +
+                        '<tr><td><b>Nombre:</b></td><td style="text-align: right;">'+newText+'</td></tr>' +
+                        '<tr><td><b>Correo electrónico:</b></td><td style="text-align: right;">'+ema.toLowerCase()+'</td></tr>' +
+                        '<tr><td><b>Dirección:</b></td><td style="text-align: right;">'+dire+'</td></tr>' +
+                        '</table>',
+				{				
+					//title:'<table><tr><td width="10%"><i class="medium icon-green material-icons">check_circle</i></td><td style="vertical-align: middle; text-align:left;">Confirmar</td></tr></table>', // Modal title
+                                        title: '<p style="background-color:#012060; color:#ffffff; text-align: center;" >Consulta Datos en SAT</p>',
+					buttons:{
+						// Use by default close and confirm buttons
+						close:{
+							className:"red",
+							text:"cancelar"						
+						},
+						confirm:{
+							className:"indigo",
+							text:"Utilizar Datos",
+							modalClose:true,
+							callback:function(){
+                                                            
+                                                            if(opcion==1){
+                                                                if(tipo=="PF")
+                                                                {
+                                                                    getObject('nombreD').value = newText;
+                                                                    getObject('labelNombreD').setAttribute("class","active");
+                                                                    getObject('nombreD').disabled = false;
+
+                                                                    getObject('nitDF').value = nit;
+                                                                    getObject('labelNitDF').setAttribute("class","active");
+                                                                    getObject('nitDF').disabled = false;
+
+                                                                    getObject('correoElectronico').value = ema.toLowerCase();
+                                                                    getObject('labelCorreo').setAttribute("class","active");
+                                                                    getObject('correoElectronico').disabled = false;
+
+                                                                    getObject('domicilioUno').value = dire;
+                                                                    getObject('labelDomicilio').setAttribute("class","active");
+                                                                    getObject('domicilioUno').disabled = false;
+                                                                }else if(tipo=="PM")
+                                                                {
+                                                                    getObject('razonSocialD').value = newText;
+                                                                    getObject('labelRazonSocialD').setAttribute("class","active");
+                                                                    getObject('razonSocialD').disabled = false;
+
+                                                                    getObject('correoElectronico').value =ema.toLowerCase();
+                                                                    getObject('labelCorreo').setAttribute("class","active");
+                                                                    getObject('correoElectronico').disabled = false;
+
+                                                                    getObject('domicilioUno').value = dire;
+                                                                    getObject('labelDomicilio').setAttribute("class","active");
+                                                                    getObject('domicilioUno').disabled = false;
+                                                                }
+                                                            }
+                                                            else if (opcion==2){
+                                                                 if(tipo=="PF")
+                                                                {
+                                                                    getObject('nombreA').value = newText;
+                                                                    getObject('labelNombreA').setAttribute("class","active");
+                                                                    getObject('nombreA').disabled = false;
+
+                                                                    getObject('nitAF').value = nit;
+                                                                    getObject('labelNitAF').setAttribute("class","active");
+                                                                    getObject('nitAF').disabled = false;
+
+                                                                    getObject('correoElectronicoA').value = ema.toLowerCase();
+                                                                    getObject('labelCorreoA').setAttribute("class","active");
+                                                                    getObject('correoElectronicoA').disabled = false;
+
+                                                                    getObject('domicilioUnoA').value = dire;
+                                                                    getObject('labelDomicilioA').setAttribute("class","active");
+                                                                    getObject('domicilioUnoA').disabled = false;
+                                                                }else if(tipo=="PM")
+                                                                {
+                                                                    getObject('razonSocialA').value = newText;
+                                                                    getObject('labelRazonSocialA').setAttribute("class","active");
+                                                                    getObject('razonSocialA').disabled = false;
+
+                                                                    getObject('correoElectronicoA').value =ema.toLowerCase();
+                                                                    getObject('labelCorreoA').setAttribute("class","active");
+                                                                    getObject('correoElectronicoA').disabled = false;
+
+                                                                    getObject('domicilioUnoA').value = dire;
+                                                                    getObject('labelDomicilioA').setAttribute("class","active");
+                                                                    getObject('domicilioUnoA').disabled = false;
+                                                                }
+                                                            }
+							}
+						}
+					}
+				}
+			);
+              
+              
+            } catch (error) {
+              console.error("Error al analizar el JSON:", error);
+            }
+        }
+          }
+function buscaDocumentoDeudor() {   
+    
 	var tipo = getObject('tipoPersonaD').value;
 	var id = '';
+        console.log(tipo);
 	
 	if(tipo=='PM') {
 		id = getObject('nitD').value;
@@ -1759,6 +1962,7 @@ function buscaFolioElectronicoAltaAcreedorRepresentado() {
 }
 
 function resultadoBuscaDocumentoDeudor(mensaje){
+    
 	if (mensaje.codeError == 0) {// todo OK
 		var persona = JSON.parse(mensaje.message);
 		//alert(persona);
@@ -3414,6 +3618,7 @@ function mostrarDeudor() {
 	$('select').material_select();
 	Materialize.updateTextFields();
 	showObject('parteDeudorDTD', true);
+        ParteDwrAction.verificarbotonsat(botonsat);
 }
 
 function cambiaTipoD() {
@@ -3796,6 +4001,7 @@ function guardaParteOtorganteRenapo(elementID, idTramite, idPersona,
 }
 
 function showObject(idObject, display) {
+    
 	if (display == true) {
 		getObject(idObject).style.visibility = 'visible';
 		getObject(idObject).style.display = 'block';
@@ -3943,5 +4149,15 @@ function cambiaTipoPersonaAOld(esAutoridadStr) {
 		}
 		showObject('personaFisicaTRA', true);
 		showObject('personaMoralTRA', false);
-	}
+	}   
+}
+
+
+function botonsat(message){      
+    if (message.message == "true") {
+		showObject("buttonValidarInst",true);
+	}else{
+            	showObject("buttonValidarInst",false);
+        }
+    
 }

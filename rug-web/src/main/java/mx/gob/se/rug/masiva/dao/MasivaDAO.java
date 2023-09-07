@@ -1283,19 +1283,26 @@ public class MasivaDAO extends BaseRugDao {
 		ConexionBD bd = new ConexionBD();
 		Connection connection = bd.getConnection();
 	
-		String sql = "INSERT INTO RUG_CARGA_POOL (ID_ARCHIVO,ID_USUARIO,ID_ARCHIVO_FIRMA,ID_ARCHIVO_RESUMEN,ID_STATUS,ID_TIPO_TRAMITE,B_TIPO_PROCESO,STATUS_REG,FECHA_REG,ID_ACREEDOR) "+
-					"VALUES (?,?,0,0,8,?,?,'AC',sysdate,?)";
+                    String sql = "INSERT INTO RUG_CARGA_POOL (ID_ARCHIVO,ID_USUARIO,ID_ARCHIVO_FIRMA,ID_ARCHIVO_RESUMEN,ID_STATUS,ID_TIPO_TRAMITE,B_TIPO_PROCESO,STATUS_REG,FECHA_REG,ID_ACREEDOR) "+
+					"VALUES (?,?,null,null,8,?,?,'AC',sysdate,?)";
 		
 		try {
 			ps = connection.prepareStatement(sql);
 			
 			resetIndexData();
+                        System.out.println("masivaProcess.getIdArchivo(): "+masivaProcess.getIdArchivo());
 			//SET
 			setDataInPreparedStatemet(masivaProcess.getIdArchivo(),ps);
-
+                        System.out.println("masivaProcess.getIdUsuario(): "+masivaProcess.getIdUsuario());
 			setDataInPreparedStatemet(masivaProcess.getIdUsuario(),ps);
+                        
+                        System.out.println("masivaProcess.getIdTipoTramite(): "+masivaProcess.getIdTipoTramite());
 			setDataInPreparedStatemet(masivaProcess.getIdTipoTramite(),ps);
+                        
+                        System.out.println("masivaProcess.getbTipoProceso(): "+masivaProcess.getbTipoProceso());
 			setDataInPreparedStatemet(masivaProcess.getbTipoProceso(),ps);
+                        
+                        System.out.println("masivaProcess.getIdAcreedor(): "+masivaProcess.getIdAcreedor());
 			setDataInPreparedStatemet(masivaProcess.getIdAcreedor(),ps);
 			
 			//Ejecutamos 

@@ -35,6 +35,8 @@ import mx.gob.se.rug.to.TramiteRUGTO;
 import mx.gob.se.rug.util.MyLogger;
 import mx.gob.se.rug.util.to.DateUtilRug;
 import gt.gob.rgm.model.RugGarantiasBienesPend;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class GarantiasDAO extends BaseRugDao {
 	String cuentasRelacionadas;
@@ -252,14 +254,22 @@ public class GarantiasDAO extends BaseRugDao {
 		String sql = "{ ? = call FN_TIENE_SALDO_MASIVO(?,?,?,?)}";
 		CallableStatement cs = null;		
 		try {
+                    Date date = new Date();
+                        System.out.println("CALL ENTRA: "+date);
 			connection = bd.getConnection();
 			cs = connection.prepareCall(sql);
 			cs.registerOutParameter(1, Types.INTEGER);
+                        System.out.println("idUsuario: "+idUsuario);
 			cs.setString(2, idUsuario);
+                        System.out.println("idTipoTramite: "+idTipoTramite);
 			cs.setInt(3, idTipoTramite);
+                        System.out.println("idTramite: "+idTramite);
 			cs.setInt(4, idTramite);
+                        System.out.println("cantidad: "+cantidad);
 			cs.setInt(5, cantidad);
 			cs.execute();
+                        Date date1 = new Date();
+                        System.out.println("CALL sale: "+date1);
 			int valor = Integer.valueOf(cs.getInt(1));
 			if (valor == 1){
 				regresa = true;

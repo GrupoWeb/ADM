@@ -426,7 +426,7 @@ public class InscripcionDAO {
 	public Double getCostoByIdTipoTramiteMasivo(Integer pIdTramiteMasivo) {
 		Double regresa =  new Double (0);
 		String sql = "SELECT SUM(MAS.COSTO) COSTO FROM (" + 				
-				"    SELECT FN_PRECIO_REAL(ID_PERSONA,ID_TIPO_TRAMITE,ID_TRAMITE_TEMP,1) COSTO " + 
+				"    SELECT FN_PRECIO_REAL(ID_PERSONA,ID_TIPO_TRAMITE,ID_TRAMITE_TEMP,1,null) COSTO " + 
 				"    FROM TRAMITES_RUG_INCOMP " + 
 				"    WHERE ID_TRAMITE_TEMP IN " + 
 				"    (   SELECT ID_TRAMITE_TEMP " + 
@@ -439,6 +439,7 @@ public class InscripcionDAO {
 		ResultSet rs =null;
 		PreparedStatement ps = null;
 		try {
+                    System.out.println("pIdTramiteMasivo: "+pIdTramiteMasivo);
 			ps=connection.prepareStatement(sql);
 			ps.setInt(1, pIdTramiteMasivo);
 			rs = ps.executeQuery();

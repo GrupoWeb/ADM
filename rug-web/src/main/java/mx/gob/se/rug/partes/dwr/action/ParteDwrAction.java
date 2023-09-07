@@ -60,8 +60,45 @@ import mx.gob.se.rug.util.ExpresionesRegularesUtil;
 import mx.gob.se.rug.util.MyLogger;
 import mx.gob.se.rug.util.to.DateUtilRug;
 
-public class ParteDwrAction extends AbstractBaseDwrAction {
+import mx.gob.se.rug.inscripcion.dao.WSExternoDAO;
+import mx.gob.se.rug.inscripcion.to.WSExternoTO;
 
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.*;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+
+public class ParteDwrAction extends AbstractBaseDwrAction {
+        private RestTemplate restTemplate;
 	private AcreedoresService acreedoresService = new AcreedoresServiceImpl();
 	
 	private InscripcionService inscripcionService = new InscripcionServiceImpl();
@@ -308,7 +345,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		StringBuffer sb = new StringBuffer();
 		sb.append(" <table> ");
 		sb.append(" <tr> ");
-		sb.append(" <td> <b>ADVERTENCIA: En la base de datos del RUG no existe un Otorgante con los atributos que ha ingresado. AsegÃºrese de la veracidad y exactitud de dicha informaciÃ³n, ya que el sistema matricularÃ¡ al Otorgante con base en la informaciÃ³n ingresada por usted.</b> </td> ");
+		sb.append(" <td> <b>ADVERTENCIA: En la base de datos del RUG no existe un Otorgante con los atributos que ha ingresado. Asegúrese de la veracidad y exactitud de dicha información, ya que el sistema matriculará al Otorgante con base en la información ingresada por usted.</b> </td> ");
 		sb.append(" </tr> ");
 		sb.append(" <tr> ");
 		sb.append(" <td> Nombre: " + usuarioTO.getNombre() + " </td> ");
@@ -350,7 +387,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 							+ usuarioTO.getNombreCompleto()
 							+ "\" /> <script>  alert('El usuario "
 							+ usuarioTO.getNombreCompleto()
-							+ "  estÃ¡ habilitado como autoridad en el sistema por lo cual cuenta con todos los privilegios y no puede ser asignado a ningÃºn grupo '); </script> ");
+							+ "  está habilitado como autoridad en el sistema por lo cual cuenta con todos los privilegios y no puede ser asignado a ningún grupo '); </script> ");
 				} else {
 					MyLogger.Logger.log(Level.INFO, "Encontro el correo");
 					dwr.setMessage(" <script> "
@@ -533,6 +570,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 	
 	/*** bienes **/
 	public MessageDwr getParteBienes(String elementId, String idTramite) {
+            System.out.println("getParteBienes");
 		MessageDwr dwr = new MessageDwr();
 		MyLogger.Logger.log(Level.INFO, "getParteBienes idtramite" + idTramite);
 		try {
@@ -658,6 +696,8 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 
 	//Para Acreedores
 	public MessageDwr buscaPersonaByFolioElectronico(String folioElectronico, String tipoPersona){
+            System.out.println("folioElectronico: "+folioElectronico );
+            System.out.println("tipoPersona: "+tipoPersona );
 		MessageDwr messageDwr = new MessageDwr();
 		OtorganteTO otorganteTO = null;
 		AltaParteDAO apdao = new AltaParteDAO();
@@ -1229,7 +1269,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 									dwr.setCodeError(0);
 									dwr.setMessage(cadena);
 									muestraOtorgante = false;
-									cadena = " <script> alert('La CURP que ingresÃ³ corresponde al siguiente Folio Electronico : "
+									cadena = " <script> alert('La CURP que ingresó corresponde al siguiente Folio Electronico : "
 											+ otorganteTO.getFolioMercantil()
 											+ "'); document.getElementById('tipoPersona').value = 'PF'; cambiaTipoPersona(); "
 											+ " document.getElementById('nombre').value = '"
@@ -1371,7 +1411,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 									if (!igual) {
 										muestraOtorgante = false;
 										cadena = " <script languaje='javascript'> alert('RFC: "+ rfc
-												+ " ya fue registrado en el sistema y esta asociado al folio electrÃ³nico: "+ otorganteTO.getFolioMercantil()
+												+ " ya fue registrado en el sistema y esta asociado al folio electrónico: "+ otorganteTO.getFolioMercantil()
 												+ "'); </script> ";
 									}
 								} else {
@@ -1413,7 +1453,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 						}
 					}
 			} else {
-				cadena = " <script> alert('El Documento de IdentificaciÃ³n que ingreso fue incorrecto, Favor de llenar el formulario nuevamente.'); agregarNuevo(); </script> ";
+				cadena = " <script> alert('El Documento de Identificación que ingreso fue incorrecto, Favor de llenar el formulario nuevamente.'); agregarNuevo(); </script> ";
 			}
 			MyLogger.Logger.log(Level.WARNING,cadena);
 			System.out.println("===============la cadena "+cadena);
@@ -1565,7 +1605,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 									dwr.setCodeError(0);
 									dwr.setMessage(cadena);
 									muestraOtorgante = false;
-									cadena = " <script> alert('La CURP que ingresÃ³ corresponde al siguiente Folio Electronico : "
+									cadena = " <script> alert('La CURP que ingresó corresponde al siguiente Folio Electronico : "
 											+ otorganteTO.getFolioMercantil()
 											+ "'); document.getElementById('tipoPersona').value = 'PF'; cambiaTipoPersona(); "
 											+ " document.getElementById('nombre').value = '"
@@ -1588,7 +1628,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 								} else {
 									// otorgante es nulo
 									System.out.println("========================================= "+tipoPersona);
-									MyLogger.Logger.log(Level.INFO,"Â¡Â¡en OTORGANTE nulo !! "+ acreedorTO.getCurp());
+									MyLogger.Logger.log(Level.INFO,"¡¡en OTORGANTE nulo !! "+ acreedorTO.getCurp());
 
 									int longitud = acreedorTO.getNombre().length();
 									System.out.println("cantidad de caracteres antes de eliminar espacios" + longitud);
@@ -1609,7 +1649,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 									System.out.println("====================================== RFC : "+ acreedorTO.getRfc());
 									System.out.println(" nombre "+nombre+" apellidoP "+apellidoP +" apellidoM "+apellidoM);
 									cadena = "<script>"
-											+ "displayMessageNuevoAcreedorRepresentado(true,' ','ADVERTENCIA: En la base de datos del RUG no existe un Otorgante con los atributos que ha ingresado. AsegÃºrese de la veracidad y exactitud de dicha informaciÃ³n, ya que el sistema matricularÃ¡ al Otorgante con base en la informaciÃ³n ingresada por usted.','"
+											+ "displayMessageNuevoAcreedorRepresentado(true,' ','ADVERTENCIA: En la base de datos del RUG no existe un Otorgante con los atributos que ha ingresado. Asegúrese de la veracidad y exactitud de dicha información, ya que el sistema matriculará al Otorgante con base en la información ingresada por usted.','"
 											+ acreedorTO.getCurp()
 											+ "','"+ nombre
 											+ "','"+ apellidoP
@@ -1716,7 +1756,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 									if (!igual) {
 										muestraOtorgante = false;
 										cadena = " <script languaje='javascript'> alert('RFC: "+ rfc
-												+ " ya fue registrado en el sistema y esta asociado al folio electrÃ³nico: "+ otorganteTO.getFolioMercantil()
+												+ " ya fue registrado en el sistema y esta asociado al folio electrónico: "+ otorganteTO.getFolioMercantil()
 												+ "'); </script> ";
 									}
 								} else {
@@ -1749,11 +1789,11 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 											nacionalidad, razonSocial);
 							/************************************/
 							if (otorganteTO != null) {
-								cadena = " <script languaje='javascript'> alert('El nÃºmero de Identificador Fiscal en el paÃ­s "
+								cadena = " <script languaje='javascript'> alert('El número de Identificador Fiscal en el país "
 										+ otorganteTO.getDescNacionalidad()
 										+ " correpondiente a la sociedad "
 										+ razonSocial
-										+ " se encuentra asociado al folio electrÃ³nico: "
+										+ " se encuentra asociado al folio electrónico: "
 										+ otorganteTO.getFolioMercantil()
 										+ "'); </script> ";
 								
@@ -2040,7 +2080,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		try {
 			persona = consultaCurp.getDataFromCurp(curp);
 
-			cadena = " <script> displayMessageConfirmacionCurp(true,' ','Favor de confirmar informaciÃ³n.','"
+			cadena = " <script> displayMessageConfirmacionCurp(true,' ','Favor de confirmar información.','"
 					+ curp
 					+ "','"
 					+ persona.getNombre()
@@ -2743,7 +2783,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 					+ "\" name=\"rfcOtFolMoral\" id=\"rfcOtFolMoral\" onkeyup=\"this.value = this.value.toUpperCase()\" maxlength=\"16\" >");
 			sb.append(" <span class=\"hint\"> <div class=\"cerrar\">" +
 					" <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> " +
-					"NÃºmero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+					"Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 			sb.append("	</dd>");
 			sb.append("	</dl>");
 			sb.append("					</td>");
@@ -2812,7 +2852,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 						+ "\" name=\"rfcOtFolMoral\" id=\"rfcOtFolMoral\" onkeyup=\"this.value = this.value.toUpperCase()\" maxlength=\"16\" >");
 				sb.append(" <span class=\"hint\"> <div class=\"cerrar\">" +
 						" <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> " +
-						"NÃºmero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+						"Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 				sb.append("	</dd>");
 				sb.append("	</dl>");
 				sb.append("					</td>");
@@ -3041,7 +3081,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 
 		sb.append("			<tr><td colspan=\"2\" class=\"tituloHeader2\" align=\"left\">");
 
-		sb.append("             <span id=\"anotacionFolioElectronico\" class=\"ayuda\">Folio ElectrÃ³nico : </span></td>");
+		sb.append("             <span id=\"anotacionFolioElectronico\" class=\"ayuda\">Folio Electrónico : </span></td>");
 
 		sb.append("			</tr>");
 
@@ -3056,7 +3096,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 										<input type=\"text\" value=\""
 				+ notNull(altaParteTO.getFolioMercantil())
 				+ "\" name=\"folioElectronico\" id=\"folioElectronico\" maxlength=\"100\" size=\"50\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El Folio ElectrÃ³nico es el expediente electrÃ³nico de un Otorgante en el que se contienen los asientos relativos a GarantÃ­as Mobiliarias, asÃ­ como los actos jurÃ­dicos por los que se constituya un privilegio especial o derecho de retenciÃ³n sobre bienes muebles a favor de terceros, incluyendo las anotaciones.  Art. 21 fr. XX y 30 bis 1 RRPC. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El Folio Electrónico es el expediente electrónico de un Otorgante en el que se contienen los asientos relativos a Garantías Mobiliarias, así como los actos jurídicos por los que se constituya un privilegio especial o derecho de retención sobre bienes muebles a favor de terceros, incluyendo las anotaciones.  Art. 21 fr. XX y 30 bis 1 RRPC. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 
@@ -3074,7 +3114,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("			<td style=\"padding-left:32px;\" class=\"textoEjemplo\">Ejemplo&nbsp;</td><td>");
 		sb.append("				<table>");
 		sb.append("					<tr>");
-		sb.append("						<td class=\"textoGris\"  align=\"justify\">a) Otorgante Persona FÃ­sica:  \"R20101026B040\"</td>");
+		sb.append("						<td class=\"textoGris\"  align=\"justify\">a) Otorgante Persona Física:  \"R20101026B040\"</td>");
 		sb.append("					</tr>");
 		sb.append("					<tr>");
 		sb.append("						<td class=\"textoGris\" align=\"justify\">b) Otorgante Persona Moral:  \"34011*7\"I</td>");
@@ -3130,7 +3170,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append(" <table style=\"visibility: visible; display: block\">");
 		sb.append("			<tr id=\"tbejrfctit\">");
 		sb.append("				<td style=\"padding-left: 20px;\" colspan=\"2\" class=\"tituloHeader2\" align=\"left\">" );
-		sb.append("					* Documento de IdentificaciÃ³n :");
+		sb.append("					* Documento de Identificación :");
 		sb.append("				</td>");
 		sb.append("			</tr>");
 		sb.append("			<tr>");
@@ -3140,7 +3180,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		
 		sb.append("	 <input type=\"text\" maxlength=\"14\" value=\"" + notNull(altaParteTO.getRfc())
 				+ "\" name=\"rfc\" id=\"rfc\" onkeyup=\"this.value = this.value.toUpperCase()\" maxlength=\"16\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> NÃºmero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -3183,7 +3223,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		
 		sb.append("	 <input type=\"text\" maxlength=\"14\" value=\"" + notNull(altaParteTO.getExtencion())
 				+ "\" name=\"extendidoEn\" id=\"extendidoEn\" onkeyup=\"this.value = this.value.toUpperCase()\" maxlength=\"16\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> N�mero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -3203,7 +3243,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		
 		sb.append("	 <input type=\"text\" maxlength=\"14\" value=\"" + notNull(altaParteTO.getPoblacion())
 				+ "\" name=\"departamento\" id=\"departamento\" onkeyup=\"this.value = this.value.toUpperCase()\" maxlength=\"16\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> N�mero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -3242,7 +3282,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	<dd style=\"width: 120px\">");
 		sb.append("	 <input type=\"text\" maxlength=\"14\" value=\"" + notNull(altaParteTO.getRfc())
 				+ "\" name=\"rfcD\" id=\"rfcD\" onkeyup=\"this.value = this.value.toUpperCase()\" maxlength=\"16\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> NÃºmero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -3288,7 +3328,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"row\">");
 		sb.append("<div class=\"input-field col s4\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getCurp()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"rfcO\" id=\"rfcO\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"rfcO\" id=\"rfcO\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelRfcO\" for=\"rfcO\">Documento de Identificaci&oacute;n</label>");
 		sb.append("</div>");
 		sb.append("<div class=\"col s4\" id=\"buttonValidar\">");
@@ -3296,7 +3336,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("</div>");
 		sb.append("<div class=\"input-field col s4\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getRfc()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"nitOF\" id=\"nitOF\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"nitOF\" id=\"nitOF\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelNitOF\" for=\"nitOF\">NIT</label>");
 		sb.append("</div>");		
 		sb.append("</div>");
@@ -3746,9 +3786,10 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 			
 			sb.append("</tr>");
 		}
-
+                   
 		sb.append("</tbody>");
 		sb.append("</table>");
+                sb.append("<strong><h5 style='text-align: center;' >Si desea modificar un deudor, se recomienda que lo elimine y lo ingrese nuevamente.</h5><strong>");
 
 		return sb;
 	}
@@ -3765,17 +3806,20 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("</div>");
 
 		sb.append("<div class=\"row\">");
-		sb.append("<div class=\"input-field col s4\">");
+		sb.append("<div class=\"input-field col s3\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getCurp()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"rfcD\" id=\"rfcD\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"rfcD\" id=\"rfcD\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelRfcD\" for=\"rfcD\">Documento de Identificaci&oacute;n</label>");
 		sb.append("</div>");
-		sb.append("<div class=\"col s4\" id=\"buttonValidar\">");
+		sb.append("<div class=\"col s3\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
-		sb.append("<div class=\"input-field col s4\">");
+                sb.append("<div class=\"col s3\" id=\"buttonValidarInst\" >");
+		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(1)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
+		sb.append("</div>");
+		sb.append("<div class=\"input-field col s3\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getRfc()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"nitDF\" id=\"nitDF\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco ni gui�n\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"nitDF\" id=\"nitDF\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco ni gui?n\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelNitDF\" for=\"nitDF\">NIT</label>");
 		sb.append("</div>");
 		sb.append("</div>");
@@ -3819,12 +3863,16 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"row\">");
 		sb.append("<div class=\"input-field col s6\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getRfc()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"nitD\" id=\"nitD\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco ni gui�n\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"nitD\" id=\"nitD\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco ni gui?n\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelNitD\" for=\"nitD\">NIT</label>");
 		sb.append("</div>");		
-		sb.append("<div class=\"col s6\" id=\"buttonValidar\">");
+		sb.append("<div class=\"col s2\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
+                sb.append("<div class=\"col s4\" id=\"buttonValidarInst\" >");
+		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(1)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
+		sb.append("</div>");
+                
 		sb.append("</div>");
 		
 		sb.append("<div class=\"row\">");
@@ -4002,7 +4050,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append(" <table style=\"visibility: visible; display: block\">");
 		sb.append("			<tr>");
 		sb.append("				<td style=\"padding-left: 20px;\" colspan=\"2\" class=\"tituloHeader2\" align=\"left\"><span");
-		sb.append("					id=\"anotacionNif\" class=\"ayudaNIF\" >NÃºmero de IdentificaciÃ³n Fiscal en el paÃ­s de origen :</span>");
+		sb.append("					id=\"anotacionNif\" class=\"ayudaNIF\" >Número de Identificación Fiscal en el país de origen :</span>");
 		sb.append("				</td>");
 		sb.append("			</tr>");
 
@@ -4530,6 +4578,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 
 		sb.append("</tbody>");
 		sb.append("</table></div>");
+                sb.append("<strong><h5 style='text-align: center;' >Si desea modificar un deudor, se recomienda que lo elimine y lo ingrese nuevamente.</h5><strong>");
 		return sb;
 	}
 
@@ -4699,7 +4748,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		listaPersona.add(persona);
 		persona = new TipoPersona();
 		persona.setId("PM");
-		persona.setDesc("Persona JurÃ­dica");
+		persona.setDesc("Persona Jurídica");
 		listaPersona.add(persona);
 		NacionalidadDAO dao = new NacionalidadDAO();
 		List<NacionalidadTO> listaNacionalidades = dao.getNacionalidades();
@@ -4718,13 +4767,13 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("		");
 		sb.append("	</td>");
 		sb.append("<td align=\"justify\" class=\"contenidoNotaDwr\">"
-				+ "La persona o personas en cuyo favor el deudor garante o por la ley constituye una garantÃ­a mobiliaria, con o sin posesiÃ³n, ya sea en el beneficio propio o de un tercero."
+				+ "La persona o personas en cuyo favor el deudor garante o por la ley constituye una garantía mobiliaria, con o sin posesión, ya sea en el beneficio propio o de un tercero."
 				+ "</td>");
 		sb.append("		</tr>");
 		sb.append("</table>");
 		/** esto no aplica
 		sb.append(" <tr> <td class=\"tituloDomicilio\" >");
-		sb.append("<input  type=\"checkbox\"  name=\"acreedorInscribe\" id=\"acreedorInscribe\" onclick=\"cambiaInscribe()\"> Seleccione en el caso del Arrendamiento Financiero ya que Ã©ste se debe inscribir tambiÃ©n en el folio electrÃ³nico del arrendador");
+		sb.append("<input  type=\"checkbox\"  name=\"acreedorInscribe\" id=\"acreedorInscribe\" onclick=\"cambiaInscribe()\"> Seleccione en el caso del Arrendamiento Financiero ya que éste se debe inscribir también en el folio electrónico del arrendador");
 		sb.append("</td> </tr>");
 		**/
 		sb.append(" </td></tr>");
@@ -4752,13 +4801,13 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		
 		// numero pais origen miguel
 		sb.append(" <tr> <td  id=\"trtdoptogantefisicoAcreedores\"  style= \"padding-left: 39px;\" \"visibility: hidden; display: none\" >");
-		sb.append("<input  type=\"checkbox\"  name=\"optotorganteAC\" id=\"optotorganteAC\" onclick=\"cambiaFolioElectronicoAcreedor()\"> El Acreedor cuenta con Folio ElectrÃ³nico en el RUG <span id=\"anotacionFolioElectronico\" class=\"ayuda\"> </span>");
+		sb.append("<input  type=\"checkbox\"  name=\"optotorganteAC\" id=\"optotorganteAC\" onclick=\"cambiaFolioElectronicoAcreedor()\"> El Acreedor cuenta con Folio Electrónico en el RUG <span id=\"anotacionFolioElectronico\" class=\"ayuda\"> </span>");
 		sb.append("</td> </tr>");
 		
 		sb.append("<tr id=\"folioIDExtAC\" style=\"visibility: hidden; display: none\"><td> ");
 		sb.append("<table> ");
 		sb.append("<tr><td style=\"padding-left: 16px;\" class=\"tituloHeader2\"> ");
-		sb.append(" Introduzca el Folio ElectrÃ³nico :");
+		sb.append(" Introduzca el Folio Electrónico :");
 		sb.append("</td></tr>");
 		sb.append(" <tr> <td style=\"padding-left: 35px;\"> ");
 		sb.append(" <input type=\"text\" name=\"folioExistenteAC\" id=\"folioExistenteAC\" onkeydown=\"desactivaBoton()\"/>");
@@ -4768,7 +4817,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("			<td style=\"padding-left: 34px;\" class=\"textoEjemplo\">Ejemplo&nbsp;</td><td>");
 		sb.append("				<table>");
 		sb.append("					<tr>");
-		sb.append("						<td class=\"textoGris\"  align=\"justify\">a) Persona FÃ­sica:  \"R20101026B040\"</td>");
+		sb.append("						<td class=\"textoGris\"  align=\"justify\">a) Persona Física:  \"R20101026B040\"</td>");
 		sb.append("					</tr>");
 		sb.append("					<tr>");
 		sb.append("						<td class=\"textoGris\" align=\"justify\">b) Persona Moral:  \"34011*7\"</td>");
@@ -5035,7 +5084,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append(" <table style=\"visibility: visible; display: block\">");
 		sb.append("			<tr>");
 		sb.append("				<td style=\"padding-left: 20px;\" colspan=\"2\" class=\"tituloHeader2\" align=\"left\"><span");
-		sb.append("					id=\"anotacionNif\" class=\"ayudaNIF\" >NÃºmero de IdentificaciÃ³n Fiscal en el paÃ­s de origen :</span>");
+		sb.append("					id=\"anotacionNif\" class=\"ayudaNIF\" >Número de Identificación Fiscal en el país de origen :</span>");
 		sb.append("				</td>");
 		sb.append("			</tr>");
 
@@ -5078,7 +5127,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 
 		sb.append("			<tr><td colspan=\"2\" class=\"tituloHeader2\" align=\"left\">");
 
-		sb.append("             <span id=\"anotacionFolioElectronico\" class=\"ayuda\">Folio ElectrÃ³nico : </span></td>");
+		sb.append("             <span id=\"anotacionFolioElectronico\" class=\"ayuda\">Folio Electrónico : </span></td>");
 
 		sb.append("			</tr>");
 
@@ -5093,7 +5142,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 										<input type=\"text\" value=\""
 				+ notNull(altaParteTO.getFolioMercantil())
 				+ "\" name=\"folioElectronico\" id=\"folioElectronico\" maxlength=\"100\" size=\"50\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El Folio ElectrÃ³nico es el expediente electrÃ³nico de un Otorgante en el que se contienen los asientos relativos a GarantÃ­as Mobiliarias, asÃ­ como los actos jurÃ­dicos por los que se constituya un privilegio especial o derecho de retenciÃ³n sobre bienes muebles a favor de terceros, incluyendo las anotaciones.  Art. 21 fr. XX y 30 bis 1 RRPC. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El Folio Electrónico es el expediente electrónico de un Otorgante en el que se contienen los asientos relativos a Garantías Mobiliarias, así como los actos jurídicos por los que se constituya un privilegio especial o derecho de retención sobre bienes muebles a favor de terceros, incluyendo las anotaciones.  Art. 21 fr. XX y 30 bis 1 RRPC. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 
@@ -5114,7 +5163,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("						<td class=\"textoGris\"  align=\"justify\">a) Persona Individual:  \"R20101026B040\"</td>");
 		sb.append("					</tr>");
 		sb.append("					<tr>");
-		sb.append("						<td class=\"textoGris\" align=\"justify\">b) Persona JurÃ­dica:  \"34011*7\"I</td>");
+		sb.append("						<td class=\"textoGris\" align=\"justify\">b) Persona Jurídica:  \"34011*7\"I</td>");
 		sb.append("					</tr>");
 		sb.append("				</table>");
 		sb.append("			</td> ");
@@ -5424,9 +5473,9 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("			<tr>");
 		sb.append("				<td style=\"padding-left: 16px;\" colspan=\"2\"  class=\"tituloHeader2\" align=\"left\"><span");
 		if (esAutoridad) {
-			sb.append("			id=\"anotacionRfc\"  class=\"ayudaRFC3\"	> Documento de IdentificaciÃ³n :</span>");
+			sb.append("			id=\"anotacionRfc\"  class=\"ayudaRFC3\"	> Documento de Identificación :</span>");
 		} else {
-			sb.append("			id=\"anotacionRfc\"  class=\"ayudaRFC3\"	> * Documento de IdentificaciÃ³n :</span>");
+			sb.append("			id=\"anotacionRfc\"  class=\"ayudaRFC3\"	> * Documento de Identificación :</span>");
 		}
 
 		sb.append("				</td>");
@@ -5438,7 +5487,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 <input type=\"text\" value=\""	+ notNull(altaParteTO.getRfc())
 				+ "\" name=\"rfcA\" maxlength=\"14\" size=\"16\" id=\"rfcA\" onkeyup=\"this.value = this.value.toUpperCase()\" style=\"visibility:visible;\">");
 		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> " +
-				"</div> <div class=\"contenido\"> NÃºmero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+				"</div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -5479,7 +5528,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 <input type=\"text\" value=\""	+ notNull(altaParteTO.getExtencion())
 				+ "\" name=\"extencionA\" maxlength=\"14\" size=\"16\" id=\"extencionA\" onkeyup=\"this.value = this.value.toUpperCase()\" style=\"visibility:visible;\">");
 		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> " +
-				"</div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+				"</div> <div class=\"contenido\"> N�mero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -5499,7 +5548,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 <input type=\"text\" value=\""	+ notNull(altaParteTO.getEdad())
 				+ "\" name=\"edadA\" maxlength=\"14\" size=\"16\" id=\"edadA\" onkeyup=\"this.value = this.value.toUpperCase()\" style=\"visibility:visible;\">");
 		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> " +
-				"</div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+				"</div> <div class=\"contenido\"> N�mero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -5519,7 +5568,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 <input type=\"text\" value=\""	+ notNull(altaParteTO.getEstadoCivil())
 				+ "\" name=\"estadoCivilA\" maxlength=\"14\" size=\"16\" id=\"estadoCivilA\" onkeyup=\"this.value = this.value.toUpperCase()\" style=\"visibility:visible;\">");
 		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> " +
-				"</div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+				"</div> <div class=\"contenido\"> N�mero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -5529,7 +5578,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<table>");
 		sb.append("			<tr>");
 		sb.append("				<td style=\"padding-left: 16px;\" colspan=\"2\"  class=\"tituloHeader2\" align=\"left\"><span");
-		sb.append("			id=\"profesion\"  class=\"ayudaRFC3\"	> * Profesión u Oficio :</span>");
+		sb.append("			id=\"profesion\"  class=\"ayudaRFC3\"	> * Profesi�n u Oficio :</span>");
 		sb.append("				</td>");
 		sb.append("			</tr>");
 		sb.append("			<tr>");
@@ -5539,7 +5588,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("	 <input type=\"text\" value=\""	+ notNull(altaParteTO.getProfesion())
 				+ "\" name=\"profesionA\" maxlength=\"14\" size=\"16\" id=\"profesionA\" onkeyup=\"this.value = this.value.toUpperCase()\" style=\"visibility:visible;\">");
 		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> " +
-				"</div> <div class=\"contenido\"> Número de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+				"</div> <div class=\"contenido\"> N�mero de registro asignado por el Registro Federal de Contribuyentes. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("					</td>");
@@ -5562,17 +5611,20 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("</div>");
 		
 		sb.append("<div class=\"row\">");
-		sb.append("<div class=\"input-field col s4\">");
+		sb.append("<div class=\"input-field col s3\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getCurp()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"rfcA\" id=\"rfcA\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"rfcA\" id=\"rfcA\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelRfcA\" for=\"rfcA\">Documento de Identificaci&oacute;n</label>");
 		sb.append("</div>");
-		sb.append("<div class=\"col s4\" id=\"buttonValidar\">");
+		sb.append("<div class=\"col s3\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoAcreedor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
-		sb.append("<div class=\"input-field col s4\">");
+                 sb.append("<div class=\"col s3\" id=\"buttonValidarInst\" >");
+		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(2)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
+		sb.append("</div>");
+		sb.append("<div class=\"input-field col s3\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getRfc()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"nitAF\" id=\"nitAF\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" required=\"true\" maxlength=\"30\" name=\"nitAF\" id=\"nitAF\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelNitAF\" for=\"nitAF\">NIT</label>");
 		sb.append("</div>");		
 		sb.append("</div>");
@@ -5664,11 +5716,14 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"row\">");
 		sb.append("<div class=\"input-field col s6\">");
 		sb.append("<input value=\"" + notNull(altaParteTO.getRfc()) 
-				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"nitA\" id=\"nitA\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n�mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
+				+ "\" type=\"text\" maxlength=\"40\" class=\"validate tooltipped\" maxlength=\"30\" required=\"true\" name=\"nitA\" id=\"nitA\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"Ingrese su n?mero sin espacios en blanco\" onkeypress=\"return aceptaalfa(event);\">");
 		sb.append("<label id=\"labelNitA\" for=\"nitA\">NIT</label>");
 		sb.append("</div>");		
-		sb.append("<div class=\"col s6\" id=\"buttonValidar\">");
+		sb.append("<div class=\"col s2\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoAcreedor()\" class=\"btn waves-effect indigo\">Buscar</button>");
+		sb.append("</div>");
+                 sb.append("<div class=\"col s4\" id=\"buttonValidarInst\" >");
+		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(2)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
 		sb.append("</div>");
 		sb.append("</div>");
 		
@@ -5755,12 +5810,12 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<input value=\""
 				+ notNull(altaParteTO.getCalle())
 				+ "\" type=\"text\" name=\"calle\" id=\"calle\" maxlength=\"50\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El domicilio para efectos del RUG es aquel que los acreedores seÃ±alen para efecto de ser contactados. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El domicilio para efectos del RUG es aquel que los acreedores señalen para efecto de ser contactados. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("</td> </tr> </table> </td> </tr>");
 		sb.append("<tr><td style=\"padding-left: 10px;\" colspan=\"2\" class=\"texto_general\" align=\"left\">");
-		sb.append("<span class=\"textoGeneralRojo\">NÃºmero Exterior :</span></td> </tr>");
+		sb.append("<span class=\"textoGeneralRojo\">Número Exterior :</span></td> </tr>");
 		sb.append("<tr> "
 				+ "		<td>"
 				+ "			<table>"
@@ -5771,7 +5826,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 				+ notNull(altaParteTO.getNumeroExterior())
 				+ "\" type=\"text\" maxlength=\"20\" name=\"numExterior\" id=\"numExterior\"></td> </tr> </table> </td> </tr>");
 		sb.append("<tr> <td style=\"padding-left: 10px;\" colspan=\"2\" class=\"texto_general\" align=\"left\">");
-		sb.append("<span class=\"textoGeneralRojo\">NÃºmero Interior :</span></td> </tr>");
+		sb.append("<span class=\"textoGeneralRojo\">Número Interior :</span></td> </tr>");
 		sb.append("<tr> <td style=\"padding-left: 29px;\" class=\"texto_general\">");
 		sb.append("<input value=\""
 				+ notNull(altaParteTO.getNumeroInterior())
@@ -6191,7 +6246,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 						} else {
 							// otorgante es nulo
 							// MyLogger.Logger.log(Level.INFO,
-							// "Â¡Â¡en OTORGANTE nulo !! "+
+							// "¡¡en OTORGANTE nulo !! "+
 							// altaParteTO.getCurp());
 
 							RenapoConsultaCurp consultaCurp = new RenapoConsultaCurp();
@@ -6285,7 +6340,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 
 	}// fin metodo otorgante nuevo
 	
-	//mÃ©todo que valida tipo de garantia derivada de un arrendamiento financiero folios acreedores
+	//método que valida tipo de garantia derivada de un arrendamiento financiero folios acreedores
 
 	public MessageDwr verificarFolios(int idInscripcion){
 		
@@ -6321,12 +6376,12 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<input value=\""
 				+ notNull(altaParteTO.getCalle())
 				+ "\" type=\"text\" name=\"calle\" id=\"calle\" maxlength=\"50\" >");
-		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El domicilio para efectos del RUG es aquel que los acreedores seÃ±alen para efecto de ser contactados. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
+		sb.append(" <span class=\"hint\"> <div class=\"cerrar\"> <a onclick=\"this.parentNode.getElementsByTagName('span')[0].style.display = 'none';\" style=\"cursor: pointer;\">x</a> </div> <div class=\"contenido\"> El domicilio para efectos del RUG es aquel que los acreedores señalen para efecto de ser contactados. </div><span class=\"hint-pointer\">&nbsp;</span></span>");
 		sb.append("	</dd>");
 		sb.append("	</dl>");
 		sb.append("</td> </tr> </table> </td> </tr>");
 		sb.append("<tr><td style=\"padding-left: 10px;\" colspan=\"2\" class=\"texto_general\" align=\"left\">");
-		sb.append("<span class=\"textoGeneralRojo\">NÃºmero Exterior :</span></td> </tr>");
+		sb.append("<span class=\"textoGeneralRojo\">Número Exterior :</span></td> </tr>");
 		sb.append("<tr> "
 				+ "		<td>"
 				+ "			<table>"
@@ -6337,7 +6392,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 				+ notNull(altaParteTO.getNumeroExterior())
 				+ "\" type=\"text\" maxlength=\"20\" name=\"numExterior\" id=\"numExterior\"></td> </tr> </table> </td> </tr>");
 		sb.append("<tr> <td style=\"padding-left: 10px;\" colspan=\"2\" class=\"texto_general\" align=\"left\">");
-		sb.append("<span class=\"textoGeneralRojo\">NÃºmero Interior :</span></td> </tr>");
+		sb.append("<span class=\"textoGeneralRojo\">Número Interior :</span></td> </tr>");
 		sb.append("<tr> <td style=\"padding-left: 29px;\" class=\"texto_general\">");
 		sb.append("<input value=\""
 				+ notNull(altaParteTO.getNumeroInterior())
@@ -6361,5 +6416,421 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		}
 		return strAcreedor;
 	}
-	
+        
+   public String buscaPersonaByFolioElectronicoInst(String folioElectronico, String tipoPersona){
+       Persona persona1 = new Persona();
+        persona1.setNit("45389829");
+        persona1.setNombre("ESPA�A,Y ESPA�A,,CARLOS,MAURICIO");
+        persona1.setTo("0");
+        persona1.setCn("1");
+        persona1.setCed("S-20 76001");
+        persona1.setPas(" ");
+        persona1.setFn("25051983");
+        persona1.setSexo("M");
+        persona1.setDir("SECTOR 9 MANZANA H");
+        persona1.setNc("0-58");
+        persona1.setApa("58");
+        persona1.setZon("7");
+        persona1.setCol("COLONIA PRADOS DE VILLA HERMOSA, SAN MIGUEL PETAPA");
+        persona1.setCd("1");
+        persona1.setCm("17");
+        persona1.setTel("42128220");
+        persona1.setFax(" ");
+        persona1.setCp("01066");
+        persona1.setEma("mauricio.espana.3@gmail.com");
+        persona1.setFirmp(" ");
+        persona1.setFirmd(" ");
+        persona1.setFirtu(null);
+        persona1.setResponse(null);
+
+        Persona persona2 = new Persona();
+        persona2.setNit("7301073");
+        persona2.setNombre("MEJ�A,CUELLAR,,H�CTOR,RAMIRO");
+        persona2.setTo("0");
+        persona2.setCn("1");
+        persona2.setCed("F-6 15110");
+        persona2.setPas(" ");
+        persona2.setFn("13091973");
+        persona2.setSexo("M");
+        persona2.setDir("14 CALLE A");
+        persona2.setNc("32-86");
+        persona2.setApa("30");
+        persona2.setZon("21");
+        persona2.setCol("COLONIA JUSTO RUFINO BARRIOS");
+        persona2.setCd("1");
+        persona2.setCm("1");
+        persona2.setTel("24498821");
+        persona2.setFax(" ");
+        persona2.setCp("01000");
+        persona2.setEma("hectormejiacuellar@gmail.com");
+        persona2.setFirmp(" ");
+        persona2.setFirmd(" ");
+        persona2.setFirtu(null);
+        persona2.setResponse(null);
+
+        Persona persona3 = new Persona();
+        persona3.setNit("26295660");
+        persona3.setNombre("MENDEZ,PAZ,,EDDY,ORLANDO");
+        persona3.setTo("0");
+        persona3.setCn("1");
+        persona3.setCed("A-1 937738");
+        persona3.setPas(" ");
+        persona3.setFn("03061976");
+        persona3.setSexo("M");
+        persona3.setDir("2 AVENIDA");
+        persona3.setNc("36-61");
+        persona3.setApa(" ");
+        persona3.setZon("12");
+        persona3.setCol("COLONIA EL CARMEN");
+        persona3.setCd("1");
+        persona3.setCm("1");
+        persona3.setTel("24766471");
+        persona3.setFax(" ");
+        persona3.setCp("1000");
+        persona3.setEma("MENDEZ.EDDY@GMAIL.COM");
+        persona3.setFirmp(" ");
+        persona3.setFirmd(" ");
+        persona3.setFirtu(null);
+        persona3.setResponse(null);
+
+        Persona persona4 = new Persona();
+        persona4.setNit("26284138");
+        persona4.setNombre("LOBOS,BARRERA,M�NDEZ,EVELYN,YESENIA");
+        persona4.setTo("0");
+        persona4.setCn("1");
+        persona4.setCed("A-1 907607");
+        persona4.setPas(" ");
+        persona4.setFn("12051975");
+        persona4.setSexo("F");
+        persona4.setDir("2 AVENIDA");
+        persona4.setNc("36-61");
+        persona4.setApa(" ");
+        persona4.setZon("12");
+        persona4.setCol("COLONIA EL CARMEN");
+        persona4.setCd("1");
+        persona4.setCm("1");
+        persona4.setTel("24766471");
+        persona4.setFax(" ");
+        persona4.setCp("1000");
+        persona4.setEma("EVELYNLOBOS12@YAHOO.COM.MX");
+        persona4.setFirmp(" ");
+        persona4.setFirmd(" ");
+        persona4.setFirtu(null);
+        persona4.setResponse(null);
+
+        // Crear un registro de personas y agregar las instancias de personas
+        RegistroPersonas registro = new RegistroPersonas();
+        registro.agregarPersona(persona1);
+        registro.agregarPersona(persona2);
+        registro.agregarPersona(persona3);
+        registro.agregarPersona(persona4);
+        
+        // Buscar persona por NIT
+        List<Persona> personas = registro.getPersonas();
+        String nitBuscado = folioElectronico;
+        JSONObject jsonPersona = new JSONObject();
+        boolean personaEncontrada = false;
+       for (Persona persona : personas) {
+        if (persona.getNit().equals(nitBuscado)) {
+             personaEncontrada = true;
+        System.out.println("Persona encontrada:");
+        System.out.println("NIT: " + persona.getNit());
+        System.out.println("Nombre: " + persona.getNombre());
+        // Imprimir otros campos de la persona encontrada
+
+        // Crear un objeto JSON con los datos encontrados
+        
+        jsonPersona.put("nit", persona.getNit());
+        jsonPersona.put("nombre", persona.getNombre());
+        jsonPersona.put("to", persona.getTo());
+        jsonPersona.put("cn", persona.getCn());
+        jsonPersona.put("ced", persona.getCed());
+        jsonPersona.put("pas", persona.getPas());
+        jsonPersona.put("fn", persona.getFn());
+        jsonPersona.put("sexo", persona.getSexo());
+        jsonPersona.put("dir", persona.getDir());
+        jsonPersona.put("nc", persona.getNc());
+        jsonPersona.put("apa", persona.getApa());
+        jsonPersona.put("zon", persona.getZon());
+        jsonPersona.put("col", persona.getCol());
+        jsonPersona.put("cd", persona.getCd());
+        jsonPersona.put("cm", persona.getCm());
+        jsonPersona.put("tel", persona.getTel());
+        jsonPersona.put("fax", persona.getFax());
+        jsonPersona.put("cp", persona.getCp());
+        jsonPersona.put("ema", persona.getEma());
+        jsonPersona.put("firmp", persona.getFirmp());
+        jsonPersona.put("firmd", persona.getFirmd());
+        jsonPersona.put("firtu", persona.getFirtu());
+        jsonPersona.put("response", persona.getResponse());
+
+        // Imprimir el objeto JSON
+        System.out.println("Datos encontrados en formato JSON:");
+        System.out.println(jsonPersona.toString());
+
+        break; // Detener el bucle una vez que se encuentra la persona
+    }
 }
+       if (!personaEncontrada) {
+            return "Datos no encontrados.";
+        }
+          /*  WSExternoDAO dao = new WSExternoDAO();
+            List<WSExternoTO> parametros = dao.getWebService();
+            String CnxSAT_login = "";
+            String CnxSAT_consulta_nit = "";
+            String CnxSAT_usuario = "";
+            String CnxSAT_password = "";
+                    
+            String respuesta="false";
+            for (WSExternoTO parametro : parametros) 
+            {
+                String cveParametro = parametro.getCVE_PARAMETRO();
+                String valorParametro = parametro.getVALOR_PARAMETRO();                
+                if(cveParametro.equals("CnxSAT_login")){                    
+                    CnxSAT_login = valorParametro;
+                }
+                if(cveParametro.equals("CnxSAT_consulta_nit")){                    
+                    CnxSAT_consulta_nit = valorParametro;
+                }
+                if(cveParametro.equals("CnxSAT_usuario")){                    
+                    CnxSAT_usuario = valorParametro;
+                }
+                if(cveParametro.equals("CnxSAT_password")){                    
+                    CnxSAT_password = valorParametro;
+                }                
+            }
+            StringBuffer responses = new StringBuffer();
+            MessageDwr messageDwr = new MessageDwr();   
+            String apiUrl = CnxSAT_login;
+            String username = CnxSAT_usuario;
+            String password = CnxSAT_password;
+            X509Certificate trustedCertificate = null;
+            
+            // Solo para pruebas, NO usar en producci�n se valida si hay certificado
+            TrustManager[] trustAllCertificates = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        
+                    return null;
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    }
+                }
+            };
+
+            // Instalar el TrustManager que no valida certificados
+            try {
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+                SSLContext.setDefault(sslContext);
+            } catch (Exception e) {
+                 System.out.println(e.getStackTrace());
+            }
+            
+            
+            
+            try {
+                    URL url = new URL(apiUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setDoOutput(true);
+
+                    String requestBody = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
+
+                    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                            wr.writeBytes(requestBody);
+                            wr.flush();
+                    
+
+                    int responseCode = connection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                                    String inputLine;
+                                    StringBuffer response = new StringBuffer();
+
+                                    while ((inputLine = in.readLine()) != null) {
+                                            response.append(inputLine);
+                                    }
+                                    String otro = null;
+                                    StringBuffer sb = new StringBuffer();
+                                    System.out.println("Response: " + response.toString());
+                                    String jsonResponse = response.toString();
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(jsonResponse);
+                                        String accessToken = jsonObject.getString("accessToken");
+                                        
+                                        String apiUrls = CnxSAT_consulta_nit;
+                                        String token = accessToken; // Reemplaza con tu token Bearer
+                                        String nit = folioElectronico;
+                                        URL urls = new URL(apiUrls);
+                                        HttpURLConnection connections = (HttpURLConnection) urls.openConnection();
+
+                                        connections.setRequestMethod("POST");
+                                        connections.setRequestProperty("Content-Type", "application/json");
+                                        connections.setRequestProperty("Authorization", "Bearer " + token);
+                                        connections.setDoOutput(true);
+
+                                        String requestBodys = "{\"nit\":\"" + nit + "\"}";
+                                        
+                                        DataOutputStream wrr = new DataOutputStream(connections.getOutputStream());
+                                            wrr.writeBytes(requestBodys);
+                                            wrr.flush();
+                                        
+                                        int responseCodes = connections.getResponseCode();
+                                        
+                                        if (responseCodes == HttpURLConnection.HTTP_OK) {
+                                            try (BufferedReader ins = new BufferedReader(new InputStreamReader(connections.getInputStream(), "UTF-8"))) {
+                                                String inputLines;
+                                                
+
+                                                while ((inputLines = ins.readLine()) != null) {
+                                                    responses.append(inputLines);
+                                                }
+
+                                                System.out.println("Response SAT: " + responses.toString());
+                                            }
+                                        } else {
+                                            System.out.println("Request failed with response code: " + responseCode);
+                                        }
+                                        
+                                       
+                                        // Aqu� puedes hacer lo que necesites con el accessToken
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    messageDwr.setCodeError(0);
+                                    messageDwr.setMessage(response.toString());
+                            
+                    } else {
+                            System.out.println("Request failed with response code: " + responseCode);
+                           responses.append(responseCode);
+                    }
+            } catch (IOException e) {
+                    e.printStackTrace();
+                    responses.append(e);
+            }
+		*/
+		return jsonPersona.toString();
+	}
+	 public static void disableCertificateValidation() throws Exception {
+        // Create a trust manager that trusts all certificates
+        TrustManager[] trustAllCertificates = new TrustManager[]{
+            new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            }
+        };
+
+        // Create an SSL context with the custom trust manager
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+
+        // Set the custom SSL context as default
+        SSLContext.setDefault(sslContext);
+    }	
+        
+        public String bnit(String token_,String link,String nit_){
+            StringBuffer responses = new StringBuffer();
+            String apiUrls = link;
+            String token = token_; // Reemplaza con tu token Bearer
+            String nit = nit_;
+             try {
+                URL url = new URL(apiUrls);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+                connection.setDoOutput(true);
+                String requestBody = "{\"nit\":\"" + nit + "\"}";
+                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                wr.writeBytes(requestBody);
+                wr.flush();
+                 int responseCode = connection.getResponseCode();
+                                        
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    try (BufferedReader ins = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+                        String inputLines;
+
+
+                        while ((inputLines = ins.readLine()) != null) {
+                            responses.append(inputLines);
+                        }
+
+                        System.out.println("Response SAT: " + responses.toString());
+                    }
+                } else {
+                    System.out.println("Request failed with response code: " + responseCode);
+                }
+                
+            } catch (IOException e) {
+               e.printStackTrace();
+               responses.append(e);
+            }
+            
+            return responses.toString();
+            
+        }
+        
+        private SSLSocketFactory getInsecureSSLFactory() {
+            try {
+                TrustManager[] trustAllCertificates = new TrustManager[] {
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+                };
+
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, trustAllCertificates, new SecureRandom());
+                return sslContext.getSocketFactory();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+	public MessageDwr verificarbotonsat(){
+            MessageDwr dwr = new MessageDwr();
+            WSExternoDAO dao = new WSExternoDAO();
+            List<WSExternoTO> parametros = dao.getWebService();
+            StringBuilder resp = new StringBuilder();
+            
+            String respuesta="false";
+            for (WSExternoTO parametro : parametros) 
+            {
+                String cveParametro = parametro.getCVE_PARAMETRO();
+                String valorParametro = parametro.getVALOR_PARAMETRO();                
+                if(cveParametro.equals("CnxSAT_BotonVisible")){                    
+                    respuesta = valorParametro;                    
+                    dwr.setCodeError(0);
+                    dwr.setMessage(respuesta);
+                    
+                }
+                resp.append("cveParametro").append(cveParametro)
+                        .append("valorParametro").append(valorParametro)
+                        .append("\n");
+            }
+           
+            return dwr;
+        }
+}
+

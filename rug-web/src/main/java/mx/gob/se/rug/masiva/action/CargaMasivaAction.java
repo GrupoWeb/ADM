@@ -288,43 +288,64 @@ public class CargaMasivaAction extends RugBaseAction implements
 				setErrorArchivo("El archivo que estas tratando de subir no es XML");
 				return regresa;
 			}
-			
+			                 System.out.println("1");
 			setListaTramites(new ArrayList<Integer>());
+                        System.out.println("2");
 			setListaTramitesErrores(new ArrayList<Integer>());
+                        System.out.println("3");
 			inscripcionesErroneas = new ArrayList<mx.gob.se.rug.masiva.resultado.to.TramiteRes>();
+                        System.out.println("4");
 			UsuarioTO usuario = (UsuarioTO) sessionMap.get(Constants.USUARIO);
+                        System.out.println("5");
 			setIdUsuario(usuario.getPersona().getIdPersona());
+                        System.out.println("6");
 			String sha1 = getSha1FromFile(getArchivo());
-			
+			System.out.println("7");
 			if(inscripcionService.existeSha1(sha1)){
+                            System.out.println("8");
 				setErrorArchivo("El archivo que tratas de subir al sistema ya fue dado de alta con anterioridad.");
 			}else{
+                            System.out.println("9");
 				if(matchXmltoXsd(archivo)){
+                                    System.out.println("10");
 					archivoTO = this.creaArchivoTo(usuario,sha1);
+                                        System.out.println("11");
 					masivaProcess = new CargaMasivaProcess();
+                                        System.out.println("12");
 					masivaProcess.setIdArchivo(archivoTO.getIdArchivo());
+                                        System.out.println("13");
 					masivaProcess.setIdTipoTramite(idListaTramite.intValue());					
+                                        System.out.println("14");
 					masivaProcess.setIdUsuario(idUsuario);
+                                        System.out.println("15");
 					masivaProcess.setIdAcreedor(idUsuario);
+                                        System.out.println("16");
 					if(idListaProceso.intValue() == 1){
+                                            System.out.println("17");
 						masivaProcess.setbTipoProceso("A");
 					}else{
+                                            System.out.println("18");
 						masivaProcess.setbTipoProceso("D");
 					}
+                                        System.out.println("19");
 					masivaDAO.insertProcessCarga(masivaProcess);
-					
+					System.out.println("20");
 					ValidateDataType validateDataType = new ValidateDataType();
-					
+					System.out.println("21");
 					String xmlFromDB = validateDataType.getFileFromDB(masivaProcess.getIdArchivo());
+                                        System.out.println("22");
 					validateDataType.validateCargaMasiva(xmlFromDB, masivaProcess.getIdTipoTramite());
-					
+					System.out.println("23");
 					if(idListaProceso.intValue() == 1){
+                                            System.out.println("24");
 						// proceso atendido
 						CargaMasivaController cargaMasivaController= new CargaMasivaController();
+                                                System.out.println("25");
 						cargaMasivaController.procesaCargaMasiva(masivaProcess);
-						
+						System.out.println("26");
 						//this.setIdArchivoResultado(masivaProcess.getIdArchivoResumen());
 						regresa ="resultado";
+                                                System.out.println("27");
 //						CargaMasiva cm = validamosArchivo(idListaTramite.intValue(),archivoTO.getIdArchivo());
 //						regresa = seleccionaProceso(cm,usuario,archivoTO);
 //						
@@ -333,27 +354,33 @@ public class CargaMasivaAction extends RugBaseAction implements
 						} else {*/
 						//masivaDAO.actualizaProcessCargaIdResumen(masivaProcess);
 							this.setIdArchivoResultado(masivaProcess.getIdArchivo());
+                                                        System.out.println("28");
 						//}
 					}else{
+                                            System.out.println("29");
 						regresa="batch";
 					}
 				}else{
+                                    System.out.println("30");
 					setErrorArchivo("El archivo que estas tratando de subir no corresponde al XSD.");
 				}
 			}
 		}catch (CargaMasivaExceptionMaxNumber e) {
+                    System.out.println("31");
 			setErrorArchivo(e.getLocalizedMessage());
 			setMensajeErroXsd(e.getLocalizedMessage());
 			setDetalleTecnico(e.getMessage());
 			e.printStackTrace();
 		
 		}catch (NoTramiteFound e) {
+                    System.out.println("32");
 			setErrorArchivo(e.getLocalizedMessage());
 			setMensajeErroXsd(e.getLocalizedMessage());
 			setDetalleTecnico(e.getMessage());
 			e.printStackTrace();
 		
 		}catch (Exception e) {
+                    System.out.println("33");
 			setErrorArchivo("El archivo que estas tratando de subir no corresponde a las especificaciones del XSD");
 			setMensajeErroXsd(stack2string(e));
 			setDetalleTecnico(e.getMessage());
@@ -1377,7 +1404,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 			}
 
 		}
-		System.out.println("--- cargaMasivaInscripcion ---" + regresa);
+		System.out.println("--- cargaMasivaInscripcion ---....." + regresa);
 		return regresa;
 	}
 	

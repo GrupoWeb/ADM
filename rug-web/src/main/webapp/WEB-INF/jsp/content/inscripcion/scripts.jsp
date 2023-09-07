@@ -177,6 +177,7 @@ function activaBtn2(){
       document.getElementById("buttonID").disabled = true;
       var idIns = document.getElementById("refInscripcion").value;
       statSend = true;
+      
       window.location.href = '<%= request.getContextPath() %>/inscripcion/paso1.do?idInscripcion=' + idIns;
       return true;
 	   
