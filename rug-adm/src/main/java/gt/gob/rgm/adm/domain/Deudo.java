@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Deudo implements Serializable {
     
     private Long idPersona;
+    private String Dpi;
     private String Rfc;
     private String nombrePersona;
     private String perJuridica;
@@ -155,5 +156,11 @@ public class Deudo implements Serializable {
     public void setcCanceladas(Integer cCanceladas) {
         this.cCanceladas = cCanceladas;
     }
-        
+    public String getDpi() {
+        return Dpi;
+    }
+
+    public void setDpi(String Dpi) {
+        this.Dpi = Dpi;
+    }  
 }

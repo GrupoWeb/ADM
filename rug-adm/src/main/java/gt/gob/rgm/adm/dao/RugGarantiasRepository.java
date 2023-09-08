@@ -134,8 +134,18 @@ public class RugGarantiasRepository {
                 
                 System.out.println("Filter " + filter.getSolicitante() + " garante: " + filter.getGuarantee() + " restrictions: " + restrictions + " fechaInicio: " + fechaInicio + " fechaFin: " + fechaFin);
 		if(filter.getSolicitante() != null) {
-    		restrictions = cb.like(cb.upper(tramites.get("usuario").get("personaFisica").get("nombrePersona")), "%" + filter.getSolicitante().getName().toUpperCase() + "%");
-        }
+                    String texto = filter.getSolicitante().getName();
+                    System.out.println("ESTO ES TEXTO: "+texto);
+                    Long idP = filter.getSolicitante().getPersonaId();
+                    if(texto!=null){
+                        System.out.println("Garantia por nombre:"+idP);
+                        restrictions = cb.like(cb.upper(tramites.get("usuario").get("personaFisica").get("nombrePersona")), "%" + filter.getSolicitante().getName().toUpperCase() + "%");
+                    }
+                    if(idP!=null){
+                        System.out.println("Garantia por id:"+idP);
+                        restrictions = cb.equal(tramites.get("usuario").get("personaFisica").get("idPersona"), filter.getSolicitante().getPersonaId());
+                    }
+                }
 		if(filter.getGuarantee() != null) {
 			ListJoin<Tramites, RugRelTramGaran> relGaran = tramites.joinList("relGarantia", JoinType.LEFT);
 			ListJoin<Tramites, RugCertificaciones> certificaciones = tramites.joinList("certificacion", JoinType.LEFT);
@@ -190,8 +200,22 @@ public class RugGarantiasRepository {
         CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
         Root<Tramites> tramites = criteria.from(Tramites.class);
         Predicate restrictions = null;
-		if(filter.getSolicitante() != null) {
-    		restrictions = cb.like(cb.upper(tramites.get("usuario").get("personaFisica").get("nombrePersona")), "%" + filter.getSolicitante().getName().toUpperCase() + "%");
+        if(filter.getSolicitante() != null) {
+            
+            String texto = filter.getSolicitante().getName();
+            System.out.println("ESTO ES TEXTO: "+texto);
+            Long idP = filter.getSolicitante().getPersonaId();
+            if(texto!=null){
+                System.out.println("Garantia por nombre:"+idP);
+                restrictions = cb.like(cb.upper(tramites.get("usuario").get("personaFisica").get("nombrePersona")), "%" + filter.getSolicitante().getName().toUpperCase() + "%");
+
+            }
+            if(idP!=null){
+                System.out.println("Garantia por id:"+idP);
+                restrictions = cb.equal(tramites.get("usuario").get("personaFisica").get("idPersona"), filter.getSolicitante().getPersonaId());
+            }
+            
+            
         }
 		if(filter.getGuarantee() != null) {
 			ListJoin<Tramites, RugRelTramGaran> relGaran = tramites.joinList("relGarantia", JoinType.LEFT);

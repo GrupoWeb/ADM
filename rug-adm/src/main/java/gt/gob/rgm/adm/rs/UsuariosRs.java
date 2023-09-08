@@ -55,6 +55,7 @@ public class UsuariosRs {
 	@SecuredResource
 	public Usuario create(@HeaderParam("Authorization") String authorization, Usuario usuario) {
 		try {
+                        
 			usuario = usuarioService.save(usuario);
 			// enviar correo de cuenta creada
 			String rol = usuario.getRol().equals("R") ? "Registrador(a)" : (usuario.getRol().equals("V") ? "Validador(a) de cuentas" : "Contador(a)");
@@ -97,6 +98,41 @@ public class UsuariosRs {
 		int updated = usuarioService.update(id, usuario);
 		// si el correo es diferente, enviar correo de actualizacion
 		if(usuario.getEmail() != null && !emailAnterior.equals(usuario.getEmail())) {
+			String rol = usuario.getRol().equals("R") ? "Registrador(a)" : (usuario.getRol().equals("V") ? "Validador(a) de cuentas" : "Contador(a)");
+			int idTipoMensaje = 1;
+			int idAccountSmtp = Integer.valueOf(parametroService.getParam(Constants.ID_SMTP_MAIL_REGISTRO_USUARIOS).getValorParametro());
+			String to = usuario.getEmail();
+			String cc = null;
+			String cco = null;
+			String subject = parametroService.getParam(Constants.MAIL_SUBJECT_CUENTA_ADM).getValorParametro();
+			String message = parametroService.getParam(Constants.MAIL_THEME_CUENTA_ADM).getValorParametro();
+			subject = subject.replace("@nombreCompleto", usuario.getNombre());
+			message = message.replace("@nombreCompleto", usuario.getNombre());
+			message = message.replace("@email", usuario.getEmail());
+			message = message.replace("@rol", rol);
+			message = message.replace("@password", usuario.getPassword());
+			try {
+				MailUtils.getMailServiceInstance().sendMail(idTipoMensaje, idAccountSmtp, to, cc, cco, subject, message);
+			} catch(Exception e) {
+				// si el envio del correo falla, se captura la excepcion pero continua el proceso
+		    	e.printStackTrace();
+			}
+		}
+		// agregar a bitacora
+		String token = authorization.split(" ")[1];
+		bitacoraService.createEntry(token, "Se ha modificado al usuario [" + usuario.getUsuarioId() + "] " + usuario.getNombre() + ", " + usuario.getEmail());
+		return usuario;
+	}
+        
+        @POST
+	@Path("/{email}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Usuario reactivar(@HeaderParam("Authorization") String authorization, @PathParam(value="email") String email, Usuario usuario) {
+		int updated = usuarioService.getUsuarioMail(email,usuario);
+		//int updated = usuarioService.update(id, usuario);
+		// si el correo es diferente, enviar correo de actualizacion
+                if(usuario.getEmail() != null ) {
 			String rol = usuario.getRol().equals("R") ? "Registrador(a)" : (usuario.getRol().equals("V") ? "Validador(a) de cuentas" : "Contador(a)");
 			int idTipoMensaje = 1;
 			int idAccountSmtp = Integer.valueOf(parametroService.getParam(Constants.ID_SMTP_MAIL_REGISTRO_USUARIOS).getValorParametro());

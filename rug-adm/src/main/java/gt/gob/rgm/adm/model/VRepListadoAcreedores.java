@@ -17,6 +17,9 @@ public class VRepListadoAcreedores implements Serializable {
         @Column(name="ID_PERSONA")
 	private Long idPersona;
         
+        @Column(name="DPI")
+	private String Dpi;
+        
         @Column(name="RFC")
 	private String Rfc;
 
@@ -160,6 +163,13 @@ public class VRepListadoAcreedores implements Serializable {
         this.cCanceladas = cCanceladas;
     }
 
+    public String getDpi() {
+        return Dpi;
+    }
+
+    public void setDpi(String Dpi) {
+        this.Dpi = Dpi;
+    }
    
 	
 }

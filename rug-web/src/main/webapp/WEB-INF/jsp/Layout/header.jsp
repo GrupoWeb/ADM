@@ -6,7 +6,13 @@
 <nav class="blue darken-4" role="navigation">
 	<div class="nav-wrapper">
 		<a href="<%= request.getContextPath() %>" class="brand-logo">
-			<img class="responsive-img" src="<%=request.getContextPath()%>/resources/imgs/logo_RGM.jpg" width="250" height="64">
+			<!--<img class="responsive-img" src="<%=request.getContextPath()%>/resources/imgs/logo_RGM.jpg" width="250" height="64">-->
+                    <%
+        String fullURL = request.getRequestURL().toString();
+        String contextPath = request.getContextPath();
+        String baseURL = fullURL.substring(0, fullURL.indexOf(contextPath));
+    %>
+                        <img class="responsive-img" src="<%= baseURL %>/rug-adm/assets/img/logo_RGM.jpg" max-width="250" max-height="64">
 		</a>
 		<ul class=" menu">
 			<%

@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import gt.gob.rgm.service.JmsSolrMessageSenderService;
 import mx.gob.se.firma.co.to.ResponseWs;
 import mx.gob.se.rug.acreedores.service.AcreedoresService;
@@ -426,21 +427,39 @@ public class FirmaElectronicaAction extends RugBaseAction {
 			MyLogger.Logger.log(Level.INFO, "ID del tramite firmar: " + idTramiteNuevo);
 			MyLogger.Logger.log(Level.INFO, "Tipo factoraje " + esFactoraje);
 			MyLogger.Logger.log(Level.INFO, "Tipo Leasing  " + idGarantiaArancel);
+                        Date date = new Date();
+                        System.out.println("PRIMERO: "+date);
 			usuarioTO = (UsuarioTO) sessionMap.get(Constants.USUARIO);
-			
+			 Date date1 = new Date();
+                        System.out.println("SEGUNDO: "+date1);
 			// carga masiva
 			if(getIdTipoTramite().intValue()-200==18) {
+                             Date date2 = new Date();
+                        System.out.println("TERCERO: "+date2);
 				MasivaDAO masivaDAO = new MasivaDAO();
+                                 Date date3 = new Date();
+                        System.out.println("CUARTO: "+date3);
 				PagoDAO pagoDAO = new PagoDAO();
+                                 Date date4 = new Date();
+                        System.out.println("QUINTO: "+date4);
 				List<Integer> tramites = new ArrayList<Integer>();
+                                
 				tramites = masivaDAO.getIdTramitesMasivos(new Integer(idTramiteNuevo));				
-				
+				 Date date5 = new Date();
+                        System.out.println("SEXTO: "+date5);
 				if(inscripcionService.getSaldoMasivoByUsuario(new Integer(usuarioTO.getPersona().getIdPersona()).toString(),getIdTipoTramite().intValue()-200,new Integer(idTramiteNuevo),tramites.size())) {
+                                     Date date6 = new Date();
+                        System.out.println("SEPTIMO: "+date6);
 					for(Iterator<Integer> it = tramites.iterator(); it.hasNext();) {
 						pagoDAO.firmaTramite(it.next(),esFactoraje);
+                                                 Date date7 = new Date();
+                        System.out.println("OCTAVO: "+date7);
 					}
+                                        
 					//firmo el masivo
 					pagoDAO.firmaTramite(new Integer(idTramiteNuevo),esFactoraje);
+                                         Date date8 = new Date();
+                        System.out.println("NOVENO: "+date8);
 					regresa = Constants.SUCCESS;
 				} else {
 					regresa = "nosaldo";

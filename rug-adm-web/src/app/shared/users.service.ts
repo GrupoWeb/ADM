@@ -73,10 +73,16 @@ export class UsersService {
   }
 
   saveData(user: User) {
+    console.log(environment.api_url + '/usuarios');
     return this.http.post<User>(environment.api_url + '/usuarios', user);
   }
 
   updateData(id: number, user: User) {
     return this.http.put<User>(environment.api_url + '/usuarios/' + id, user);
   }
+  reactivData(user: User) {
+    
+    return this.http.post<User>(environment.api_url + '/usuarios/' + user.email, user);
+  }
+
 }

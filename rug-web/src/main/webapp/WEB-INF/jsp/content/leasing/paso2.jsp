@@ -51,7 +51,7 @@
 											<div class="row">
 												<div class="input-field col s12">
 													<s:textarea rows="10" id="descripcionId" cols="80" onchange="replaceValue('descripcionId')"
-														name="actoContratoTO.descripcion" />
+														name="actoContratoTO.descripcion" disabled="true" />
 													<label for="descripcionId">Descripci&oacute;n general</label>
 												</div>
 											</div>
@@ -137,9 +137,10 @@
                                                                                     <span class="card-title">Monto estimado de la garant&iacute;a (Leasing)</span>
 											<div class="row">
                                                                                                 <div class="input-field col s12">
-                                                                                                    <s:select  name="idTipoMoneda" value="24" list="listaMonedas" listKey="idMoneda" listValue="descMoneda"
+                                                                                                    <s:select  name="idTipoMoneda"  list="listaMonedas" listKey="idMoneda" listValue="descMoneda"
 														id="idTipoMoneda" />
 													<label for="idTipoMoneda">Seleccione la moneda:</label>
+                                                                                                        
 												</div>
 												<div class="input-fieldx col s12">
                                                                                                     <label for="monto_calculo">Monto estimado de la garantia</label>
@@ -153,7 +154,17 @@
 											</div>
 										</div>
 									</div>
-								</div>                                                                                                        
+								</div>   
+                                                                <s:if test="actoContratoTO.montoMaximo > 0">
+                                                                        <script type="text/javascript">  
+                                                                            
+                                                                            document.getElementById('monto_calculo').value = document.getElementById('actoContratoTO.montoMaximo').value;
+                                                                           
+                                                                            Materialize.updateTextFields();
+                                                                        </script>                                                                        
+                                                                </s:if>
+                                                                      
+                                                                
 								<div class="row">
 									<div class="card">
 										<div class="card-content">
@@ -180,8 +191,17 @@
 									</div>
 								</center>
 							</s:form>
+                                                        <s:if test="!actoContratoTO.descripcion.isEmpty()">
+								<script type="text/javascript">                                                                    
+									document.getElementById('sinRegistro.button').checked = 1;
+                                                                        document.getElementById("descripcionId").disabled = false;      
+                                                                        Materialize.updateTextFields();
+								</script>
+							</s:if>
+                                                       
+                                                                
 							<s:if test="actoContratoTO.noGarantiaPreviaOt">
-								<script type="text/javascript">
+								<script type="text/javascript">                                                                    
 									document.getElementById('actoContratoTO.noGarantiaPreviaOt').checked = 1;
 								</script>
 							</s:if>
@@ -359,7 +379,7 @@
 <script src="<%=request.getContextPath()%>/resources/js/xlsx.core.min.js"></script>
 <script type="text/javascript">
 	var idTramite = <s:property value = "idInscripcion"/> ;
-	document.getElementById("descripcionId").disabled = true;
+	//document.getElementById("descripcionId").disabled = true;
 
 	cargaParteBienes('divParteDWRBienes', idTramite);
 </script>
@@ -390,9 +410,9 @@
            valor = valor.replace(",","");
            valor = valor.replace(",","");
            valor = valor.replace(",","");
-
+            
            $(".monto_maximo").val(valor);
-        }
+        }       
 
                                                                                                         
                                                                                                      </script>

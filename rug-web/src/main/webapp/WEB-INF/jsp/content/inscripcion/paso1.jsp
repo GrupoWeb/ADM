@@ -1,7 +1,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@page contentType="text/html"%>
+
 <%@page pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
+<meta charset="UTF-8">
 <div class="section"></div>
 <main>
 	<div class="container-fluid">
@@ -44,10 +46,13 @@
 //$("#cuatroMenu").attr("class", "linkSelected");
 var idTramite = <s:property value="idInscripcion"/>;
 var idPersona = <s:property value="idPersona"/>;
+var descripcion = <s:property value="actoContratoTO.descripcion"/>
+
 
 //cargaParteOtorgante('divParteDWR', idTramite, idPersona, '0', '1');
 cargaParteDeudor('divParteDWR2', idTramite, idPersona, '0', '1');
 cargaParteAcreedor('divParteDWR3', idTramite, idPersona, '0', '1');
 activaBtn1_d_paso1();
+
 	
 </script>

@@ -120,7 +120,9 @@ public class GarantiasRs {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@SecuredResource
-	public ResponseRs getGarantias(@QueryParam(value="page") Integer page, @QueryParam(value="size") Integer size, @QueryParam(value="nombre") String nombre, @QueryParam(value="numero") Long numero, @QueryParam(value="fechaInicio") String fechaInicio, @QueryParam(value="fechaFin") String fechaFin) {
+	public ResponseRs getGarantias(@QueryParam(value="page") Integer page, @QueryParam(value="size") Integer size,
+                @QueryParam(value="nombre") String nombre, @QueryParam(value="numero") Long numero, 
+                @QueryParam(value="fechaInicio") String fechaInicio, @QueryParam(value="fechaFin") String fechaFin,@QueryParam(value="Idpersona") Long Idpersona) {
 		ResponseRs response = new ResponseRs();
 		List<Transaction> transactions = new ArrayList<>();
     	List<Tramites> tramites;
@@ -134,6 +136,13 @@ public class GarantiasRs {
     		externalUserFilter = new ExternalUser();
     		externalUserFilter.setName(nombre);
     	}
+        
+        if(Idpersona != null) {
+            System.out.println("VALOR DE IDPERSONA DESPUES: "+Idpersona);
+    		externalUserFilter = new ExternalUser();
+    		externalUserFilter.setPersonaId(Idpersona);
+    	}
+        
     	transactFilter.setSolicitante(externalUserFilter);
     	Guarantee guaranteeFilter = null;
     	if(numero != null) {

@@ -1,0 +1,48 @@
+<div class="section"></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col s1"></div>
+      <div class="col s12">
+        <h4 style="text-align: center; color:#0D47A1;">Cambiar imagen</h4>
+        <div class="row">
+          <div class="card">
+            <div class="card-content">
+                <form>
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <span>Seleccionar Archivo</span>
+                        <input type="file" accept=".jpg,.png" (change)="onFileSelected($event)">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Sube un archivo JPG o PNG">
+                      </div>
+                    </div>
+                    <button class="btn waves-effect waves-light" type="submit" (click)="onUpload()">Subir Imagen</button>
+                  </form>       
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s1"></div>
+    </div>
+  </div>
+</main>
+<div id="modalAviso" class="modal modal-fixed-footer" materialize="modal" style="height:225px;"
+  [materializeParams]="[{dismissible: true}]" [materializeActions]="modalAviso">
+
+  <div class="modal-content">
+    <div class="modal-header " [ngClass]="isSuccess ? 'success-header' : 'error-header'" >
+      <h5 class="modal-title">{{tituloModal}}</h5>
+    </div>
+    <br>
+        <h5 style="text-align: center;">{{mensajeModal}}</h5>
+  </div>
+  <div class="modal-footer">
+    <div class="row right-align">
+
+      <a class="waves-effect waves-green btn-flat" (click)="closeModal()">Cerrar</a>
+    </div>
+  </div>
+
+</div>

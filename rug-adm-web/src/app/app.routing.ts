@@ -36,6 +36,9 @@ import { ReinicioSaldoComponent } from "./reinicio-saldo/reinicio-saldo.componen
 import { ReportDeudoresComponent } from "./report-deudores/report-deudores.component";
 import { ReportAcreedoresComponent } from "./report-acreedores/report-acreedores.component";
 import { ReportUsuariosComponent } from "./report-usuarios/report-usuarios.component";
+import { SubirImagenComponent } from "./subir-imagen/subir-imagen.component";
+import { PermisosMenuComponent } from "./permisos-menu/permisos-menu.component";
+import { NuevoRolMenuComponent } from "./nuevo-rol-menu/nuevo-rol-menu.component";
 
 export const routes: Routes = [
   {
@@ -286,6 +289,27 @@ export const routes: Routes = [
       {
         path: 'report-usuarios',
         component: ReportUsuariosComponent,
+        data: {
+          roles: ['R','C']
+        }
+      },
+      {
+        path: 'subir-imagen',
+        component: SubirImagenComponent,
+        data: {
+          roles: ['R','C']
+        }
+      },
+      {
+        path: 'permisosMenu',
+        component: PermisosMenuComponent,
+        data: {
+          roles: ['R','C']
+        }
+      },
+      {
+        path: 'nuevoRolMenu',
+        component: NuevoRolMenuComponent,
         data: {
           roles: ['R','C']
         }

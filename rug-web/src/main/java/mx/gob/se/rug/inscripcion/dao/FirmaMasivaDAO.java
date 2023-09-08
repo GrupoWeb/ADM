@@ -67,6 +67,7 @@ public class FirmaMasivaDAO {
 		String sql ="{ call RUG.SP_FIRMA_MASIVA( " +
 				" ?,?,?,?," +
 				" ?,?,? ) }";
+                
 		ConexionBD bd = new ConexionBD();
 		Connection connection = bd.getConnection();
 		CallableStatement cs =null;

@@ -1,0 +1,12 @@
+.success-header {
+    background-color: #2bb105;
+    color: #000000;
+    text-align: center;
+  }
+  
+  /* Estilos para caso de error */
+  .error-header {
+    background-color: red;
+    color: #ffffff;
+    text-align: center;
+  }

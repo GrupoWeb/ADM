@@ -55,7 +55,7 @@ public class AcreedorRs {
 
             for (VRepListadoAcreedoresUsuario acreedo : acreedores2) {
                 Acreedor acreed = new Acreedor();
-                System.out.println(acreedo.getNombrePersona());
+                
                 acreed.setIdPersona(acreedo.getIdPersona());
                 acreed.setRfc(acreedo.getRfc());
                 acreed.setNombrePersona(acreedo.getNombrePersona());
@@ -82,8 +82,9 @@ public class AcreedorRs {
 
             for (VRepListadoAcreedores acreedo : acreedores) {
                 Acreedor acreed = new Acreedor();
-                System.out.println(acreedo.getNombrePersona());
+                
                 acreed.setIdPersona(acreedo.getIdPersona());
+                acreed.setDpi(acreedo.getDpi());
                 acreed.setRfc(acreedo.getRfc());
                 acreed.setNombrePersona(acreedo.getNombrePersona());
                 acreed.setPerJuridica(acreedo.getPerJuridica());

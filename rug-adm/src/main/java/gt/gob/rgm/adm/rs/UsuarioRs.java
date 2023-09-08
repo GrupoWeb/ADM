@@ -62,6 +62,7 @@ public class UsuarioRs {
             System.out.println(usuario);
     		Usuario usua = new Usuario();
     		usua.setIdPersona(usuario.getIdPersona());
+                usua.setDpi(usuario.getDpi());
     		usua.setRfc(usuario.getRfc());
     		usua.setNombrePersona(usuario.getNombrePersona());
     		usua.setPerJuridica(usuario.getPerJuridica());

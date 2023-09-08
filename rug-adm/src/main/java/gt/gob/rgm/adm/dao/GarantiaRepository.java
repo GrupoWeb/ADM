@@ -55,11 +55,12 @@ public class GarantiaRepository {
         	}              
         }
         if (filter.getnDeudor() != null) {
+			String busca = filter.getnDeudor();
             if(!"".equals(where)) {
-        		where+=" AND NOMBRE_DEUDOR LIKE ('%"+filter.getnDeudor()+"%')";
+        		where+=" AND UPPER(NOMBRE_DEUDOR) LIKE ('%"+busca.toUpperCase()+"%')";
         	} else {
-        		where+=" NOMBRE_DEUDOR LIKE ('%"+filter.getnDeudor()+"%')";
-        	}              
+        		where+=" UPPER(NOMBRE_DEUDOR) LIKE ('%"+busca.toUpperCase()+"%')";
+        	}               
         }
         if (filter.getIdGarantia()!= null) {
             if(!"".equals(where)) {
@@ -85,10 +86,11 @@ public class GarantiaRepository {
             }
         }
         if (filter.getnAcreedor()!= null) {
+			String busca = filter.getnAcreedor();
             if(!"".equals(where)) {
-                where+=" AND NOMBRE_ACREEDOR LIKE('%"+filter.getnAcreedor()+"%')";
+                where+=" AND UPPER(NOMBRE_ACREEDOR) LIKE('%"+busca.toUpperCase()+"%')";
             } else {
-                where+=" NOMBRE_ACREEDOR LIKE('%"+filter.getnAcreedor()+"%')";
+                where+=" UPPER(NOMBRE_ACREEDOR) LIKE('%"+busca.toUpperCase()+"%')";
             }
         }
         
@@ -111,11 +113,11 @@ public class GarantiaRepository {
         List<Object[]> results = em.createNativeQuery(sql)
         .setParameter(1, filter.getIdDeudor())
         .getResultList();
-        System.out.println("PASO RESULTS 1");
+        
 List<VRepListadoGarantias> garantias = new ArrayList<>();
-System.out.println("PASO 2");
+
 for (Object[] row  : results) {
-    System.out.println("PASO 3 ");
+
     VRepListadoGarantias garantia = new VRepListadoGarantias();
    // em.refresh(garantia);
       garantia.setIdGarantia(((BigDecimal) row[0]).intValue());
@@ -143,7 +145,7 @@ for (Object[] row  : results) {
       garantias.add(garantia);  
    
 }
-System.out.println("PASO 4");
+
         return garantias;
      
     }
@@ -153,9 +155,6 @@ System.out.println("PASO 4");
         CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
         Root<VRepListadoGarantias> listgarantias = criteria.from(VRepListadoGarantias.class);
         Predicate restrictions = null;
-        System.out.println("Select count(*) from Garantias");
-        System.out.println(filter.getTextobusqueda());
-        System.out.println(filter.getTextobusqueda());
         if (filter.getIdDeudor() != null) {
             System.out.println("Where IdDeudor = "+filter.getIdDeudor());          
             //long numero = Long.parseLong(filter.getIdDeudor());     
@@ -163,13 +162,15 @@ System.out.println("PASO 4");
             restrictions = cb.equal(listgarantias.get("idDeudor"), numero);
         }
         if (filter.getnDeudor()!= null) {
+			 String filterNDeudor = filter.getnDeudor().toUpperCase();														 
             System.out.println("Where nDeudor = "+filter.getnDeudor());          
             //long numero = Long.parseLong(filter.getIdDeudor());     
             
-            restrictions = cb.like(listgarantias.get("nDeudor"), "%" +filter.getnDeudor()+ "%");
+            restrictions = cb.like(cb.upper(listgarantias.get("nDeudor")), "%" +filterNDeudor+ "%");
             //cb.like(listdeudores.get("Rfc"), "%" + filter.getTextobusqueda() + "%")
         }
          if (filter.getnAcreedor()!= null) {
+			String filterNAcreedor = filter.getnAcreedor().toUpperCase();												  
             System.out.println("Where nAcreedor = "+filter.getnAcreedor());          
             //long numero = Long.parseLong(filter.getIdDeudor());     
             

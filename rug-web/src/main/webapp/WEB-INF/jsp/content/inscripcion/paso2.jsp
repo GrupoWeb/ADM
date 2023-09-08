@@ -79,7 +79,7 @@
 											<div class="row">
 												<p>
 													<input type="checkbox" name="actoContratoTO.noGarantiaPreviaOt"
-														id="actoContratoTO.noGarantiaPreviaOt" value="true" />
+														id="actoContratoTO.noGarantiaPreviaOt" value="true" onclick="noGarantiaPreviaOt_()" />
 													<label for="actoContratoTO.noGarantiaPreviaOt">Declaro que de conformidad con el contrato de
 														garant&iacute;a, el deudor declar&oacute; que sobre los bienes en garant&iacute;a no existen
 														otro gravamen, anotaci&oacute;n o limitaci&oacute;n previa.</label>
@@ -87,8 +87,8 @@
 											</div>
 											<div class="row">
 												<p>
-													<input type="checkbox" name="actoContratoTO.cambiosBienesMonto"
-														id="actoContratoTO.cambiosBienesMonto" value="true" />
+													<input type="checkbox" name="actoContratoTO.cambiosBienesMonto" 
+														id="actoContratoTO.cambiosBienesMonto" value="true" onclick="cambiosBienesMonto()" />
 													<label for="actoContratoTO.cambiosBienesMonto">Los atribuibles y derivados no esta afectos a
 														la Garant&iacute;a Mobiliaria</label>
 												</p>
@@ -111,7 +111,7 @@
 											<div class="row">
 												<div class="input-field col s6">
 													<s:textarea name="actoContratoTO.txtRegistro" id="actoContratoTO.txtRegistro"
-														disabled="true" />
+														disabled="true" onchange="txtRegistro('actoContratoTO.txtRegistro')" />
 													<label for="actoContratoTO.txtRegistro">Especifique cual</label>
 												</div>
 											</div>
@@ -126,7 +126,7 @@
 											<div class="row">
 												<div class="input-field col s12">
 													<s:textarea rows="10" cols="80" name="actoContratoTO.instrumentoPub" maxlength="3500"
-														id="actoContratoTO.instrumentoPub" />
+														id="actoContratoTO.instrumentoPub" onchange="instrumentoPub('actoContratoTO.instrumentoPub')" />
 													<label for="actoContratoTO.instrumentoPub">Informaci&oacute;n general del contrato de la
 														Garant&iacute;a(Lugar y Fecha, tipo de documento, monto inicial garantizado, plazo,
 														etc.)</label>
@@ -142,7 +142,7 @@
 											<div class="row">
 												<div class="input-field col s12">
 													<s:textarea rows="10" cols="80" id="actoContratoTO.otrosTerminos"
-														name="actoContratoTO.otrosTerminos" onblur="actualizaCopia()" />
+														name="actoContratoTO.otrosTerminos" onchange="otrosTerminos('actoContratoTO.otrosTerminos')" onblur="actualizaCopia()" />
 													<label for="actoContratoTO.otrosTerminos">Observaciones Adicionales</label>
 												</div>
 											</div>
@@ -161,6 +161,14 @@
 									</div>
 								</center>
 							</s:form>
+                                                                
+                                                         <s:if test="!actoContratoTO.descripcion.isEmpty()">
+								<script type="text/javascript">                                                                    
+									document.getElementById('sinRegistro.button').checked = 1;
+                                                                        document.getElementById("descripcionId").disabled = false;      
+                                                                        Materialize.updateTextFields();
+								</script>
+							</s:if>
 							<s:if test="actoContratoTO.noGarantiaPreviaOt">
 								<script type="text/javascript">
 									document.getElementById('actoContratoTO.noGarantiaPreviaOt').checked = 1;
@@ -442,8 +450,11 @@
 	}
 
 	function esPrioritaria() {
+            var checkBox = document.getElementById("actoContratoTO.garantiaPrioritaria");
+                
 		var checkBox = document.getElementById("actoContratoTO.garantiaPrioritaria");
 		if (checkBox.checked == true) {
+                    localStorage.setItem('garantiaPrioritaria', 1);
 			MaterialDialog.alert(
 				'<p style="text-align: justify; text-justify: inter-word;">Recuerde: <b>Artículo 17. Garantia Mobiliria Prioritaria.</b> ' +
 				'La publicidad de la garantía mobiliaria se constituye por medio de la inscripción del formulario registral, ' +
@@ -480,7 +491,9 @@
 					}
 				}
 			);
-		}
+		}else{
+                    localStorage.removeItem('garantiaPrioritaria');
+                }
 	}
 
 	function limpiaCampos() {
@@ -515,6 +528,7 @@
 		} else {
 			document.getElementById("actoContratoTO.txtRegistro").value = '';
 			document.getElementById("actoContratoTO.txtRegistro").disabled = true;
+                        localStorage.removeItem('txtRegistro');
 			Materialize.updateTextFields();
 		}
 	}
@@ -522,11 +536,15 @@
 	function bienesSinSerie() {
 		var checkBox = document.getElementById("sinRegistro.button");
 		if (checkBox.checked == true) {
-			document.getElementById("descripcionId").disabled = false;
+			document.getElementById("descripcionId").disabled = false;    
+                        document.getElementById("descripcionId").value = '';
+                        localStorage.removeItem('descripcionId');
 			Materialize.updateTextFields();
 		} else {
 			document.getElementById("descripcionId").value = '';
 			document.getElementById("descripcionId").disabled = true;
+                        localStorage.removeItem('descripcionId');
+                        localStorage.removeItem()('descripcionId');
 			Materialize.updateTextFields();
 		}
 	}
@@ -800,4 +818,122 @@
 
 		Materialize.updateTextFields();
 	}
+        
+        function noGarantiaPreviaOt_() {
+            
+		var checkBox = document.getElementById("actoContratoTO.noGarantiaPreviaOt");
+            
+		if (checkBox.checked == true) {
+			localStorage.setItem('noGarantiaPreviaOt', 1);
+		} else {
+			localStorage.removeItem('noGarantiaPreviaOt');
+		}
+	}
+        function cambiosBienesMonto() {
+		var checkBox = document.getElementById("actoContratoTO.cambiosBienesMonto");
+                
+		if (checkBox.checked == true) {
+			localStorage.setItem('cambiosBienesMonto', 1);
+		} else {
+			localStorage.removeItem('cambiosBienesMonto');
+		}
+	}
+     
+       function txtRegistro(idValue) {
+		var cadena = getObject(idValue).value;
+                var text='';
+                text=cadena.replace(/“/g, "\"").replace(/”/g, "\"").replace(/’/g, "\'").replace(/‘/g, "\'").replace(/	/,"    		");
+                getObject(idValue).value = text;
+                localStorage.setItem('txtRegistro', text);
+	}
+       function instrumentoPub(idValue) {
+            var cadena = getObject(idValue).value;
+                var text='';
+                text=cadena.replace(/“/g, "\"").replace(/”/g, "\"").replace(/’/g, "\'").replace(/‘/g, "\'").replace(/	/,"    		");
+                getObject(idValue).value = text;
+                localStorage.setItem('instrumentoPub_', text);
+	}
+       function otrosTerminos(idValue) {
+            var cadena = getObject(idValue).value;
+                var text='';
+                text=cadena.replace(/“/g, "\"").replace(/”/g, "\"").replace(/’/g, "\'").replace(/‘/g, "\'").replace(/	/,"    		");
+                getObject(idValue).value = text;
+                localStorage.setItem('otrosTerminos_', text);
+	}
+        window.onload = function() {
+      var descripcionId = localStorage.getItem('descripcionId');
+    if (descripcionId) {
+        document.getElementById('sinRegistro.button').checked = 1;
+        document.getElementById("descripcionId").disabled = true;      
+        document.getElementById('descripcionId').value = descripcionId;
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById('sinRegistro.button').checked = 0;
+    }
+    
+    var noGarantiaPreviaOt = localStorage.getItem('noGarantiaPreviaOt');
+    
+    if (noGarantiaPreviaOt) {
+        
+        document.getElementById('actoContratoTO.noGarantiaPreviaOt').checked = 1;      
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById('actoContratoTO.noGarantiaPreviaOt').checked = 0;      
+        Materialize.updateTextFields(); 
+    }
+    
+    var cambiosBienesMonto = localStorage.getItem('cambiosBienesMonto');
+    if (cambiosBienesMonto) {
+        document.getElementById('actoContratoTO.cambiosBienesMonto').checked = 1;      
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById('actoContratoTO.cambiosBienesMonto').checked = 0;      
+        Materialize.updateTextFields(); 
+    }
+     var garantiaPrioritaria = localStorage.getItem('garantiaPrioritaria');
+    if (garantiaPrioritaria) {
+        document.getElementById('actoContratoTO.garantiaPrioritaria').checked = 1;      
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById('actoContratoTO.garantiaPrioritaria').checked = 0;      
+        Materialize.updateTextFields(); 
+    }
+    
+    var txtRegistro = localStorage.getItem('txtRegistro');
+    if (txtRegistro) {
+        document.getElementById('actoContratoTO.cpRegistro').checked = 1;
+        document.getElementById("actoContratoTO.txtRegistro").disabled = true;      
+        document.getElementById('actoContratoTO.txtRegistro').value = txtRegistro;
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById('actoContratoTO.cpRegistro').checked = 0;
+         document.getElementById("actoContratoTO.txtRegistro").disabled = true;      
+        document.getElementById('actoContratoTO.txtRegistro').value = '';
+        Materialize.updateTextFields();        
+    }
+     var instrumentoPub = localStorage.getItem('instrumentoPub_');
+    if (instrumentoPub) {
+        
+        document.getElementById("actoContratoTO.instrumentoPub").disabled = false;      
+        document.getElementById('actoContratoTO.instrumentoPub').value = instrumentoPub;
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById("actoContratoTO.instrumentoPub").disabled = false;      
+         document.getElementById('actoContratoTO.instrumentoPub').value = instrumentoPub;
+    }
+    
+     var otrosTerminos = localStorage.getItem('otrosTerminos_');
+    if (otrosTerminos) {
+        
+        document.getElementById("actoContratoTO.otrosTerminos").disabled = false;      
+        document.getElementById('actoContratoTO.otrosTerminos').value = otrosTerminos;
+        Materialize.updateTextFields();        
+    }else{
+         document.getElementById("actoContratoTO.otrosTerminos").disabled = false;      
+         document.getElementById('actoContratoTO.otrosTerminos').value = otrosTerminos;
+    }
+};
+
+        
+  
 </script>

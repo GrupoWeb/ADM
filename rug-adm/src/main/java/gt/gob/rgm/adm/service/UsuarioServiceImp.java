@@ -22,22 +22,30 @@ public class UsuarioServiceImp implements UsuarioService {
 
 	@Override
 	public int update(Long id, Usuario usuario) {
+            
 		Usuario usuarioEncontrado = usuarioDao.findById(id);
+                
 		if(usuarioEncontrado != null) {
 			// actualizar campos
 			if(usuario.getEstado() != null) {
 				usuarioEncontrado.setEstado(usuario.getEstado());
 			}
 			if(usuario.getPassword() != null) {
+                            usuario.setPassword(CryptoUtils.hash(usuario.getPassword(), new StringBuffer(usuario.getEmail()).reverse().toString()));
+                            
 				usuarioEncontrado.setPassword(usuario.getPassword());
 			}
 			if(usuario.getRol() != null) {
 				usuarioEncontrado.setRol(usuario.getRol());
 			}
+                        usuarioEncontrado.setCreado(usuarioEncontrado.getCreado());
+                        usuarioEncontrado.setEstado(usuarioEncontrado.getEstado());
 			usuarioDao.save(usuarioEncontrado);
+                        
 			return 1;
 		} else {
 			// usuario no encontrado
+                        
 			return 0;
 		}
 	}
@@ -47,10 +55,13 @@ public class UsuarioServiceImp implements UsuarioService {
 		// verificar si el correo no existe
 		Usuario existente = usuarioDao.findByEmail(usuario.getEmail());
 		if(existente != null) {
-			throw new EntityAlreadyExistsException("El correo ya está siendo utilizado por otro usuario.");
+			throw new EntityAlreadyExistsException("El correo ya está siendo utilizado por otro usuario.-"+existente.getEstado());
 		}
 		// generar password aleatorio
-		String password = RandomStringUtils.randomAlphanumeric(8);
+		//String password = RandomStringUtils.randomAlphanumeric(8);
+                String password = usuario.getPassword();
+                
+                
 		usuario.setPassword(CryptoUtils.hash(password, new StringBuffer(usuario.getEmail()).reverse().toString()));
 		usuario.setCreado(Timestamp.valueOf(LocalDateTime.now()));
 		usuario.setEstado("A");
@@ -70,5 +81,32 @@ public class UsuarioServiceImp implements UsuarioService {
 	@Override
 	public Usuario getUsuario(Long id) {
 		return usuarioDao.findById(id);
+	}
+        @Override
+	public int getUsuarioMail(String email, Usuario usuario) { 
+            Usuario usuarioEncontrado = usuarioDao.findByEmail(email);
+            if(usuarioEncontrado != null) 
+            {
+                	if(usuario.getEstado() != null) {
+				usuarioEncontrado.setEstado(usuario.getEstado());
+			}
+			if(usuario.getPassword() != null) {
+                            usuario.setPassword(CryptoUtils.hash(usuario.getPassword(), new StringBuffer(usuario.getEmail()).reverse().toString()));
+                            
+				usuarioEncontrado.setPassword(usuario.getPassword());
+			}
+			if(usuario.getRol() != null) {
+				usuarioEncontrado.setRol(usuario.getRol());
+			}
+                        usuarioEncontrado.setCreado(usuarioEncontrado.getCreado());
+                        usuarioEncontrado.setEstado(usuarioEncontrado.getEstado());
+			usuarioDao.save(usuarioEncontrado);
+                        
+			return 1;
+            }
+            else{
+                return  0;
+            }
+		
 	}
 }

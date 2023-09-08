@@ -29,6 +29,9 @@ export class Transaction {
     if (this.guarantee && this.guarantee.idGarantia) {
       filter += 'numero=' + this.guarantee.idGarantia + '&';
     }
+    if (this.solicitante && this.solicitante.personaId && this.solicitante.personaId > 0) {
+      filter += 'Idpersona=' + this.solicitante.personaId + '&';
+    }
     filter = filter.substr(0, filter.length -1);
 
     return filter;
