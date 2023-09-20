@@ -970,22 +970,22 @@ public class CargaMasivaAction extends RugBaseAction implements
 			} catch (FileNotFoundException e) {
 
 				System.out.println("ThreadCargaMasiva:::archivo [" + idArchivo
-						+ "]::: sucedio un error faltal:::");
+						+ "]::: sucedio un error faltal:::1");
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {
 
 				System.out.println("ThreadCargaMasiva:::archivo [" + idArchivo
-						+ "]::: sucedio un error faltal:::");
+						+ "]::: sucedio un error faltal:::11");
 				e.printStackTrace();
 			} catch (JAXBException e) {
 
 				System.out.println("ThreadCargaMasiva:::archivo [" + idArchivo
-						+ "]::: sucedio un error faltal:::");
+						+ "]::: sucedio un error faltal:::111");
 				e.printStackTrace();
 			} catch (Exception e) {
 
 				System.out.println("ThreadCargaMasiva:::archivo [" + idArchivo
-						+ "]::: sucedio un error faltal:::");
+						+ "]::: sucedio un error faltal:::1111");
 				e.printStackTrace();
 			}
 			for (Integer tramiteErroneo : listaTramitesErrores) {
@@ -1142,25 +1142,25 @@ public class CargaMasivaAction extends RugBaseAction implements
 
 				System.out
 						.println("ThreadCargaMasiva::cargaMasivaRectificacion:archivo ["
-								+ idArchivo + "]::: sucedio un error faltal:::");
+								+ idArchivo + "]::: sucedio un error faltal:::2");
 				e.printStackTrace();
 			} catch (UnsupportedEncodingException e) {
 
 				System.out
 						.println("ThreadCargaMasiva::cargaMasivaRectificacion:archivo ["
-								+ idArchivo + "]::: sucedio un error faltal:::");
+								+ idArchivo + "]::: sucedio un error faltal:::22");
 				e.printStackTrace();
 			} catch (JAXBException e) {
 
 				System.out
 						.println("ThreadCargaMasiva::cargaMasivaRectificacion:archivo ["
-								+ idArchivo + "]::: sucedio un error faltal:::");
+								+ idArchivo + "]::: sucedio un error faltal:::222");
 				e.printStackTrace();
 			} catch (Exception e) {
 
 				System.out
 						.println("ThreadCargaMasiva::cargaMasivaRectificacion:archivo ["
-								+ idArchivo + "]::: sucedio un error faltal:::");
+								+ idArchivo + "]::: sucedio un error faltal:::2222");
 				e.printStackTrace();
 			}
 			for (Integer tramiteErroneo : listaTramitesErrores) {
@@ -1372,22 +1372,22 @@ public class CargaMasivaAction extends RugBaseAction implements
 				} catch (FileNotFoundException e) {
 
 					System.out.println("ThreadCargaMasiva:::archivo ["
-							+ idArchivo + "]::: sucedio un error faltal:::");
+							+ idArchivo + "]::: sucedio un error faltal:::3");
 					e.printStackTrace();
 				} catch (UnsupportedEncodingException e) {
 
 					System.out.println("ThreadCargaMasiva:::archivo ["
-							+ idArchivo + "]::: sucedio un error faltal:::");
+							+ idArchivo + "]::: sucedio un error faltal:::33");
 					e.printStackTrace();
 				} catch (JAXBException e) {
 
 					System.out.println("ThreadCargaMasiva:::archivo ["
-							+ idArchivo + "]::: sucedio un error faltal:::");
+							+ idArchivo + "]::: sucedio un error faltal:::333");
 					e.printStackTrace();
 				} catch (Exception e) {
 
 					System.out.println("ThreadCargaMasiva:::archivo ["
-							+ idArchivo + "]::: sucedio un error faltal:::");
+							+ idArchivo + "]::: sucedio un error faltal:::3333");
 					e.printStackTrace();
 				}
 			}

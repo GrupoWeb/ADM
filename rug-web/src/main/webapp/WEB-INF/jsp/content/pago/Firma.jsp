@@ -37,6 +37,24 @@
  	String cadenaOriginal = (String) request.getAttribute("cadenaOriginal");
  	if (cadenaOriginal != null && cadenaOriginal.length() > 5) {
  %>
+ <style>
+        .progress-container {
+            width: 50%;
+            margin: 50px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f2f2f2;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 30px;
+            background-color: #007bff;
+            text-align: center;
+            line-height: 30px;
+            color: #fff;
+        }
+    </style>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col s12">
@@ -45,13 +63,13 @@
 				<div class="col s8">	
 					<span class="card-title">Confirmaci&oacute;n Electr&oacute;nica</span>
 					<div class="row note">
-						<p>Con su confirmaci&oacute;n electr�nica,
+						<p>Con su confirmaci&oacute;n electr&oacute;nica,
 						usted, bajo protesta de decir verdad:</b> <br />1. Ratifica todos y
-						cada uno de los T�rminos y Condiciones que acept� al momento de
+						cada uno de los T&eacute;rminos y Condiciones que acept&oacute; al momento de
 						registrarse como usuario del sistema del Registro de Garant&iacute;as Mobiliarias
 						; <br />2. Reconoce la existencia y veracidad de la
-						informaci�n ingresada o trasladada; y <br />3. Manifiesta que conoce la
-						responsabilidad civil, administrativa y penal en que podr�a
+						informaci&oacute;n ingresada o trasladada; y <br />3. Manifiesta que conoce la
+						responsabilidad civil, administrativa y penal en que podr&iacute;a
 						incurrir en caso de falsedad. </p>
 					</div>
 					<s:form action="firmaGuarda.do" theme="simple" id="b64Form">
@@ -83,6 +101,7 @@
 							</div>
 						</center>
 					</s:form>
+                                                
 					<img id="indicator" src="<%=request.getContextPath()%>/resources/imgs/loader/loadingAnimation.gif" alt="Loading..." style="display:none"/>
 				</div>
 				<div class="col s2"></div>

@@ -83,9 +83,13 @@ public class RugSignatureImp implements RugSignature {
 //    public static final String SIGN_BYTES =  "http://128.5.101.19:8080/api/toBytes";
 //    public static final String SIGN_VERIFY = "http://128.5.101.19:8080/api/verifyFile";
 
-    public static final String SIGN_URL = 	 "https://operaciones.rgm.gob.gt/api/signature";
+   /* public static final String SIGN_URL = 	 "https://operaciones.rgm.gob.gt/api/signature";
     public static final String SIGN_BYTES =  "https://operaciones.rgm.gob.gt/api/toBytes";
-    public static final String SIGN_VERIFY = "https://operaciones.rgm.gob.gt/api/verifyFile";
+    public static final String SIGN_VERIFY = "https://operaciones.rgm.gob.gt/api/verifyFile";*/
+    
+    public static final String SIGN_URL = 	 "https://qasistema.rgm.gob.gt/api/signature";
+    public static final String SIGN_BYTES =  "https://qasistema.rgm.gob.gt/api/toBytes";
+    public static final String SIGN_VERIFY = "https://qasistema.rgm.gob.gt/api/verifyFile";
 
 
     private Integer idTipoTramiteMasiva;
@@ -467,6 +471,7 @@ public class RugSignatureImp implements RugSignature {
 
                                     break;
                                 case 18:// Firma masiva
+                                    System.out.println("PARA CREAR ZIP 1");
                                     InscripcionService inscripcionServiceV = new InscripcionServiceImpl();
                                     int idEstatus = new FirmaMasivaDAO().getEstatusByTramiteTemporal(idTramiteNuevo);
                                     MasivaDAO masivaDAO = new MasivaDAO();
@@ -614,6 +619,8 @@ public class RugSignatureImp implements RugSignature {
                                             recursiveDelete(new File(filePathToBeServed +"/boleta_zip/"));
 
                                             for (int iteracionB = 0; iteracionB < pdfTO.getHtmlList().size(); iteracionB++) {
+                                                
+                                                System.out.println("PARA CREAR ZIP 2");
                                                 byte filepdf[] = null;
                                                 byte filesSignature[] = null;
                                                 ByteArrayOutputStream ospdf = new ByteArrayOutputStream();

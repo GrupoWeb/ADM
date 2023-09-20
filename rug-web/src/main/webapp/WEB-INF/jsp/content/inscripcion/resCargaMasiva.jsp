@@ -78,6 +78,8 @@ $("#seisMenu").attr("class","linkSelected");
 function confirmar(){
 	var correctos = '<s:property value="tramitesCompletos"/>';
 	var costoTramite = '<s:property value="costoTramiteMasivo"/>'	
+        alert(correctos);
+        alert(costoTramite);
 	var total = costoTramite * correctos;
 	
 	MaterialDialog.dialog(

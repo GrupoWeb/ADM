@@ -71,9 +71,13 @@ public class RugSignatureFile extends HttpServlet {
 //    public static final String SIGN_BYTES =  "http://128.5.101.19:8080/api/toBytes";
 //    public static final String SIGN_VERIFY = "http://128.5.101.19:8080/api/verifyFile";
 
-    public static final String SIGN_URL = 	 "https://operaciones.rgm.gob.gt/api/signature";
+    /*public static final String SIGN_URL = 	 "https://operaciones.rgm.gob.gt/api/signature";
 	public static final String SIGN_BYTES =  "https://operaciones.rgm.gob.gt/api/toBytes";
-	public static final String SIGN_VERIFY = "https://operaciones.rgm.gob.gt/api/verifyFile";
+	public static final String SIGN_VERIFY = "https://operaciones.rgm.gob.gt/api/verifyFile";*/
+    
+      public static final String SIGN_URL = 	 "https://qasistema.rgm.gob.gt/api/signature";
+    public static final String SIGN_BYTES =  "https://qasistema.rgm.gob.gt/api/toBytes";
+    public static final String SIGN_VERIFY = "https://qasistema.rgm.gob.gt/api/verifyFile";
 
     private void signatureFiles(HttpServletRequest req, HttpServletResponse resp){
         HttpSession session = req.getSession(false);

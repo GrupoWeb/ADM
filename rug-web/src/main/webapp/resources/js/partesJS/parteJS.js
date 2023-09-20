@@ -3583,6 +3583,7 @@ function agregarNuevo() {
 	$('select').material_select();
 	Materialize.updateTextFields();
 	showObject('agreNuevo', true);
+        ParteDwrAction.verificarbotonsat(botonsat);
 }
 
 function agregarNuevoO() {
@@ -4003,9 +4004,22 @@ function guardaParteOtorganteRenapo(elementID, idTramite, idPersona,
 function showObject(idObject, display) {
     
 	if (display == true) {
+                
+                var elements = document.getElementsByClassName("buttonValidarInst");
+            for (var i = 0; i < elements.length; i++) {
+              elements[i].style.visibility = 'visible';
+              // O elements[i].style.display = 'none'; para ocultarlos completamente
+            }
 		getObject(idObject).style.visibility = 'visible';
 		getObject(idObject).style.display = 'block';
 	} else if (display == false) {
+            
+            var elements = document.getElementsByClassName("buttonValidarInst");
+            for (var i = 0; i < elements.length; i++) {
+              elements[i].style.visibility = 'hidden';
+              // O elements[i].style.display = 'none'; para ocultarlos completamente
+            }
+               
 		getObject(idObject).style.visibility = 'hidden';
 		getObject(idObject).style.display = 'none';
 	} else {
@@ -4154,10 +4168,15 @@ function cambiaTipoPersonaAOld(esAutoridadStr) {
 
 
 function botonsat(message){      
+    
     if (message.message == "true") {
 		showObject("buttonValidarInst",true);
+                showObject("buttonValidarInstbtn",true);
+                
 	}else{
+            
             	showObject("buttonValidarInst",false);
+                showObject("buttonValidarInstbtn",false);
         }
     
 }

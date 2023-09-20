@@ -47,7 +47,9 @@ Map<Integer,PrivilegioTO> priv= privilegiosTO.getMapPrivilegio();
 		<div class="col s12">
 			<div class="card">
 				<div class="col s1"></div>					
-				<div class="col s10">					
+				<div class="col s10">
+                                 
+                                    </div>
 					<s:form action="cargaMasiva.do" method="post" enctype="multipart/form-data" theme="simple" id="idCargaMasivaForm">						
 					   	<div class="row">
 					   		<div id="dwrId"></div>
@@ -70,16 +72,19 @@ function cargaMasiva(){
 	var idUsuario = <s:property value="idUsuario" />;
 	var idAcreedor = '';	
 	displayLoader(true);
-	MasivaDwrAction.getCargaMasiva(idUsuario, idUsuario, showMasiva);	
+	MasivaDwrAction.getCargaMasiva(idUsuario, idUsuario, showMasiva);
+        console.log("abra cadabra2..........................");
 }
 
 function cambiaAction(){
+    console.log("abra cadabra3..........................");
 	idListaTramite = document.getElementById("idListaTramite").value; 
 	if (idListaTramite == 32){
 		document.getElementById("idCargaMasivaForm").action='<%= request.getContextPath() %>/masiva/autoridad/carga.do';
 	}else{
 		document.getElementById("idCargaMasivaForm").action='cargaMasiva.do';
 	}  
+        console.log("abra cadabra4..........................");
 }
 
 $(document).ready()

@@ -75,7 +75,8 @@ import javax.xml.bind.annotation.XmlType;
     "anotacion",
     "avisoPreventivo",
     "traslado",
-    "acreedores"
+    "acreedores",
+    "ejecucion"
 })
 @XmlRootElement(name = "carga-masiva")
 public class CargaMasiva {

@@ -434,6 +434,8 @@ public class InscripcionDAO {
 				"        WHERE ID_FIRMA_MASIVA = ? " + 
 				"    ) " + 
 				") MAS";
+                System.out.println("getCostoByIdTipoTramiteMasivo: ");
+                System.out.println(sql);
 		ConexionBD bd = new ConexionBD();
 		Connection connection = bd.getConnection();
 		ResultSet rs =null;
@@ -445,6 +447,7 @@ public class InscripcionDAO {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				regresa = rs.getDouble("COSTO");
+                                System.out.println("EL COSTO:"+regresa);
 
 			}
 		} catch (SQLException e) {

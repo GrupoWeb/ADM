@@ -3814,7 +3814,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"col s3\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
-                sb.append("<div class=\"col s3\" id=\"buttonValidarInst\" >");
+                sb.append("<div class=\"col s3 buttonValidarInst \" id=\"buttonValidarInst\" >");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(1)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
 		sb.append("</div>");
 		sb.append("<div class=\"input-field col s3\">");
@@ -3869,7 +3869,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"col s2\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
-                sb.append("<div class=\"col s4\" id=\"buttonValidarInst\" >");
+                sb.append("<div class=\"col s4 buttonValidarInst \" id=\"buttonValidarInst\" >");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(1)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
 		sb.append("</div>");
                 
@@ -4578,7 +4578,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 
 		sb.append("</tbody>");
 		sb.append("</table></div>");
-                sb.append("<strong><h5 style='text-align: center;' >Si desea modificar un deudor, se recomienda que lo elimine y lo ingrese nuevamente.</h5><strong>");
+                sb.append("<strong><h5 style='text-align: center;' >Si desea modificar un acreedor, se recomienda que lo elimine y lo ingrese nuevamente.</h5><strong>");
 		return sb;
 	}
 
@@ -5619,7 +5619,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"col s3\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoAcreedor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
-                 sb.append("<div class=\"col s3\" id=\"buttonValidarInst\" >");
+                 sb.append("<div class=\"col s3 buttonValidarInst \" id=\"buttonValidarInst\" >");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(2)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
 		sb.append("</div>");
 		sb.append("<div class=\"input-field col s3\">");
@@ -5722,7 +5722,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 		sb.append("<div class=\"col s2\" id=\"buttonValidar\">");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoAcreedor()\" class=\"btn waves-effect indigo\">Buscar</button>");
 		sb.append("</div>");
-                 sb.append("<div class=\"col s4\" id=\"buttonValidarInst\" >");
+                 sb.append("<div class=\"col s4 buttonValidarInst \" id=\"buttonValidarInst\" >");
 		sb.append("<button type=\"button\" onclick=\"buscaDocumentoDeudorInstitucion(2)\" class=\"btn waves-effect indigo\">Busqueda SAT (Nit)</button>");
 		sb.append("</div>");
 		sb.append("</div>");
@@ -6418,7 +6418,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 	}
         
    public String buscaPersonaByFolioElectronicoInst(String folioElectronico, String tipoPersona){
-       Persona persona1 = new Persona();
+      /* Persona persona1 = new Persona();
         persona1.setNit("45389829");
         persona1.setNombre("ESPAÑA,Y ESPAÑA,,CARLOS,MAURICIO");
         persona1.setTo("0");
@@ -6573,8 +6573,8 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
 }
        if (!personaEncontrada) {
             return "Datos no encontrados.";
-        }
-          /*  WSExternoDAO dao = new WSExternoDAO();
+        }*/
+            WSExternoDAO dao = new WSExternoDAO();
             List<WSExternoTO> parametros = dao.getWebService();
             String CnxSAT_login = "";
             String CnxSAT_consulta_nit = "";
@@ -6716,8 +6716,8 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
                     e.printStackTrace();
                     responses.append(e);
             }
-		*/
-		return jsonPersona.toString();
+		
+		return responses.toString();
 	}
 	 public static void disableCertificateValidation() throws Exception {
         // Create a trust manager that trusts all certificates
