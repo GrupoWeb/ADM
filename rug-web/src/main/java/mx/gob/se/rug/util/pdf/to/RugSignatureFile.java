@@ -46,6 +46,7 @@ import mx.gob.se.rug.util.pdf.PageXofY;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.struts2.ServletActionContext;
 
 
 public class RugSignatureFile extends HttpServlet {
@@ -65,19 +66,6 @@ public class RugSignatureFile extends HttpServlet {
         signatureFiles(req, resp);
 
     }
-
-
-//    public static final String SIGN_URL = 	 "http://128.5.101.19:8080/api/signature";
-//    public static final String SIGN_BYTES =  "http://128.5.101.19:8080/api/toBytes";
-//    public static final String SIGN_VERIFY = "http://128.5.101.19:8080/api/verifyFile";
-
-    /*public static final String SIGN_URL = 	 "https://operaciones.rgm.gob.gt/api/signature";
-	public static final String SIGN_BYTES =  "https://operaciones.rgm.gob.gt/api/toBytes";
-	public static final String SIGN_VERIFY = "https://operaciones.rgm.gob.gt/api/verifyFile";*/
-    
-      public static final String SIGN_URL = 	 "https://qasistema.rgm.gob.gt/api/signature";
-    public static final String SIGN_BYTES =  "https://qasistema.rgm.gob.gt/api/toBytes";
-    public static final String SIGN_VERIFY = "https://qasistema.rgm.gob.gt/api/verifyFile";
 
     private void signatureFiles(HttpServletRequest req, HttpServletResponse resp){
         HttpSession session = req.getSession(false);
@@ -283,19 +271,24 @@ public class RugSignatureFile extends HttpServlet {
         return doc.getNumberOfPages();
     }
 
+    private String changePath(String Constant_path){
+        HttpServletRequest request = ServletActionContext.getRequest();
+        StringBuffer uri = request.getRequestURL();
+        String url = uri.toString().replace(Constants.SIGN_BASE_REPLACE, "") + Constant_path;
+        return url;
+    }
+
 
     private String sendPDF(String pIdGarantia, boolean local, byte[] files, String email, Integer idUsuario) throws ClientProtocolException, IOException, NoSuchAlgorithmException {
 
-
-
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_URL);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL));
         String fileName = pIdGarantia;
         System.out.println("Garantia " + fileName);
 
         String pageNumber = Integer.toString(countPage(files));
 
-        System.out.println("Cantidad " + pageNumber);
+
 
 
         ContentBody cd = new InputStreamBody(new ByteArrayInputStream(files), "files.pdf");
@@ -319,7 +312,7 @@ public class RugSignatureFile extends HttpServlet {
 
     private byte[] getBytesFile(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_BYTES);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_BYTES));
         String fileName = pIdGarantia;
 
 
@@ -337,7 +330,7 @@ public class RugSignatureFile extends HttpServlet {
 
     private Integer verifyFiles(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_VERIFY);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_VERIFY));
         String fileName = pIdGarantia;
         Integer very = 0;
 
