@@ -306,6 +306,8 @@ public static final String MSG_CM= "msgCargasMasivas";
 	 */
 
 	public static final String SIGN_BASE_REPLACE = 	 "rug-web/signature.pdo";
+	public static final String SIGN_BASE_PROD = 	 "https://operaciones.rgm.gob.gt/";
+	public static final String ENV = 	 "prod"; // Enum: "dev, prod"
 	public static final String SIGN_URL = 	 "api/signature";
 	public static final String SIGN_BYTES =  "api/toBytes";
 	public static final String SIGN_VERIFY = "api/verifyFile";
