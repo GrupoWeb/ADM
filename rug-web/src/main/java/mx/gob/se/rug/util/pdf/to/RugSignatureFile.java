@@ -275,18 +275,26 @@ public class RugSignatureFile extends HttpServlet {
         return doc.getNumberOfPages();
     }
 
-    private String changePath(String Constant_path){
-        HttpServletRequest request = ServletActionContext.getRequest();
-        StringBuffer uri = request.getRequestURL();
-        String url = uri.toString().replace(Constants.SIGN_BASE_REPLACE, "") + Constant_path;
-        return url;
+    private String changePath(String Constant_path, String env){
+        System.out.println("Variables de entorno "+ Constant_path + " env " + env + " path " + Constants.SIGN_BASE_PROD);
+        if(env.equals("prod")){
+            String url = Constants.SIGN_BASE_PROD  + Constant_path;
+            return url;
+        }else {
+            HttpServletRequest request = ServletActionContext.getRequest();
+            StringBuffer uri = request.getRequestURL();
+            String url = uri.toString().replace(Constants.SIGN_BASE_REPLACE, "") + Constant_path;
+            return url;
+        }
+
+
     }
 
 
     private String sendPDF(String pIdGarantia, boolean local, byte[] files, String email, Integer idUsuario) throws ClientProtocolException, IOException, NoSuchAlgorithmException {
 
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL));
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL, Constants.ENV));
         String fileName = pIdGarantia;
         System.out.println("Garantia " + fileName);
 
@@ -316,7 +324,7 @@ public class RugSignatureFile extends HttpServlet {
 
     private byte[] getBytesFile(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_BYTES));
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_BYTES,Constants.ENV));
         String fileName = pIdGarantia;
 
 
@@ -334,7 +342,7 @@ public class RugSignatureFile extends HttpServlet {
 
     private Integer verifyFiles(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_VERIFY));
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_VERIFY,Constants.ENV));
         String fileName = pIdGarantia;
         Integer very = 0;
 
