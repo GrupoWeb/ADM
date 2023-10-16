@@ -48,6 +48,11 @@ public class RugGarantiasServiceImp implements RugGarantiasService {
 
 	@Override
 	public List<Tramites> listGarantias(Transaction filter, Integer page, Integer size, String fechaInicio, String fechaFin) {
+            System.out.println("listGarantias_________________"+filter);
+            System.out.println("listGarantias_________________"+page);
+            System.out.println("listGarantias_________________"+size);
+            System.out.println("listGarantias_________________"+fechaInicio);
+            System.out.println("listGarantias_________________"+fechaFin);
 		return garantiasDao.findWithFilter(filter, page, size, fechaInicio, fechaFin);
 	}
 

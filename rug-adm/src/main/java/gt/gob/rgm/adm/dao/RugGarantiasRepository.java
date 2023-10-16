@@ -127,12 +127,13 @@ public class RugGarantiasRepository {
         } 
 	
 	public List<Tramites> findWithFilter(Transaction filter, Integer page, Integer size, String fechaInicio, String fechaFin) {
+            
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tramites> criteria = cb.createQuery(Tramites.class);
 		Root<Tramites> tramites = criteria.from(Tramites.class);
 		Predicate restrictions = null;
                 
-                System.out.println("Filter " + filter.getSolicitante() + " garante: " + filter.getGuarantee() + " restrictions: " + restrictions + " fechaInicio: " + fechaInicio + " fechaFin: " + fechaFin);
+                System.out.println("Filter " + filter.getSolicitante() + " garante: " + filter.getGuarantee()+ " restrictions: " + restrictions + " fechaInicio: " + fechaInicio + " fechaFin: " + fechaFin);
 		if(filter.getSolicitante() != null) {
                     String texto = filter.getSolicitante().getName();
                     System.out.println("ESTO ES TEXTO: "+texto);
@@ -270,9 +271,13 @@ public class RugGarantiasRepository {
 	}
 
 	public List<RugGarantias> findByDescripcionAndStatus(String descripcion, String status) {
+            System.out.println("ENTRA A BUSCAR GARANTIAS..............................................................");
+            System.out.println("descripcion: "+descripcion);
+            System.out.println("status: "+status);
 		TypedQuery<RugGarantias> query = em.createNamedQuery("RugGarantias.findByDescripcionAndNotStatus", RugGarantias.class);
 		query.setParameter("descripcion", "%" + descripcion.toUpperCase() + "%");
 		query.setParameter("status", status);
+              System.out.println("termina A BUSCAR GARANTIAS..............................................................");
 		return query.getResultList();
 	}
 }

@@ -50,9 +50,9 @@
     <class>gt.gob.rgm.adm.model.RugRelGarantiaPartes</class>
     <class>gt.gob.rgm.adm.model.RugDomiciliosExtH</class>
     <class>gt.gob.rgm.adm.model.RugGarantiasBienes</class>
-    <!--properties>
+    <properties>
 			<property name="eclipselink.logging.level.sql" value="FINE"/>
  			<property name="eclipselink.logging.parameters" value="true"/>
-		</properties-->
+    </properties>
   </persistence-unit>
 </persistence>

@@ -128,6 +128,13 @@ public class GarantiasRs {
     	List<Tramites> tramites;
     	Long transactionsCount = 0L;
     	
+            System.out.println("getGarantias+++++++++++++++++++++ "+page);
+            System.out.println("size+++++++++++++++++++++ "+size);
+            System.out.println("nombre+++++++++++++++++++++ "+nombre);
+            System.out.println("numero+++++++++++++++++++++ "+numero);
+            System.out.println("fechaInicio+++++++++++++++++++++ "+fechaInicio);
+            System.out.println("fechaFin+++++++++++++++++++++ "+fechaFin);
+            System.out.println("Idpersona+++++++++++++++++++++ "+Idpersona);
         
         int iteracionD = 0;
     	Transaction transactFilter = new Transaction();
@@ -153,11 +160,16 @@ public class GarantiasRs {
     	tramites = rugGarantiasService.listGarantias(transactFilter, page, size, fechaInicio, fechaFin);
     	transactionsCount = rugGarantiasService.countGarantias(transactFilter, fechaInicio, fechaFin);
     	
-            System.out.println("Tramites " + tramites.size());
+            System.out.println("Tramites:::::: " + tramites.size());
+            System.out.println("transactionsCount::: "+transactionsCount);
+            System.out.println(tramites);
+            
     	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	for(Tramites tramite : tramites) {
                 iteracionD++;
-                
+                System.out.println("****************************************************************************************");
+                System.out.println(tramite);
+                System.out.println("****************************************************************************************");
     		Transaction transaction = new Transaction();
     		transaction.setIdTramite(tramite.getIdTramite());
     		transaction.setbCargaMasiva(tramite.getBCargaMasiva());

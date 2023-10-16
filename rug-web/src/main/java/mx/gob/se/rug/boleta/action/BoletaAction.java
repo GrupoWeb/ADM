@@ -196,6 +196,7 @@ public class BoletaAction extends RugBaseAction {
                 }
                 PdfTO pdfTOInfo = null;
                 BoletaServices boletaServices = new BoletaServices();
+                System.out.println("idTipoTramiteVar Prueba: "+idTipoTramiteVar);
                 switch (idTipoTramiteVar) {
                     case 1:// Inscripcion
                         mx.gob.se.rug.boleta.to.DetalleTO detalleTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -487,8 +488,10 @@ public class BoletaAction extends RugBaseAction {
                     case 18:// Firma masiva
                         InscripcionService inscripcionService = new InscripcionServiceImpl();
                         int idEstatus = new FirmaMasivaDAO().getEstatusByTramiteTemporal(idTramiteVar);
+                        System.out.println("idEstatus: "+idEstatus);
                         MasivaDAO masivaDAO = new MasivaDAO();
                         setIdTipoTramiteMasiva(masivaDAO.getIdTipoTramiteMasiva(idTramiteVar));
+                        
                         switch (idEstatus) {
                         case 3:
                             Integer idTramiteFirma = boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteVar);

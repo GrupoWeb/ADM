@@ -53,7 +53,9 @@ public class RugSignatureFile extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            
             throws ServletException, IOException {
+        System.out.println("doGet RUGSIgnature");
         processRequest(req, resp);
     }
 
@@ -63,11 +65,13 @@ public class RugSignatureFile extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
+        
         signatureFiles(req, resp);
 
     }
 
     private void signatureFiles(HttpServletRequest req, HttpServletResponse resp){
+        System.out.println("INGRESA A signatureFiles DE RugSignatureFile.java");
         HttpSession session = req.getSession(false);
         byte file[] = null;
         ByteArrayOutputStream os = new ByteArrayOutputStream();

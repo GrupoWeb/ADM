@@ -22,7 +22,7 @@
 
 
 			function certificacion(garantia, tramite) {
-
+                              
 				const signature_api = 'https://firma.rgm.gob.gt/api/files/';
 				const apiSignature = '<%= request.getContextPath() %>/rs/signature/certificacion/'+ garantia +'/'+ tramite +'/51071/35'
 

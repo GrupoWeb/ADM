@@ -135,7 +135,11 @@ public class RugSignatureImp implements RugSignature {
      * @version: 26.09.2022
      */
     public Response signatureFiles(Integer idGarantia, Integer idTramite, Integer idUsuario, Integer idTipoTramiteRest){    
-        
+        System.out.println("INGRESA A signatureFiles DE RugSignatureImp.java");
+        System.out.println("idGarantia:::"+idGarantia);
+        System.out.println("idTramite:::"+idTramite);
+        System.out.println("idUsuario:::"+idUsuario);
+        System.out.println("idTipoTramiteRest:::"+idTipoTramiteRest);
         try {
 
 

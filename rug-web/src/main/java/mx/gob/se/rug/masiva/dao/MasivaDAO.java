@@ -1530,6 +1530,9 @@ public class MasivaDAO extends BaseRugDao {
 	 */
 	public HashMap<String, String> getTiposTramite(Integer idAcreedor,
 			Integer idUsuario) {
+            System.out.println("getTiposTramite: ");
+            System.out.println("idAcreedor: "+idAcreedor);
+            System.out.println("idUsuario: "+idUsuario);
 		HashMap<String, String> mapTipoTramite = new HashMap<String, String>();
 		ConexionBD bd = new ConexionBD();
 		String sql = "SELECT DESC_PRIVILEGIO, ID_PRIVILEGIO FROM V_USUARIO_ACREEDOR_GRUPOS WHERE ID_ACREEDOR =? AND ID_SUB_USUARIO = ? AND ID_RECURSO = 7 ";

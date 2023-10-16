@@ -26,6 +26,11 @@ public class FirmaElectronica {
     @Path("/certificacion/{idGarantia}/{idTramite}/{idUsuario}/{idTipoTramiteRest}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response signatureTest(@PathParam("idGarantia") Integer idGarantia, @PathParam("idTramite") Integer idTramite, @PathParam("idUsuario") Integer idUsuario,@PathParam("idTipoTramiteRest") Integer idTipoTramiteRest){
+        System.out.println("signatureTest");
+        System.out.println("idGarantia: "+idGarantia);
+        System.out.println("idTramite: "+idTramite);
+        System.out.println("idUsuario: "+idUsuario);
+        System.out.println("idTipoTramiteRest: "+idTipoTramiteRest);
         return signatureFile.signatureFiles(idGarantia, idTramite, idUsuario, idTipoTramiteRest);
     }
     

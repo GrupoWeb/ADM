@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import gt.gob.rgm.service.JmsSolrMessageSenderService;
+import gt.gob.rgm.service.RugSignatureImp;
 import mx.gob.se.firma.co.to.ResponseWs;
 import mx.gob.se.rug.acreedores.service.AcreedoresService;
 import mx.gob.se.rug.anotacion.tramites.dao.TramitesDAO;
@@ -73,6 +74,7 @@ public class FirmaElectronicaAction extends RugBaseAction {
 	
 	private InscripcionService inscripcionService;
 	
+        public RugSignatureImp signatureFile;
 	public String confirmacion() {
 		return SUCCESS;
 	}
@@ -416,6 +418,8 @@ public class FirmaElectronicaAction extends RugBaseAction {
 	}
 
 	public String validarFirma() {
+                System.out.println("Archivo: D:\\Proyecto_RMG\\ADM-consultoria-actualizado\\ADM\\rug-web\\src\\main\\java\\mx\\gob\\se\\rug\\firma\\action\\FirmaElectronicaAction.java");
+                System.out.println("Funcion: validarFirma --- Linea: 422");
 		String regresa = Constants.FAILED;
 		UsuarioTO usuarioTO = null;
 		setUrlBack(null);
@@ -432,6 +436,7 @@ public class FirmaElectronicaAction extends RugBaseAction {
 			usuarioTO = (UsuarioTO) sessionMap.get(Constants.USUARIO);
 			 Date date1 = new Date();
                         System.out.println("SEGUNDO: "+date1);
+                        System.out.println("getIdTipoTramite: "+getIdTipoTramite().intValue());
 			// carga masiva
 			if(getIdTipoTramite().intValue()-200==18) {
                              Date date2 = new Date();
@@ -444,7 +449,8 @@ public class FirmaElectronicaAction extends RugBaseAction {
                         System.out.println("QUINTO: "+date4);
 				List<Integer> tramites = new ArrayList<Integer>();
                                 
-				tramites = masivaDAO.getIdTramitesMasivos(new Integer(idTramiteNuevo));				
+				tramites = masivaDAO.getIdTramitesMasivos(new Integer(idTramiteNuevo));
+                        System.out.println("getIdTramitesMasivos: "+tramites);
 				 Date date5 = new Date();
                         System.out.println("SEXTO: "+date5);
 				if(inscripcionService.getSaldoMasivoByUsuario(new Integer(usuarioTO.getPersona().getIdPersona()).toString(),getIdTipoTramite().intValue()-200,new Integer(idTramiteNuevo),tramites.size())) {
@@ -459,7 +465,9 @@ public class FirmaElectronicaAction extends RugBaseAction {
 					//firmo el masivo
 					pagoDAO.firmaTramite(new Integer(idTramiteNuevo),esFactoraje);
                                          Date date8 = new Date();
-                        System.out.println("NOVENO: "+date8);
+                        System.out.println("NOVENO: "+date8+"---"+idTramiteNuevo+"---"+207031+"---"+396+"---"+18);
+                        signatureFile = new RugSignatureImp();
+                        signatureFile.signatureFiles(207108, 207108, 396, 18);
 					regresa = Constants.SUCCESS;
 				} else {
 					regresa = "nosaldo";
@@ -493,10 +501,13 @@ public class FirmaElectronicaAction extends RugBaseAction {
 	}
 
 	public String firmaGuarda(){
+                System.out.println("Archivo: D:\\Proyecto_RMG\\ADM-consultoria-actualizado\\ADM\\rug-web\\src\\main\\java\\mx\\gob\\se\\rug\\firma\\action\\FirmaElectronicaAction.java");
+                System.out.println("Funcion: firmaGuarda --- Linea: 498");
 		String regresa = Constants.FAILED;
 		UsuarioTO usuarioTO = null;
 		String docXML = null;
 		try{
+                    System.out.println("Llama a validarFirma --- Linea: 505");
 			regresa = validarFirma();
 		}catch(Exception e){
 			
@@ -737,7 +748,9 @@ public class FirmaElectronicaAction extends RugBaseAction {
 	public void setInscripcionService(InscripcionService inscripcionService) {
 		this.inscripcionService = inscripcionService;
 	}
-
+        public void setRugSignatureImp(RugSignatureImp signatureFile) {
+		this.signatureFile = signatureFile;
+	}
 	public JmsSolrMessageSenderService getSolrMessageSender() {
 		return solrMessageSender;
 	}
