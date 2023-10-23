@@ -1,0 +1,10 @@
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\domain\MessageTO.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\domain\MailTO.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\dao\ConexionDB.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\service\MailServiceImp.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\exception\InfrastructureException.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\security\SMTPAuthenticator.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\service\MailService.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\dao\MailBitacoraDAO.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\domain\AccountMailTO.java
+D:\RUG\codigo_fuente_2021\RUG\rgm-mail\src\main\java\gt\gob\rgm\mail\exception\NoDestinationAddressException.java
