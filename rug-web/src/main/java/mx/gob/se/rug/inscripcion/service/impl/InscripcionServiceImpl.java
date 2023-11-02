@@ -164,7 +164,13 @@ public class InscripcionServiceImpl implements InscripcionService{
 	
 	public boolean getSaldoByUsuario(String idUsuario, Integer idTipoTramite, Integer idTramite, Integer idGarantia) {
 		// si es subcuenta, utilizar idUsuario de cuenta maestra
+                System.out.println("getSaldoByUsuario:");
+                System.out.println("idUsuario:"+idUsuario);
+                System.out.println("idTipoTramite:"+idTipoTramite);
+                System.out.println("idTramite:"+idTramite);
+                System.out.println("idGarantia:"+idGarantia);
 		long idUsuarioMaestro = acreedoresDAO.getCuentaMaestra(Integer.valueOf(idUsuario));
+                System.out.println("idUsuarioMaestro: "+idUsuarioMaestro);
 		return garantiasDAO.getSaldoByUsuario(String.valueOf(idUsuarioMaestro), idTipoTramite, idTramite, idGarantia);
 	}
 	

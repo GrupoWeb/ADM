@@ -77,7 +77,8 @@ $("#seisMenu").attr("class","linkSelected");
 <script>
 function confirmar(){
 	var correctos = '<s:property value="tramitesCompletos"/>';
-	var costoTramite = '<s:property value="costoTramiteMasivo"/>'	
+        var costoTramite = '<s:property value="costoTramiteMasivo"/>';	
+        //var costoTramite = 300;
         alert(correctos);
         alert(costoTramite);
 	var total = costoTramite * correctos;

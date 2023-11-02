@@ -140,6 +140,7 @@ public class RugSignatureImp implements RugSignature {
         System.out.println("idTramite:::"+idTramite);
         System.out.println("idUsuario:::"+idUsuario);
         System.out.println("idTipoTramiteRest:::"+idTipoTramiteRest);
+        
         try {
 
 
@@ -161,16 +162,21 @@ public class RugSignatureImp implements RugSignature {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
         
         
-            
+            System.out.println("ANTES DEL IF");
             if(!inscripcionService.getSaldoByUsuario(idUsuario.toString(), idTipoTramiteRest, 0, idGarantiaVar)){
+                System.out.println("ENTRA AL IF");
                 return Response.ok("Sin Saldo").build();
             }
             else{
+                System.out.println("ENTRA AL ELSE");
                 Integer idTramiteNuevo = inscripcionDAO.insert(idUsuario, idTipoTramiteRest); 
                 garantiasDAO.altaBitacoraTramite(idTramiteNuevo, new Integer(3), new Integer(0), null, "V");
 
                 try {
+                    System.out.println("ENTRA AL TRY");
                     idTipoTramiteVar = boletaDAO.getTipoTramitebyIdTramiteTemporal(idTramiteVar);
+                    System.out.println("idTipoTramiteVar: "+idTipoTramiteVar);
+                    System.out.println("idTramiteNuevo: "+idTramiteNuevo);
                     Integer idTramiteCert = boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteNuevo);
                     Integer idTTramite = boletaDAO.getTipoTramitebyIdTramiteTerminado(idTramiteVar);
                     certificacionDAO.setCertificacion(idTramiteCert, idTramiteVar, idTTramite, idGarantiaVar, idUsuario);
@@ -187,6 +193,7 @@ public class RugSignatureImp implements RugSignature {
                             if (idTipoTramiteRest.intValue() == 15 || idTipoTramiteRest.intValue() == 16) {
                                 idTipoTramiteRest = 1;
                             }
+                            System.out.println("VALIDA EL idTipoTramiteRest: "+idTipoTramiteRest);
                             switch(idTipoTramiteRest){
                                 case 1:// Inscripcion
                                     mx.gob.se.rug.boleta.to.DetalleTO detalleTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -571,7 +578,7 @@ public class RugSignatureImp implements RugSignature {
                                     }
                                 break;
                             }
-
+                            System.out.println("DESPUES DEL SWITCH");
                             if (pdfTO.getIdTramite() != null) {
                                 pdfTO.setValue("[*idTramite*]", pdfTO.getIdTramite().toString());
                                 pdfTO.setValue("[*GMTExplica*]", "");
@@ -582,8 +589,9 @@ public class RugSignatureImp implements RugSignature {
                             }
 
                             /**** FIRMA DE DOCUMENTOS  */
-
+                            System.out.println("VA A FIRMAR DOCUMENTOS");
                             if (idTipoTramiteRest == 1) {
+                                System.out.println("ENTRA AL IF DE LA FIRMA");
 
                                 PdfWriter writer = new PdfWriter(os);
                                 PdfDocument pdf = new PdfDocument(writer);
@@ -601,6 +609,7 @@ public class RugSignatureImp implements RugSignature {
                                 }
                             }
                             else{
+                                System.out.println("ENTRA AL EL DE LA FIRMA :"+pdfTO);
                                 try {
                                     if (pdfTO != null) {
                                         if (pdfTO.getMassive() != "False") {
@@ -627,6 +636,7 @@ public class RugSignatureImp implements RugSignature {
                                                 System.out.println("PARA CREAR ZIP 2");
                                                 byte filepdf[] = null;
                                                 byte filesSignature[] = null;
+                                                
                                                 ByteArrayOutputStream ospdf = new ByteArrayOutputStream();
                                                 pdfTO.setKey("" + pdfTO.getIdTramite() + Random.generateRandom(100000));
                                                 PdfWriter writer = new PdfWriter(ospdf);
@@ -745,7 +755,7 @@ public class RugSignatureImp implements RugSignature {
                     return Response.serverError().build();
                 }
             }
-        
+            System.out.println("SALE SIN SALDO : "+ regresa);
             return Response.ok(regresa).build();
         } catch (Exception e) {
             e.printStackTrace();

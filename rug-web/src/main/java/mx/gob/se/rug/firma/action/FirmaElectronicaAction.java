@@ -465,9 +465,11 @@ public class FirmaElectronicaAction extends RugBaseAction {
 					//firmo el masivo
 					pagoDAO.firmaTramite(new Integer(idTramiteNuevo),esFactoraje);
                                          Date date8 = new Date();
-                        System.out.println("NOVENO: "+date8+"---"+idTramiteNuevo+"---"+207031+"---"+396+"---"+18);
-                        signatureFile = new RugSignatureImp();
-                        signatureFile.signatureFiles(207108, 207108, 396, 18);
+                        System.out.println("NOVENO: "+date8+"---"+(idTramiteNuevo-1)+"---"+207031+"---"+new Integer(usuarioTO.getPersona().getIdPersona())+"---"+218);
+                        //signatureFile = new RugSignatureImp();
+                        //signatureFile.signatureFiles((idTramiteNuevo-1), new Integer(idTramiteNuevo), new Integer(usuarioTO.getPersona().getIdPersona()), 218);
+                        
+                                    
 					regresa = Constants.SUCCESS;
 				} else {
 					regresa = "nosaldo";

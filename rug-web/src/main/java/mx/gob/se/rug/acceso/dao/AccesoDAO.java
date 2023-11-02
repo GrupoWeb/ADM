@@ -82,6 +82,7 @@ public class AccesoDAO {
 	}
 	
 	public Boolean getCuentaMaestra(Integer idUsusario) {
+            
 		ConexionBD bd = new ConexionBD();
 		Connection connection = bd.getConnection();
 		ResultSet rs = null;

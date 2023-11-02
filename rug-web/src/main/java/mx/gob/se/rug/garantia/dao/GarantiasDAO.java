@@ -244,6 +244,7 @@ public class GarantiasDAO extends BaseRugDao {
 		}finally{
 			bd.close(connection, null, cs);
 		}
+                System.out.println("getSaldoByUsuario --- Regresa: "+ regresa);
 		return regresa;
 	}
 	
@@ -1058,6 +1059,7 @@ public class GarantiasDAO extends BaseRugDao {
 	}
 	
 	public Long getCuentaMaestra(Long idPersona) {
+            
 		ConexionBD bd = new ConexionBD();
 		Connection connection = null;
 		PreparedStatement psUsuarios = null;

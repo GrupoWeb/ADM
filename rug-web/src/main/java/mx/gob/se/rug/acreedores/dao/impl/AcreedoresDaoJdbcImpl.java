@@ -849,6 +849,7 @@ public class AcreedoresDaoJdbcImpl extends BaseRugDao implements AcreedoresDAO {
 
 	@Override
 	public long getCuentaMaestra(Integer idPersona) {
+            System.out.println("LLEGA A getCuentaMaestra 3: "+ idPersona);
 		String sql = "SELECT NVL(cve_usuario_padre, 'MAESTRA') AS cve_usuario_padre FROM rug_secu_usuarios WHERE id_persona = ?";
 		ConexionBD bd = new ConexionBD();
 		Connection connection = null;

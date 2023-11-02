@@ -449,6 +449,8 @@ public class CargaMasivaAction extends RugBaseAction implements
 		}
 		try {
 			Integer idTramiteFirma = masivaDAO.getIdTramiteFirmaDb(idArchivoResultado);
+                        System.out.println("idTramiteFirma: "+idTramiteFirma);
+                        System.out.println("inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma): "+inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma));
 			this.setCostoTramiteMasivo(inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma));
 			sessionMap.put(Constants.ID_TRAMITE_NUEVO, idTramiteFirma);
 		}catch(Exception e){

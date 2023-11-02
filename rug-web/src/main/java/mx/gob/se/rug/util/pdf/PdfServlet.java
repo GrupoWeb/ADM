@@ -117,10 +117,13 @@ public class PdfServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         byte file[] = null;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
+        
+        
 
 
         if (session.getAttribute("Consulta") != null && (Integer) session.getAttribute("Consulta") == 1) {
             PdfTO pdfTO = (PdfTO) session.getAttribute("pdfTO");
+            
             PdfWriter writer = new PdfWriter(os);
             PdfDocument pdf = new PdfDocument(writer);
             try {
@@ -137,6 +140,7 @@ public class PdfServlet extends HttpServlet {
             Integer idTramite = (Integer) session.getAttribute(Constants.ID_TRAMITE_NUEVO);
             UsuarioTO usuario = (UsuarioTO) session.getAttribute(Constants.USUARIO);
             PdfTO pdfTO = (PdfTO) session.getAttribute("pdfTO");
+            System.out.println("REtorno n " + pdfTO.getMassive() + " tramite n "+ idTramite + " usuario n "+ usuario);
             try {
                 if (pdfTO != null) {
                     if (pdfTO.getMassive() != "False") {
