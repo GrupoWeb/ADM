@@ -237,20 +237,6 @@ public static final String FS_BASEPATH = "fsBasePath";
  public static final String SIGN_ZIP_URL = "SIGN_ZIP_URL";
  public static final String SIGN_PDF_URL = "SIGN_PDF_URL";
 
-// firma digital de PDF
-//public static final String SIGN_TEXT = "Texto de Pruebas";
-//public static final String SIGN_IMAGE = "SIGN_IMAGE";
-//public static final String SIGN_FILE = "C:/certificado_RGM/rgm.p12";
-//public static final String SIGN_PASSWORD = "eu47gm18tp5";
-//public static final String SIGN_LOCATION = "SIGN_LOCATION";
-//public static final String SIGN_LLX = "SIGN_LLX";
-//public static final String SIGN_LLY = "SIGN_LLY";
-//public static final String SIGN_URX = "SIGN_URX";
-//public static final String SIGN_URY = "SIGN_URY";
-//public static final String SIGN_PAGE = "SIGN_PAGE";
-//public static final String SIGN_FIELDNAME = "SIGN_FIELDNAME";
-//public static final String SIGN_ENABLED = "1";
-
 //Privielgios VS tipoTramite
 public static Map<Integer, Integer> mapTipoTramite;
 

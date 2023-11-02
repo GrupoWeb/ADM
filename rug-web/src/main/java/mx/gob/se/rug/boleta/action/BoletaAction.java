@@ -132,13 +132,10 @@ public class BoletaAction extends RugBaseAction {
     }
 
     public String signatureFiles(){
-        System.out.println("Entramos a signatureFile");
         UsuarioTO usuarioTO = (UsuarioTO) sessionMap.get(Constants.USUARIO);
         String regresa = "";
         Integer idTramiteVar = null;
         Integer idTipoTramiteVar = null;
-        System.out.println("ID Tramite " + getIdTramite());
-        System.out.println("ID Garantia " + getIdTipoTramite());
 
         if(usuarioTO == null){
             try {
@@ -175,13 +172,11 @@ public class BoletaAction extends RugBaseAction {
             BoletaDAO boletaDAO = new BoletaDAO();
 
             if (getIdTramite() != null) {
-                System.out.println("if " + getIdTipoTramite() + " var " + getIdTramite());
                 idTramiteVar = new Integer(getIdTramite());
                 idTipoTramiteVar = new Integer(getIdTipoTramite());
             } else {
                 idTramiteVar = new Integer((Integer) sessionMap.get(Constants.ID_TRAMITE_NUEVO));
                 idTipoTramiteVar = boletaDAO.getTipoTramitebyIdTramiteTemporal(idTramiteVar);
-                System.out.println("Else " + idTramiteVar + " var " + idTipoTramiteVar);
             }
 
             BoletaServiceImpl boletaServiceImpl = new BoletaServiceImpl();
@@ -196,7 +191,6 @@ public class BoletaAction extends RugBaseAction {
                 }
                 PdfTO pdfTOInfo = null;
                 BoletaServices boletaServices = new BoletaServices();
-                System.out.println("idTipoTramiteVar Prueba: "+idTipoTramiteVar);
                 switch (idTipoTramiteVar) {
                     case 1:// Inscripcion
                         mx.gob.se.rug.boleta.to.DetalleTO detalleTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -249,7 +243,6 @@ public class BoletaAction extends RugBaseAction {
                         break;
                     case 35:// Certificacion Nuevo Arancel
                         Integer idTramiteNuevo = boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteVar);
-                        System.out.println("Valor " + idTramiteVar);
                         DetalleTO detalleCertNuevo = boletaDAO.getCertificacion(idTramiteNuevo);
                         pdfTO.setIdGarantiaTO(Integer.valueOf(detalleCertNuevo.getIdGarantia()));
                         byte myFileNuevo[] = null;
@@ -615,7 +608,6 @@ public class BoletaAction extends RugBaseAction {
 
     public String getBoleta() {
 
-         System.out.println("Entramos a getboleta");
         UsuarioTO usuarioTO = (UsuarioTO) sessionMap.get(Constants.USUARIO);
 
         if (usuarioTO == null) {
@@ -688,7 +680,6 @@ public class BoletaAction extends RugBaseAction {
             pdfTO.setMassive("False");
             pdfTO.setSave("0");
 
-            // System.out.println("idTipotramite:::::::::::::::::1 " + idTipoTramite);
             if (idTipoTramiteVar != null) {
                 if (idTipoTramiteVar.intValue() == 15
                         || idTipoTramiteVar.intValue() == 16) {
@@ -701,11 +692,9 @@ public class BoletaAction extends RugBaseAction {
                  * }
                  */
 
-                // System.out.println("idTipotramite:::::::::::::::::2 " + idTipoTramiteVar);
 
                 PdfTO pdfTOInfo = null;
                 BoletaServices boletaServices = new BoletaServices();
-                System.out.println("tipo " + idTipoTramiteVar);
                 switch (idTipoTramiteVar) {
                     case 1:// Inscripcion
                         mx.gob.se.rug.boleta.to.DetalleTO detalleTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -834,7 +823,6 @@ public class BoletaAction extends RugBaseAction {
                         Integer idTramiteF = boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteVar);
                         DetalleTO detalleCert = boletaDAO.getCertificacion(idTramiteF);
 
-                        System.out.println("Garantia " + detalleCert.getIdGarantia());
                         pdfTO.setIdGarantiaTO(Integer.valueOf(detalleCert.getIdGarantia()));
                         // byte myFile[] = boletaDAO.getPdfBoleta(detalleCert.getIdTramite());
                         byte myFile[] = null;
@@ -1222,10 +1210,6 @@ public class BoletaAction extends RugBaseAction {
                                     // pdfTO.setHtmlList(pdfMas.getHtml());
                                 }
 
-                                // System.out.println("Html normal = " + htmlLista.size());
-                                // System.out.println("Html Lista = " + pdfTO.getHtmlList().size());
-
-                                // System.out.println("iteracion = " + pdfTO.getHtmlList());
                                 pdfTO.setTypeValue(this.getTypeData());
                                 pdfTO.setIdTramite(idTramiteFirma);
                                 // pdfTO.setValue("[*nInscripciones*]",

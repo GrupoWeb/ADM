@@ -933,7 +933,6 @@ public class UsuarioAction extends RugBaseAction /* implements CaptchaAction */{
 					if(upload != null) {
 						Constants c = new Constants();
 						String basepath = c.getParamValue(Constants.FS_BASEPATH);
-						System.out.println(upload);
 						String fileUrl = filesService.saveFile(new FileInputStream(upload), basepath, uploadFileName, usuario.getDocId(), true);
 						// eliminar archivos anteriores
 						archivoSvc.deleteByObjeto(idPersona);

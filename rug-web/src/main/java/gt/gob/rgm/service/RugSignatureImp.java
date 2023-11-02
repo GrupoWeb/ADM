@@ -71,6 +71,7 @@ import mx.gob.se.rug.to.UsuarioTO;
 import mx.gob.se.rug.util.pdf.PageXofY;
 import mx.gob.se.rug.util.pdf.to.PdfTO;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.struts2.ServletActionContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -78,19 +79,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class RugSignatureImp implements RugSignature {
-
-//    public static final String SIGN_URL = 	 "http://128.5.101.19:8080/api/signature";
-//    public static final String SIGN_BYTES =  "http://128.5.101.19:8080/api/toBytes";
-//    public static final String SIGN_VERIFY = "http://128.5.101.19:8080/api/verifyFile";
-
-   /* public static final String SIGN_URL = 	 "https://operaciones.rgm.gob.gt/api/signature";
-    public static final String SIGN_BYTES =  "https://operaciones.rgm.gob.gt/api/toBytes";
-    public static final String SIGN_VERIFY = "https://operaciones.rgm.gob.gt/api/verifyFile";*/
-    
-    public static final String SIGN_URL = 	 "https://qasistema.rgm.gob.gt/api/signature";
-    public static final String SIGN_BYTES =  "https://qasistema.rgm.gob.gt/api/toBytes";
-    public static final String SIGN_VERIFY = "https://qasistema.rgm.gob.gt/api/verifyFile";
-
 
     private Integer idTipoTramiteMasiva;
     private String typeData;
@@ -135,12 +123,7 @@ public class RugSignatureImp implements RugSignature {
      * @version: 26.09.2022
      */
     public Response signatureFiles(Integer idGarantia, Integer idTramite, Integer idUsuario, Integer idTipoTramiteRest){    
-        System.out.println("INGRESA A signatureFiles DE RugSignatureImp.java");
-        System.out.println("idGarantia:::"+idGarantia);
-        System.out.println("idTramite:::"+idTramite);
-        System.out.println("idUsuario:::"+idUsuario);
-        System.out.println("idTipoTramiteRest:::"+idTipoTramiteRest);
-        
+
         try {
 
 
@@ -162,21 +145,15 @@ public class RugSignatureImp implements RugSignature {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
         
         
-            System.out.println("ANTES DEL IF");
             if(!inscripcionService.getSaldoByUsuario(idUsuario.toString(), idTipoTramiteRest, 0, idGarantiaVar)){
-                System.out.println("ENTRA AL IF");
                 return Response.ok("Sin Saldo").build();
             }
             else{
-                System.out.println("ENTRA AL ELSE");
-                Integer idTramiteNuevo = inscripcionDAO.insert(idUsuario, idTipoTramiteRest); 
+                Integer idTramiteNuevo = inscripcionDAO.insert(idUsuario, idTipoTramiteRest);
                 garantiasDAO.altaBitacoraTramite(idTramiteNuevo, new Integer(3), new Integer(0), null, "V");
 
                 try {
-                    System.out.println("ENTRA AL TRY");
                     idTipoTramiteVar = boletaDAO.getTipoTramitebyIdTramiteTemporal(idTramiteVar);
-                    System.out.println("idTipoTramiteVar: "+idTipoTramiteVar);
-                    System.out.println("idTramiteNuevo: "+idTramiteNuevo);
                     Integer idTramiteCert = boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteNuevo);
                     Integer idTTramite = boletaDAO.getTipoTramitebyIdTramiteTerminado(idTramiteVar);
                     certificacionDAO.setCertificacion(idTramiteCert, idTramiteVar, idTTramite, idGarantiaVar, idUsuario);
@@ -193,7 +170,6 @@ public class RugSignatureImp implements RugSignature {
                             if (idTipoTramiteRest.intValue() == 15 || idTipoTramiteRest.intValue() == 16) {
                                 idTipoTramiteRest = 1;
                             }
-                            System.out.println("VALIDA EL idTipoTramiteRest: "+idTipoTramiteRest);
                             switch(idTipoTramiteRest){
                                 case 1:// Inscripcion
                                     mx.gob.se.rug.boleta.to.DetalleTO detalleTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -246,7 +222,6 @@ public class RugSignatureImp implements RugSignature {
                                     break;
                                 case 35:// Certificacion Nuevo Arancel
                                     Integer idTramiteCertificacion = boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteNuevo);
-                                    System.out.println("Valor 2 " + idTramiteNuevo);
                                     DetalleTO detalleCertNuevo = boletaDAO.getCertificacion(idTramiteCertificacion);
                                     pdfTO.setIdGarantiaTO(Integer.valueOf(detalleCertNuevo.getIdGarantia()));
                                     byte myFileNuevo[] = null;
@@ -482,7 +457,6 @@ public class RugSignatureImp implements RugSignature {
 
                                     break;
                                 case 18:// Firma masiva
-                                    System.out.println("PARA CREAR ZIP 1");
                                     InscripcionService inscripcionServiceV = new InscripcionServiceImpl();
                                     int idEstatus = new FirmaMasivaDAO().getEstatusByTramiteTemporal(idTramiteNuevo);
                                     MasivaDAO masivaDAO = new MasivaDAO();
@@ -578,7 +552,6 @@ public class RugSignatureImp implements RugSignature {
                                     }
                                 break;
                             }
-                            System.out.println("DESPUES DEL SWITCH");
                             if (pdfTO.getIdTramite() != null) {
                                 pdfTO.setValue("[*idTramite*]", pdfTO.getIdTramite().toString());
                                 pdfTO.setValue("[*GMTExplica*]", "");
@@ -589,9 +562,7 @@ public class RugSignatureImp implements RugSignature {
                             }
 
                             /**** FIRMA DE DOCUMENTOS  */
-                            System.out.println("VA A FIRMAR DOCUMENTOS");
                             if (idTipoTramiteRest == 1) {
-                                System.out.println("ENTRA AL IF DE LA FIRMA");
 
                                 PdfWriter writer = new PdfWriter(os);
                                 PdfDocument pdf = new PdfDocument(writer);
@@ -609,7 +580,6 @@ public class RugSignatureImp implements RugSignature {
                                 }
                             }
                             else{
-                                System.out.println("ENTRA AL EL DE LA FIRMA :"+pdfTO);
                                 try {
                                     if (pdfTO != null) {
                                         if (pdfTO.getMassive() != "False") {
@@ -633,7 +603,6 @@ public class RugSignatureImp implements RugSignature {
 
                                             for (int iteracionB = 0; iteracionB < pdfTO.getHtmlList().size(); iteracionB++) {
                                                 
-                                                System.out.println("PARA CREAR ZIP 2");
                                                 byte filepdf[] = null;
                                                 byte filesSignature[] = null;
                                                 
@@ -724,7 +693,6 @@ public class RugSignatureImp implements RugSignature {
                                                 pdfTO.setFile(file);
                                                 String retorno = sendPDF(TimeStampFile(), true, file, idUsuario.toString());
                                                 while (true) {
-                                                    System.out.println(verifyFiles(retorno));
                                                     if(verifyFiles(retorno) == 1){
                                                         filesSignature = getBytesFile(retorno);
                                                         pdfTO.setFile(filesSignature);
@@ -755,7 +723,6 @@ public class RugSignatureImp implements RugSignature {
                     return Response.serverError().build();
                 }
             }
-            System.out.println("SALE SIN SALDO : "+ regresa);
             return Response.ok(regresa).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -839,15 +806,27 @@ public class RugSignatureImp implements RugSignature {
         return doc.getNumberOfPages();
     }
 
+    private String changePath(String Constant_path, String env){
+        if(env.equals("prod")){
+            String url = Constants.SIGN_BASE_PROD  + Constant_path;
+            return url;
+        }else {
+            HttpServletRequest request = ServletActionContext.getRequest();
+            StringBuffer uri = request.getRequestURL();
+            String url = uri.toString().replace(Constants.SIGN_BASE_REPLACE, "") + Constant_path;
+            return url;
+        }
+
+
+    }
 
     private String sendPDF(String pIdGarantia, boolean local, byte[] files, String email) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_URL);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL, Constants.ENV));
         String fileName = pIdGarantia;
 
         String pageNumber = Integer.toString(countPage(files));
 
-        System.out.println("Cantidad " + pageNumber);
 
         Long idPersona = getIdUsuarioByEmail(email);
 
@@ -872,7 +851,7 @@ public class RugSignatureImp implements RugSignature {
 
     private byte[] getBytesFile(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_BYTES);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_BYTES,Constants.ENV));
         String fileName = pIdGarantia;
 
 
@@ -889,7 +868,7 @@ public class RugSignatureImp implements RugSignature {
     }
     private Response getBytesFileDownload(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_BYTES);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_BYTES,Constants.ENV));
         String fileName = pIdGarantia + ".pdf";
 
 
@@ -913,7 +892,7 @@ public class RugSignatureImp implements RugSignature {
 
     private Integer verifyFiles(String pIdGarantia) throws ClientProtocolException, IOException{
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(SIGN_VERIFY);
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_VERIFY,Constants.ENV));
         String fileName = pIdGarantia;
         Integer very = 0;
 
@@ -924,7 +903,6 @@ public class RugSignatureImp implements RugSignature {
 
         HttpResponse response = httpclient.execute(httpPost);
         String data = new BasicResponseHandler().handleResponse(response);
-        System.out.println("Response " + data);
         if(data.equals("true"))
         {
             very = new Integer(1);

@@ -71,7 +71,6 @@ public class RugSignatureFile extends HttpServlet {
     }
 
     private void signatureFiles(HttpServletRequest req, HttpServletResponse resp){
-        System.out.println("INGRESA A signatureFiles DE RugSignatureFile.java");
         HttpSession session = req.getSession(false);
         byte file[] = null;
         ByteArrayOutputStream os = new ByteArrayOutputStream();

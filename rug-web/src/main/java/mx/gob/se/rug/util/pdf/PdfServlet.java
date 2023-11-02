@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 
 import javax.servlet.ServletException;
@@ -24,6 +25,18 @@ import mx.gob.se.rug.util.MyLogger;
 import mx.gob.se.rug.util.pdf.to.PdfTO;
 
 //import org.w3c.dom.Document;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.InputStreamBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.struts2.ServletActionContext;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xml.sax.SAXException;
 
@@ -98,32 +111,13 @@ public class PdfServlet extends HttpServlet {
 
     private void generatePdf(HttpServletRequest req, HttpServletResponse resp)  {
 
-        System.out.println("Firma Antigua ");
 
         // Variables Firma
-        String signText = "";
-        String signImage = "";
-        String signFile = "";
-        String signPassword = "";
-        String signLocation = "";
-        String signLlx = "";
-        String signLly = "";
-        String signUrx = "";
-        String signUry = "";
-        String signPage = "";
-        String signFieldname = "";
-        String archivoNombre = "";
-        Integer idGarantiaTO;
         HttpSession session = req.getSession(false);
         byte file[] = null;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        
-        
-
-
         if (session.getAttribute("Consulta") != null && (Integer) session.getAttribute("Consulta") == 1) {
             PdfTO pdfTO = (PdfTO) session.getAttribute("pdfTO");
-            
             PdfWriter writer = new PdfWriter(os);
             PdfDocument pdf = new PdfDocument(writer);
             try {
@@ -131,7 +125,6 @@ public class PdfServlet extends HttpServlet {
                 doc.close();
                 file = os.toByteArray();
                 pdfTO.setFile(file);
-                System.out.println("Garanti TO " + pdfTO.getIdGarantiaTO());
                 showPdf(pdfTO, resp, "Consulta",0);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -140,7 +133,6 @@ public class PdfServlet extends HttpServlet {
             Integer idTramite = (Integer) session.getAttribute(Constants.ID_TRAMITE_NUEVO);
             UsuarioTO usuario = (UsuarioTO) session.getAttribute(Constants.USUARIO);
             PdfTO pdfTO = (PdfTO) session.getAttribute("pdfTO");
-            System.out.println("REtorno n " + pdfTO.getMassive() + " tramite n "+ idTramite + " usuario n "+ usuario);
             try {
                 if (pdfTO != null) {
                     if (pdfTO.getMassive() != "False") {
@@ -152,40 +144,7 @@ public class PdfServlet extends HttpServlet {
                         if (idTramite != null) {
                             pdfTO.setIdTramite(idTramite);
                         }
-                        String signEnabled = Constants.getParamValue(Constants.SIGN_ENABLED);
-                        String signDev = Constants.getParamValue(Constants.SIGN_LOCAL);
-                        
-                        
-                        
-                        if (Boolean.valueOf(signEnabled)) {
-                            if (Boolean.valueOf(signDev)) {
-                                signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                                signImage = Constants.getParamValue(Constants.SIGN_IMAGE_LOCAL);
-                                signFile = Constants.getParamValue(Constants.SIGN_FILE_LOCAL);
-                                signPassword = Constants.getParamValue(Constants.SIGN_PASSWORD);
-                                signLocation = Constants.getParamValue(Constants.SIGN_LOCATION);
-                                signLlx = Constants.getParamValue(Constants.SIGN_LLX);
-                                signLly = Constants.getParamValue(Constants.SIGN_LLY);
-                                signUrx = Constants.getParamValue(Constants.SIGN_URX);
-                                signUry = Constants.getParamValue(Constants.SIGN_URY);
-                                signPage = Constants.getParamValue(Constants.SIGN_PAGE);
-                                signFieldname = Constants.getParamValue(Constants.SIGN_FIELDNAME);
-                            } else {
-                                signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                                signImage = Constants.getParamValue(Constants.SIGN_IMAGE);
-                                signFile = Constants.getParamValue(Constants.SIGN_FILE);
-                                signPassword = Constants.getParamValue(Constants.SIGN_PASSWORD);
-                                signLocation = Constants.getParamValue(Constants.SIGN_LOCATION);
-                                signLlx = Constants.getParamValue(Constants.SIGN_LLX);
-                                signLly = Constants.getParamValue(Constants.SIGN_LLY);
-                                signUrx = Constants.getParamValue(Constants.SIGN_URX);
-                                signUry = Constants.getParamValue(Constants.SIGN_URY);
-                                signPage = Constants.getParamValue(Constants.SIGN_PAGE);
-                                signFieldname = Constants.getParamValue(Constants.SIGN_FIELDNAME);
-                            }
 
-                        }
- 
                         String filePathToBeServed = Constants.getParamValue(Constants.SIGN_ZIP_URL);
                         Date date = new Date();
                         DateFormat datePDF = new SimpleDateFormat("dd-MM-yyyy");
@@ -209,42 +168,22 @@ public class PdfServlet extends HttpServlet {
                             pdf.addEventHandler(PdfDocumentEvent.START_PAGE, footerHandler);
                             Document doc = HtmlConverter.convertToDocument(pdfTO.getHtmlList().get(iteracionB), pdf, converterProperties);
                             doc.close();
-                            
+                            byte filesSignature[] = null;
                             filepdf = ospdf.toByteArray();
-                            
-                            
-                            if (Boolean.valueOf(signEnabled)) {
-                                info.setSignText(signText);
-                                info.setGraphicSignature(signImage);
-                                info.setKeyFile(signFile);
-                                info.setKeyPassword(signPassword);
-                                info.setLocation(signLocation);
-                                info.setLlx(Integer.valueOf(signLlx));
-                                info.setLly(Integer.valueOf(signLly));
-                                info.setUrx(Integer.valueOf(signUrx));
-                                info.setUry(Integer.valueOf(signUry));
-                                info.setSignPage(Integer.valueOf(signPage));
-                                info.setFieldName(signFieldname);
-                                if (pdfTO.getTypeValue() == null) {
-                                    info.setTypeDocument("Consulta");
-                                } else {
-                                    info.setTypeDocument(pdfTO.getTypeValue());
-                                }
-                                info.setReason("Tramite #");
-                                info.setDocument(filepdf);
 
-                                try {
-                                    ByteArrayOutputStream signedOs = digitalSignatureSvc.signDocument(info);
-                                    filepdf = signedOs.toByteArray();
-                                } catch (GeneralSecurityException | com.itextpdf.text.DocumentException e) {
-                                    e.printStackTrace();
+                            System.out.println("Garantia " + TimeStampFile() + " files " + filepdf +  " email "+ usuario.getPersona().getCorreoElectronico() + " usuario " + usuario.getPersona().getIdPersona());
+                            String retorno = sendPDF(TimeStampFile(), true, filepdf,usuario.getPersona().getCorreoElectronico(), usuario.getPersona().getIdPersona());
+                            while (true) {
+                                if(verifyFiles(retorno) == 1){
+                                    filesSignature = getBytesFile(retorno);
+                                    pdfTO.setFile(filesSignature);
+                                    break;
                                 }
                             }
 
                             try {
                                 String fileName = "Boleta_" + iteracionB + "_" + PDFtime + ".pdf";
                                 String path = filePathToBeServed+"/" + fileName;
-                                System.out.println("path = " + path);
                                 FileOutputStream FOS = new FileOutputStream(path);
                                 FOS.write(filepdf);
                                 FOS.close();
@@ -254,12 +193,9 @@ public class PdfServlet extends HttpServlet {
 
                         }
                         String pathOutputZip = Constants.getParamValue(Constants.SIGN_PDF_URL);
-                        System.out.println("pathOutputZip = " + pathOutputZip);
-                        System.out.println("filePathToBeServed = " + filePathToBeServed);
                         try {
                             zipFolder(filePathToBeServed, pathOutputZip+"/boleta_zip/"+PDFIndex+"_"+PDFtime+".zip");
                         } catch (Exception ex) {
-                            System.out.println("Error = " + ex);
                         }
                         File zipFile = new File(pathOutputZip+"/boleta_zip/"+PDFIndex+"_"+PDFtime+".zip");
                         resp.setContentType("application/zip");
@@ -273,191 +209,65 @@ public class PdfServlet extends HttpServlet {
                                 responseOutputStream.write(bytes);
                             }
                         } catch (IOException e) {
-                            System.out.println("err = " + e);
                         }
                         BoletaDAO boleta = new BoletaDAO();
                         boleta.insertBoletaPdf(pdfTO, usuario);
                     } 
                     else {
+                        byte filesSignature[] = null;
                         if (pdfTO.getIdTramite() == null) {
+                            pdfTO.setIdTramite(idTramite);
+                        }
+                        if (idTramite != null) {
                             pdfTO.setIdTramite(idTramite);
                         }
                         pdfTO.setKey("" + pdfTO.getIdTramite() + Random.generateRandom(100000));
                         PdfWriter writer = new PdfWriter(os);
                         ConverterProperties converterProperties = new ConverterProperties();
                         PdfDocument pdf = new PdfDocument(writer);
-                        
                         PageXofY footerHandler = new PageXofY(pdfTO.getKey());
-                        
-                                
                         pdf.addEventHandler(PdfDocumentEvent.START_PAGE, footerHandler);
-                    
-                        
-                       pdf.setDefaultPageSize(PageSize.A3);
-
-
-                        System.out.println("Html Error " + pdfTO.getHtml());
+                        pdf.setDefaultPageSize(PageSize.A3);
                         Document doc = HtmlConverter.convertToDocument(pdfTO.getHtml(), pdf, converterProperties);
-                        
-                 
-                        
-                        if (idTramite != null) {
-                            pdfTO.setIdTramite(idTramite);
-                        }
-
                         doc.close();
                         file = os.toByteArray();
-                        String signEnabled = Constants.getParamValue(Constants.SIGN_ENABLED);
-                        String signDev = Constants.getParamValue(Constants.SIGN_LOCAL);
-                        DigitalSignatureServiceImp digitalSignatureSvc = new DigitalSignatureServiceImp();
-                        SignatureInfo info = new SignatureInfo();
+                        BoletaDAO boleta = new BoletaDAO();
+                        boleta.insertBoletaPdf(pdfTO, usuario);
+
+                        String archivoNombre = "Consulta";
+                        Integer idGarantiaTO = 0;
 
                         try {
-                            signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                            signImage = Constants.getParamValue(Constants.SIGN_IMAGE);
-                            signFile = Constants.getParamValue(Constants.SIGN_FILE);
-                            signPassword = Constants.getParamValue(Constants.SIGN_PASSWORD);
-                            signLocation = Constants.getParamValue(Constants.SIGN_LOCATION);
-                            signLlx = Constants.getParamValue(Constants.SIGN_LLX);
-                            signLly = Constants.getParamValue(Constants.SIGN_LLY);
-                            signUrx = Constants.getParamValue(Constants.SIGN_URX);
-                            signUry = Constants.getParamValue(Constants.SIGN_URY);
-                            signPage = Constants.getParamValue(Constants.SIGN_PAGE);
-                            signFieldname = Constants.getParamValue(Constants.SIGN_FIELDNAME);
-
-                            info.setSignText(signText);
-                            info.setGraphicSignature(signImage);
-                            info.setKeyFile(signFile);
-                            info.setKeyPassword(signPassword);
-                            info.setLocation(signLocation);
-                            info.setLlx(Integer.valueOf(signLlx));
-                            info.setLly(Integer.valueOf(signLly));
-                            info.setUrx(Integer.valueOf(signUrx));
-                            info.setUry(Integer.valueOf(signUry));
-                            info.setSignPage(Integer.valueOf(signPage));
-                            info.setFieldName(signFieldname);
-                            if (pdfTO.getTypeValue() == null) {
-                                info.setTypeDocument("Consulta");
-                                archivoNombre = "Consulta";
-                                idGarantiaTO = 0;
-                            } else {
-                                info.setTypeDocument(pdfTO.getTypeValue());
-                                archivoNombre = pdfTO.getTypeValue();
-                            }
-                            System.out.println("Garanti TO " + pdfTO.getIdGarantiaTO());
-                            idGarantiaTO= pdfTO.getIdGarantiaTO();
-                            info.setReason("Tramite #");
-                            info.setDocument(file);
-
-                            
-                             //corellana desactivar para el ambiente local, ya que no tengo el p12 
-                            
-                            if (Boolean.valueOf(signEnabled)) {
-                                try {
-                                    ByteArrayOutputStream signedOs = digitalSignatureSvc.signDocument(info);
-                                    file = signedOs.toByteArray();
-                                } catch (GeneralSecurityException | com.itextpdf.text.DocumentException e) {
-                                    MyLogger.Logger.log(Level.INFO, " no tiene parametros....." + e);
-                                    e.printStackTrace();
+                            pdfTO.setFile(file);
+                            String retorno = sendPDF(TimeStampFile(), true, file, usuario.getPersona().getCorreoElectronico(), usuario.getPersona().getIdPersona());
+                            while (true) {
+                                if(verifyFiles(retorno) == 1){
+                                    filesSignature = getBytesFile(retorno);
+                                    pdfTO.setFile(filesSignature);
+                                    break;
                                 }
                             }
-
-                            pdfTO.setFile(file);
-                            BoletaDAO boleta = new BoletaDAO();
-                            boleta.insertBoletaPdf(pdfTO, usuario);
-                            
                             showPdf(pdfTO, resp, archivoNombre,idGarantiaTO);
 
                         } catch (Exception e) {
-                            MyLogger.Logger.log(Level.INFO, " Error en exception" + e);
-                            signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                            signImage = Constants.getParamValue(Constants.SIGN_IMAGE);
-                            // signImage = "C:/certificado_RGM/firma.png";
-					        // signFile = "C:/certificado_RGM/rgm.p12";
-                            signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                            signPassword = Constants.getParamValue(Constants.SIGN_PASSWORD);
-                            signLocation = Constants.getParamValue(Constants.SIGN_LOCATION);
-                            signLlx = Constants.getParamValue(Constants.SIGN_LLX);
-                            signLly = Constants.getParamValue(Constants.SIGN_LLY);
-                            signUrx = Constants.getParamValue(Constants.SIGN_URX);
-                            signUry = Constants.getParamValue(Constants.SIGN_URY);
-                            signPage = Constants.getParamValue(Constants.SIGN_PAGE);
-                            signFieldname = Constants.getParamValue(Constants.SIGN_FIELDNAME);
-
-                            info.setSignText(signText);
-                            info.setGraphicSignature(signImage);
-                            info.setKeyFile(signFile);
-                            info.setKeyPassword(signPassword);
-                            info.setLocation(signLocation);
-                            info.setLlx(Integer.valueOf(signLlx));
-                            info.setLly(Integer.valueOf(signLly));
-                            info.setUrx(Integer.valueOf(signUrx));
-                            info.setUry(Integer.valueOf(signUry));
-                            info.setSignPage(Integer.valueOf(signPage));
-                            info.setFieldName(signFieldname);
-                            if (pdfTO.getTypeValue() == null) {
-                                info.setTypeDocument("Consulta");
-                                archivoNombre = "Consulta";
-                                idGarantiaTO = 0;
-                            } else {
-                                info.setTypeDocument(pdfTO.getTypeValue());
-                                archivoNombre = pdfTO.getTypeValue();
-                            }
-                            System.out.println("Garanti TO " + pdfTO.getIdGarantiaTO());
-                            idGarantiaTO= pdfTO.getIdGarantiaTO();
-                            info.setReason("Tramite #");
-                            info.setDocument(file);
-
-                            try {
-                                ByteArrayOutputStream signedOs = digitalSignatureSvc.signDocument(info);
-                                file = signedOs.toByteArray();
-                            } catch (GeneralSecurityException | com.itextpdf.text.DocumentException ee) {
-                                MyLogger.Logger.log(Level.INFO, " no tiene parametros....." + ee);
-                                e.printStackTrace();
-                            }
-                            System.out.println("Tramite Firma" + pdfTO.getIdTramite());
-
-                            pdfTO.setFile(file);
-                            BoletaDAO boleta = new BoletaDAO();
-                            boleta.insertBoletaPdf(pdfTO, usuario);
-                            
-                            showPdf(pdfTO, resp, archivoNombre,idGarantiaTO);
+                            e.printStackTrace();
                         }
-                        // if (Boolean.valueOf(signEnabled)) {
-                        //     if (Boolean.valueOf(signDev)) {
-                        //         signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                        //         signImage = Constants.getParamValue(Constants.SIGN_IMAGE_LOCAL);
-                        //         signFile = Constants.getParamValue(Constants.SIGN_FILE_LOCAL);
-                        //         signPassword = Constants.getParamValue(Constants.SIGN_PASSWORD);
-                        //         signLocation = Constants.getParamValue(Constants.SIGN_LOCATION);
-                        //         signLlx = Constants.getParamValue(Constants.SIGN_LLX);
-                        //         signLly = Constants.getParamValue(Constants.SIGN_LLY);
-                        //         signUrx = Constants.getParamValue(Constants.SIGN_URX);
-                        //         signUry = Constants.getParamValue(Constants.SIGN_URY);
-                        //         signPage = Constants.getParamValue(Constants.SIGN_PAGE);
-                        //         signFieldname = Constants.getParamValue(Constants.SIGN_FIELDNAME);
-                        //     } else {
-                        //         signText = Constants.getParamValue(Constants.SIGN_TEXT);
-                        //         signImage = Constants.getParamValue(Constants.SIGN_IMAGE);
-                        //         signFile = Constants.getParamValue(Constants.SIGN_FILE);
-                        //         signPassword = Constants.getParamValue(Constants.SIGN_PASSWORD);
-                        //         signLocation = Constants.getParamValue(Constants.SIGN_LOCATION);
-                        //         signLlx = Constants.getParamValue(Constants.SIGN_LLX);
-                        //         signLly = Constants.getParamValue(Constants.SIGN_LLY);
-                        //         signUrx = Constants.getParamValue(Constants.SIGN_URX);
-                        //         signUry = Constants.getParamValue(Constants.SIGN_URY);
-                        //         signPage = Constants.getParamValue(Constants.SIGN_PAGE);
-                        //         signFieldname = Constants.getParamValue(Constants.SIGN_FIELDNAME);
-                        //     }
-                        // }
-                        
                     }
                 }
             } catch (IOException e) {
-                MyLogger.Logger.log(Level.WARNING, "HTML_NO_PARSE::::::" + pdfTO.getHtml());
                 e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
             }
         }
+    }
+
+    public String TimeStampFile()
+    {
+        Date date = new Date();
+        DateFormat hourDateFormat = new SimpleDateFormat("yyyyMMdd-HH-mm-ss");
+        String history = hourDateFormat.format(date);
+        return history;
     }
 
     public String getUrl(String url) {
@@ -543,8 +353,102 @@ public class PdfServlet extends HttpServlet {
               for (int i=0; i<myFiles.length; i++) {
                   File myFile = new File(file, myFiles[i]); 
                   myFile.delete();
-                  System.out.println("Deleted " + myFile);
               }
            }
     }
+
+    private String changePath(String Constant_path, String env){
+        System.out.println("Variables de entorno "+ Constant_path + " env " + env + " path " + Constants.SIGN_BASE_PROD);
+        if(env.equals("prod")){
+            String url = Constants.SIGN_BASE_PROD  + Constant_path;
+            return url;
+        }else {
+            HttpServletRequest request = ServletActionContext.getRequest();
+            StringBuffer uri = request.getRequestURL();
+            String url = uri.toString().replace(Constants.SIGN_BASE_REPLACE, "") + Constant_path;
+            return url;
+        }
+    }
+
+    public Integer countPage(byte[] files) throws IOException {
+        PDDocument doc = null;
+        doc = PDDocument.load(files);
+        return doc.getNumberOfPages();
+    }
+
+    private String sendPDF(String pIdGarantia, boolean local, byte[] files, String email, Integer idUsuario) throws ClientProtocolException, IOException, NoSuchAlgorithmException {
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL, Constants.ENV));
+        String fileName = pIdGarantia;
+        System.out.println("Garantia " + fileName);
+
+        String pageNumber = Integer.toString(countPage(files));
+
+
+
+
+        ContentBody cd = new InputStreamBody(new ByteArrayInputStream(files), "files.pdf");
+        MultipartEntity reqEntity = new MultipartEntity();
+        reqEntity.addPart("file", cd);
+        reqEntity.addPart("name", new StringBody(fileName));
+        reqEntity.addPart("page", new StringBody(pageNumber));
+        reqEntity.addPart("user", new StringBody(idUsuario.toString()));
+        reqEntity.addPart("email", new StringBody(email));
+
+
+        httpPost.setEntity(reqEntity);
+
+
+        HttpResponse response = httpclient.execute(httpPost);
+        String data = new BasicResponseHandler().handleResponse(response);
+        System.out.println("Respuesta desde RUG " + data);
+        return fileName;
+
+    }
+
+    private byte[] getBytesFile(String pIdGarantia) throws ClientProtocolException, IOException{
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_BYTES,Constants.ENV));
+        String fileName = pIdGarantia;
+
+
+        MultipartEntity reqEntity = new MultipartEntity();
+        reqEntity.addPart("garantia", new StringBody(fileName));
+        httpPost.setEntity(reqEntity);
+
+        HttpResponse response = httpclient.execute(httpPost);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        response.getEntity().writeTo(baos);
+        byte[] bytes = baos.toByteArray();
+        return bytes;
+
+    }
+
+    private Integer verifyFiles(String pIdGarantia) throws ClientProtocolException, IOException{
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_VERIFY,Constants.ENV));
+        String fileName = pIdGarantia;
+        Integer very = 0;
+
+
+        MultipartEntity reqEntity = new MultipartEntity();
+        reqEntity.addPart("garantia", new StringBody(fileName));
+        httpPost.setEntity(reqEntity);
+
+        HttpResponse response = httpclient.execute(httpPost);
+        String data = new BasicResponseHandler().handleResponse(response);
+        if(data.equals("true"))
+        {
+            very = new Integer(1);
+            return very;
+        }else{
+            very = new Integer(0);
+            return very;
+
+        }
+
+    }
+
+
 }

@@ -34,16 +34,6 @@ public class CancelacionAnotacionSNGarantiaDAO extends BaseRugDao {
 								+ ",idTramiteTemporal="
 								+ idTipoTram);
 
-		System.out.println("#################");
-		System.out.println("idUsuario:" +IdUsuario + "\n"+
-				"idTipoTram:" +idTipoTram+ "\n"+
-				"idAnotacion:" + IdAnotacion+"\n"+
-				"autoInst:"+autoInst+ "\n"+
-				"anotacion:"+Anotacion+ "\n"+
-				"VigenMes:" +VigenMes+ "\n"
-				
-				);
-		
 		PlSql regresa = new PlSql();
 		String sql = "{ call RUG.SP_ALTA_ANOTACION_SN_GARANTIA1(?, ?, ?, ?, ?, ?, ?, ?) }";
 		ConexionBD bd = new ConexionBD();
