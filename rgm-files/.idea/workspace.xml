@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="65dbf64c-dd65-4a78-b3f4-d3f542d9301d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../rgm-captcha/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rgm-captcha/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rgm-captcha/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rgm-captcha/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rgm-captcha/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rgm-captcha/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rug-ejb/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../rug-ejb/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/classes/gt/gob/rgm/captcha/service/CaptchaService.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/classes/gt/gob/rgm/captcha/service/CaptchaService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/classes/gt/gob/rgm/captcha/service/CaptchaServiceImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/classes/gt/gob/rgm/captcha/service/CaptchaServiceImp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/classes/gt/gob/rgm/captcha/utils/Random.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/classes/gt/gob/rgm/captcha/utils/Random.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-captcha/target/rgm-captcha-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-captcha/target/rgm-captcha-1.0.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/gt/gob/rgm/files/service/FilesService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gt/gob/rgm/files/service/FilesService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/gt/gob/rgm/files/service/FilesServiceImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gt/gob/rgm/files/service/FilesServiceImp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/gt/gob/rgm/files/utils/HashUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gt/gob/rgm/files/utils/HashUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/rgm-files-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/rgm-files-1.0.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/dao/ConexionDB.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/dao/ConexionDB.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/dao/MailBitacoraDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/dao/MailBitacoraDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/domain/AccountMailTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/domain/AccountMailTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/domain/MailTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/domain/MailTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/domain/MessageTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/domain/MessageTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/exception/InfrastructureException.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/exception/InfrastructureException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/exception/NoDestinationAddressException.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/exception/NoDestinationAddressException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/security/SMTPAuthenticator.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/security/SMTPAuthenticator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/service/MailService.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/service/MailService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/service/MailServiceImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/classes/gt/gob/rgm/mail/service/MailServiceImp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rgm-mail/target/rgm-mail-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../rgm-mail/target/rgm-mail-1.0.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rug-ejb/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/META-INF/sun-ejb-jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/captcha/CaptchaBean.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/captcha/CaptchaBeanLocal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/captcha/CaptchaBeanRemote.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/conexion/ConexionDB.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/constants/Constantes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/constants/ConstantesDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/exception/InfrastructureException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/exception/NoDestinationAddressException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/ClientWebServiceRestful.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/FirmaCentral.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/FooterAcuseBean.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/FooterAcuseBeanLocal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/FooterAcuseBeanRemote.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/co/ClienteCadenaOriginal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/co/ObjectFactory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/co/Respuesta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/co/to/MessageResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/co/to/ResponseWs.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/firma/to/FirmasTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/MailBean.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/MailBeanLocal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/MailBeanRemote.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/MailBitacoraDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/SMTPAuthenticator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/to/AccountMailTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/to/MailTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/mail/to/MessageTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/renapo/curp/consulta/ConsultaCurpBean.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/renapo/curp/consulta/ConsultaCurpBeanLocal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/renapo/curp/consulta/ConsultaCurpBeanRemote.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/renapo/curp/consulta/ResponseCurp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/renapo/curp/consulta/exception/NoCurpFound.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/renapo/curp/consulta/exception/NoServiceRenapoAvailable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/classes/mx/gob/se/utils/Random.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-ejb/target/rug-ejb-1.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rug-web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../rug-web/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="2XBYhZfL9KnCVWBAj0PAnkEaROb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "consultoria",
+    "last_opened_file_path": "C:/Users/jjolon/Desktop/www/ADM/rgm-files",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="65dbf64c-dd65-4a78-b3f4-d3f542d9301d" name="Changes" comment="" />
+      <created>1698104061222</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1698104061222</updated>
+      <workItem from="1698104062221" duration="190000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
