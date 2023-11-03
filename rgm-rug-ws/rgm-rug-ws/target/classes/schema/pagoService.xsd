@@ -1,0 +1,107 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" xmlns:tns="https://rug.rgm.gob.gt/services/rug-rgm-web-service"
+	targetNamespace="https://rug.rgm.gob.gt/services/rug-rgm-web-service">
+	
+	<xs:element name="getUsuarioRGMRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pCodigoPersona" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="getUsuarioRGMResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="estado" type="xs:int" />
+				<xs:element name="descripcion" type="xs:string" />
+				<xs:element name="persona" type="tns:persona" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="persona">
+		<xs:sequence>
+			<xs:element name="nit" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="nombre" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="idPersona" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="setBoletaRGMRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pFechaHora" type="xs:dateTime" />
+				<xs:element name="pAgencia" type="xs:string" />
+				<xs:element name="pIdTransaccion" type="xs:long" />
+				<xs:element name="pSerie" type="xs:string" />
+				<xs:element name="pNumero" type="xs:long" />
+				<xs:element name="pCodigoPersona" type="xs:string" />
+				<xs:element name="pIdPersona" type="xs:string" />
+				<xs:element name="tipoPago" type="xs:long" minOccurs="0"/>
+				<xs:element name="pMonto" type="xs:float" />
+				<xs:element name="pChequespropios" type="xs:float" minOccurs="0"/>
+				<xs:element name="pChequesotros" type="xs:float" minOccurs="0"/>
+				<xs:element name="pUsuario" type="xs:string" />
+				<xs:element name="pReciboContraloria" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="setBoletaRGMResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="estado" type="xs:int" />
+				<xs:element name="descripcion" type="xs:string" />				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="revertBoletaRGMRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pFechaHora" type="xs:dateTime" />				
+				<xs:element name="pIdTransaccion" type="xs:long" />				
+				<xs:element name="pUsuario" type="xs:string" />				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="revertBoletaRGMResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="estado" type="xs:int" />
+				<xs:element name="descripcion" type="xs:string" />				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="confirmBoletaRGMRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pFechaHora" type="xs:dateTime" />				
+				<xs:element name="pTransacciones" type="tns:transacciones" />				
+				<xs:element name="pUsuario" type="xs:string" />				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="confirmBoletaRGMResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="estado" type="xs:int" />
+				<xs:element name="descripcion" type="xs:string" />				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="transacciones">
+		<xs:sequence>
+			<xs:element name="pTransaccion" type="tns:transaccion" maxOccurs="unbounded"/>			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="transaccion">
+		<xs:sequence>			
+			<xs:element name="pIdTransaccion" type="xs:long" />
+			<xs:element name="pSerie" type="xs:string" />
+			<xs:element name="pNumero" type="xs:long" />						
+			<xs:element name="pMonto" type="xs:float" />						
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

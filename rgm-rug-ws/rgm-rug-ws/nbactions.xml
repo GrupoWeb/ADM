@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM--X</actionName>
+            <displayName>-X</displayName>
+            <goals>
+                <goal>-X</goal>
+            </goals>
+            <properties>
+                <Env.JAVA_HOME>C:\Program Files\Java\jdk1.8.0_202</Env.JAVA_HOME>
+            </properties>
+            <activatedProfiles>
+                <activatedProfile>-X</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM--e -X</actionName>
+            <displayName>-e -X</displayName>
+            <goals>
+                <goal>-e</goal>
+                <goal>-X</goal>
+            </goals>
+        </action>
+    </actions>

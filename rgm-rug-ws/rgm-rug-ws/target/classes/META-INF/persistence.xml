@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="RUG_ADM_PERSISTENCE" transaction-type="JTA">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<jta-data-source>jdbc/rugDS</jta-data-source>		
+		<class>gt.gob.rgm.adm.model.Boleta</class>		
+		<class>gt.gob.rgm.adm.model.VCodigoPersonas</class>
+		<class>gt.gob.rgm.adm.model.RugPersonas</class>		
+		<class>gt.gob.rgm.adm.model.RugPersonasFisicas</class>
+		<class>gt.gob.rgm.adm.model.BitacoraOperaciones</class>					
+		<properties>
+			<property name="eclipselink.logging.level.sql" value="FINE"/>
+ 			<property name="eclipselink.logging.parameters" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>
