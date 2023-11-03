@@ -135,69 +135,70 @@ public class PdfServlet extends HttpServlet {
             PdfTO pdfTO = (PdfTO) session.getAttribute("pdfTO");
             try {
                 if (pdfTO != null) {
-                    if (pdfTO.getMassive() != "False") {
-                        DigitalSignatureServiceImp digitalSignatureSvc = new DigitalSignatureServiceImp();
-                        SignatureInfo info = new SignatureInfo();
-                        if (pdfTO.getIdTramite() == null) {
-                            pdfTO.setIdTramite(idTramite);
-                        }
-                        if (idTramite != null) {
-                            pdfTO.setIdTramite(idTramite);
-                        }
+                    if (!Objects.equals(pdfTO.getMassive(), "False")) {
+                            if (pdfTO.getIdTramite() == null) {
+                                pdfTO.setIdTramite(idTramite);
+                            }
+                            if (idTramite != null) {
+                                pdfTO.setIdTramite(idTramite);
+                            }
 
-                        String filePathToBeServed = Constants.getParamValue(Constants.SIGN_ZIP_URL);
-                        Date date = new Date();
-                        DateFormat datePDF = new SimpleDateFormat("dd-MM-yyyy");
-                        DateFormat timePDF = new SimpleDateFormat("HH_mm_ss");
-                        
-                        String PDFIndex = datePDF.format(date);
-                        String PDFtime = timePDF.format(date);
-                        File directory = new File(filePathToBeServed);
-                        directory.mkdir();
-                        recursiveDelete(new File(filePathToBeServed));
-                        recursiveDelete(new File(filePathToBeServed +"/boleta_zip/"));
-                        
-                        for (int iteracionB = 0; iteracionB < pdfTO.getHtmlList().size(); iteracionB++) {
-                            byte filepdf[] = null;
-                            ByteArrayOutputStream ospdf = new ByteArrayOutputStream();
-                            pdfTO.setKey("" + pdfTO.getIdTramite() + Random.generateRandom(100000));
-                            PdfWriter writer = new PdfWriter(ospdf);
-                            ConverterProperties converterProperties = new ConverterProperties();
-                            PdfDocument pdf = new PdfDocument(writer);
-                            PageXofY footerHandler = new PageXofY(pdfTO.getKey());
-                            pdf.addEventHandler(PdfDocumentEvent.START_PAGE, footerHandler);
-                            Document doc = HtmlConverter.convertToDocument(pdfTO.getHtmlList().get(iteracionB), pdf, converterProperties);
-                            doc.close();
-                            byte filesSignature[] = null;
-                            filepdf = ospdf.toByteArray();
+                            String filePathToBeServed = Constants.getParamValue(Constants.SIGN_ZIP_URL);
+                            String filePathToZip = Constants.getParamValue(Constants.SIGN_PDF_URL);
+                            Date date = new Date();
+                            DateFormat datePDF = new SimpleDateFormat("dd-MM-yyyy");
+                            DateFormat timePDF = new SimpleDateFormat("HH_mm_ss");
 
-                            System.out.println("Garantia " + TimeStampFile() + " files " + filepdf +  " email "+ usuario.getPersona().getCorreoElectronico() + " usuario " + usuario.getPersona().getIdPersona());
-                            String retorno = sendPDF(TimeStampFile(), true, filepdf,usuario.getPersona().getCorreoElectronico(), usuario.getPersona().getIdPersona());
-                            while (true) {
-                                if(verifyFiles(retorno) == 1){
-                                    filesSignature = getBytesFile(retorno);
-                                    pdfTO.setFile(filesSignature);
-                                    break;
+                            String PDFIndex = datePDF.format(date);
+                            String PDFtime = timePDF.format(date);
+                            File directory = new File(filePathToBeServed);
+                            directory.mkdir();
+
+                            recursiveDelete(new File(filePathToBeServed));
+                            recursiveDelete(new File(filePathToZip));
+
+                            for (int iteracionB = 0; iteracionB < pdfTO.getHtmlList().size(); iteracionB++) {
+                                byte[] filepdf = null;
+                                ByteArrayOutputStream ospdf = new ByteArrayOutputStream();
+                                pdfTO.setKey("" + pdfTO.getIdTramite() + Random.generateRandom(100000));
+                                PdfWriter writer = new PdfWriter(ospdf);
+                                ConverterProperties converterProperties = new ConverterProperties();
+                                PdfDocument pdf = new PdfDocument(writer);
+                                PageXofY footerHandler = new PageXofY(pdfTO.getKey());
+                                pdf.addEventHandler(PdfDocumentEvent.START_PAGE, footerHandler);
+                                Document doc = HtmlConverter.convertToDocument(pdfTO.getHtmlList().get(iteracionB), pdf, converterProperties);
+                                doc.close();
+                                byte[] filesSignature = null;
+                                filepdf = ospdf.toByteArray();
+
+                                String retorno = sendPDF("massive-"+TimeStampFile(), true, filepdf,usuario.getPersona().getCorreoElectronico(), usuario.getPersona().getIdPersona());
+                                while (true) {
+                                    if(verifyFiles(retorno) == 1){
+                                        filesSignature = getBytesFile(retorno);
+                                        pdfTO.setFile(filesSignature);
+                                        break;
+                                    }
                                 }
-                            }
 
+                                try {
+
+                                    String fileName = "file_" + iteracionB + "_" + PDFtime + ".pdf";
+                                    String path = filePathToBeServed +"/" + fileName;
+                                    FileOutputStream FOS = new FileOutputStream(path);
+                                    FOS.write(pdfTO.getFile());
+                                    FOS.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            String pathOutputZip = Constants.getParamValue(Constants.SIGN_PDF_URL);
                             try {
-                                String fileName = "Boleta_" + iteracionB + "_" + PDFtime + ".pdf";
-                                String path = filePathToBeServed+"/" + fileName;
-                                FileOutputStream FOS = new FileOutputStream(path);
-                                FOS.write(filepdf);
-                                FOS.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                zipFolder(filePathToBeServed, pathOutputZip+"\\zip_signature\\"+PDFIndex+"_"+PDFtime+".zip");
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-
-                        }
-                        String pathOutputZip = Constants.getParamValue(Constants.SIGN_PDF_URL);
-                        try {
-                            zipFolder(filePathToBeServed, pathOutputZip+"/boleta_zip/"+PDFIndex+"_"+PDFtime+".zip");
-                        } catch (Exception ex) {
-                        }
-                        File zipFile = new File(pathOutputZip+"/boleta_zip/"+PDFIndex+"_"+PDFtime+".zip");
+                        File zipFile = new File(pathOutputZip+"\\zip_signature\\"+PDFIndex+"_"+PDFtime+".zip");
                         resp.setContentType("application/zip");
                         resp.addHeader("Content-Disposition", "attachment; filename=" + ("pdf_"+PDFIndex+"_"+PDFtime+".zip"));
                         resp.setContentLength((int) zipFile.length());
@@ -208,8 +209,7 @@ public class PdfServlet extends HttpServlet {
                             while ((bytes = fileInputStream.read()) != -1) {
                                 responseOutputStream.write(bytes);
                             }
-                        } catch (IOException e) {
-                        }
+                        } catch (IOException e) {}
                         BoletaDAO boleta = new BoletaDAO();
                         boleta.insertBoletaPdf(pdfTO, usuario);
                     } 
@@ -308,9 +308,14 @@ public class PdfServlet extends HttpServlet {
     }
 
     static public void zipFolder(String srcFolder, String destZipFile) throws Exception {
+
+        File destFile = new File(destZipFile);
+        destFile.getParentFile().mkdirs();
+
         ZipOutputStream zip = null;
         FileOutputStream fileWriter = null;
-        fileWriter = new FileOutputStream(destZipFile);
+
+        fileWriter = new FileOutputStream(destFile);
         zip = new ZipOutputStream(fileWriter);
         addFolderToZip("", srcFolder, zip);
         zip.flush();
@@ -358,7 +363,6 @@ public class PdfServlet extends HttpServlet {
     }
 
     private String changePath(String Constant_path, String env){
-        System.out.println("Variables de entorno "+ Constant_path + " env " + env + " path " + Constants.SIGN_BASE_PROD);
         if(env.equals("prod")){
             String url = Constants.SIGN_BASE_PROD  + Constant_path;
             return url;
@@ -381,7 +385,6 @@ public class PdfServlet extends HttpServlet {
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL, Constants.ENV));
         String fileName = pIdGarantia;
-        System.out.println("Garantia " + fileName);
 
         String pageNumber = Integer.toString(countPage(files));
 
@@ -402,7 +405,6 @@ public class PdfServlet extends HttpServlet {
 
         HttpResponse response = httpclient.execute(httpPost);
         String data = new BasicResponseHandler().handleResponse(response);
-        System.out.println("Respuesta desde RUG " + data);
         return fileName;
 
     }

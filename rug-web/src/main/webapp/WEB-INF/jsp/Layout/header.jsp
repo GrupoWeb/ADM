@@ -12,7 +12,9 @@
         String contextPath = request.getContextPath();
         String baseURL = fullURL.substring(0, fullURL.indexOf(contextPath));
     %>
-                        <img class="responsive-img" src="<%= baseURL %>/rug-adm/assets/img/logo_RGM.jpg" max-width="250" max-height="64">
+<%--                        <img class="responsive-img" src="<%= baseURL %>/rug-adm/assets/img/logo_RGM.jpg" max-width="250" max-height="64">--%>
+			<img class="responsive-img" src="<%= baseURL %>/rug-adm/assets/img/logo_RGM.jpg" onerror="this.onerror=null; this.src='<%=request.getContextPath()%>/resources/imgs/logo_RGM.jpg'" style="max-width:250px; max-height:64px;">
+
 		</a>
 		<ul class=" menu">
 			<%
