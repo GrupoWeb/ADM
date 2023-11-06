@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+        xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+        xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+        xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:tns="https://operaciones.rgm.gob.gt/rug-rgm-ws/Pagos"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        targetNamespace="https://operaciones.rgm.gob.gt/rug-rgm-ws/Pagos"
+        name="pagoService">
+
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="https://operaciones.rgm.gob.gt/rug-rgm-ws/Pagos" schemaLocation="../schema/pagoService.xsd" />
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="getUsuarioRGMRequest">
+        <wsdl:part name="getUsuarioRGMRequest" element="tns:getUsuarioRGMRequest" />
+    </wsdl:message>
+    <wsdl:message name="getUsuarioRGMResponse">
+        <wsdl:part name="getUsuarioRGMResponse" element="tns:getUsuarioRGMResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="setBoletaRGMRequest">
+        <wsdl:part name="setBoletaRGMRequest" element="tns:setBoletaRGMRequest" />
+    </wsdl:message>
+    <wsdl:message name="setBoletaRGMResponse">
+        <wsdl:part name="setBoletaRGMResponse" element="tns:setBoletaRGMResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="revertBoletaRGMRequest">
+        <wsdl:part name="revertBoletaRGMRequest" element="tns:revertBoletaRGMRequest" />
+    </wsdl:message>
+    <wsdl:message name="revertBoletaRGMResponse">
+        <wsdl:part name="revertBoletaRGMResponse" element="tns:revertBoletaRGMResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="confirmBoletaRGMRequest">
+        <wsdl:part name="confirmBoletaRGMRequest" element="tns:confirmBoletaRGMRequest" />
+    </wsdl:message>
+    <wsdl:message name="confirmBoletaRGMResponse">
+        <wsdl:part name="confirmBoletaRGMResponse" element="tns:confirmBoletaRGMResponse" />
+    </wsdl:message>
+
+    <wsdl:portType name="PagoServicePortType">
+        <wsdl:operation name="getUsuarioRGM">
+            <wsdl:input name="getUsuarioRGMRequest" message="tns:getUsuarioRGMRequest" />
+            <wsdl:output name="getUsuarioRGMResponse" message="tns:getUsuarioRGMResponse" />
+        </wsdl:operation>
+
+        <wsdl:operation name="setBoletaRGM">
+            <wsdl:input name="setBoletaRGMRequest" message="tns:setBoletaRGMRequest" />
+            <wsdl:output name="setBoletaRGMResponse" message="tns:setBoletaRGMResponse" />
+        </wsdl:operation>
+
+        <wsdl:operation name="revertBoletaRGM">
+            <wsdl:input name="revertBoletaRGMRequest" message="tns:revertBoletaRGMRequest" />
+            <wsdl:output name="revertBoletaRGMResponse" message="tns:revertBoletaRGMResponse" />
+        </wsdl:operation>
+
+        <wsdl:operation name="confirmBoletaRGM">
+            <wsdl:input name="confirmBoletaRGMRequest" message="tns:confirmBoletaRGMRequest" />
+            <wsdl:output name="confirmBoletaRGMResponse" message="tns:confirmBoletaRGMResponse" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="PagoEndpointPortBinding" type="tns:PagoServicePortType">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="getUsuarioRGM">
+            <soap:operation style="document" soapAction="getUsuarioRGM" />
+            <wsdl:input name="getUsuarioRGMRequest">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="getUsuarioRGMResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="setBoletaRGM">
+            <soap:operation style="document" soapAction="getUsuarioRGM" />
+            <wsdl:input name="setBoletaRGMRequest">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="setBoletaRGMResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="revertBoletaRGM">
+            <soap:operation style="document" soapAction="getUsuarioRGM" />
+            <wsdl:input name="revertBoletaRGMRequest">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="revertBoletaRGMResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="confirmBoletaRGM">
+            <soap:operation style="document" soapAction="getUsuarioRGM" />
+            <wsdl:input name="confirmBoletaRGMRequest">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="confirmBoletaRGMResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="pagoService">
+        <wsdl:port name="PagoEndpointPort" binding="tns:PagoEndpointPortBinding">
+            <soap:address location="https://operaciones.rgm.gob.gt/rug-rgm-ws/Pagos" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
