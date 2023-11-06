@@ -156,7 +156,7 @@ public class PdfServlet extends HttpServlet {
 
                             recursiveDelete(new File(filePathToBeServed));
                             recursiveDelete(new File(filePathToZip));
-
+                                  System.out.println("pdfTO.getHtmlList().size(): "+pdfTO.getHtmlList().size());
                             for (int iteracionB = 0; iteracionB < pdfTO.getHtmlList().size(); iteracionB++) {
                                 byte[] filepdf = null;
                                 ByteArrayOutputStream ospdf = new ByteArrayOutputStream();
