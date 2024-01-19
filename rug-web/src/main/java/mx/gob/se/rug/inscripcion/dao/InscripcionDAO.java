@@ -56,6 +56,7 @@ public class InscripcionDAO {
 			cs = connection.prepareCall(sql);
 			cs.setInt(1, inscripcionTO.getIdPersona());			
 			cs.setInt(2, inscripcionTO.getIdTipoTramite());
+                        System.out.println("inscripcionTO.getIdTipoTramite(): "+inscripcionTO.getIdTipoTramite());
 			cs.setInt(3, inscripcionTO.getIdPersona());
 			cs.setString(4, "PF");
 			cs.setInt(5, 1);
@@ -426,7 +427,7 @@ public class InscripcionDAO {
 	public Double getCostoByIdTipoTramiteMasivo(Integer pIdTramiteMasivo) {
 		Double regresa =  new Double (0);
 		String sql = "SELECT SUM(MAS.COSTO) COSTO FROM (" + 				
-				"    SELECT FN_PRECIO_REAL(ID_PERSONA,ID_TIPO_TRAMITE,ID_TRAMITE_TEMP,1,null) COSTO " + 
+				"    SELECT FN_PRECIO_REAL_2023(ID_PERSONA,1,ID_TRAMITE_TEMP,1,null) COSTO " + 
 				"    FROM TRAMITES_RUG_INCOMP " + 
 				"    WHERE ID_TRAMITE_TEMP IN " + 
 				"    (   SELECT ID_TRAMITE_TEMP " + 
@@ -459,6 +460,46 @@ public class InscripcionDAO {
 		return regresa;
 
 	}
+        
+        /*Agregado por Benjamin*/
+        public Double getCostoByIdTipoTramiteMasivo_N(Integer pIdTramiteMasivo) {
+		Double regresa =  new Double (0);
+		String sql = "SELECT SUM(FN_PRECIO_REAL_2023(A.ID_PERSONA,36,A.ID_TRAMITE_TEMP,1,null)) COSTO" + 				
+				"    FROM TRAMITES_RUG_INCOMP  A ,RUG_GARANTIAS_BIENES_PEND  B " + 
+				"    WHERE " + 
+				"    A.ID_TRAMITE_TEMP = B.ID_TRAMITE_TEMP " + 
+				"    AND " + 
+				"        A.ID_TRAMITE_TEMP IN " + 
+				"        (   SELECT ID_TRAMITE_TEMP FROM RUG_FIRMA_MASIVA WHERE ID_FIRMA_MASIVA = ? ) " ;
+                
+                
+              
+                System.out.println("getCostoByIdTipoTramiteMasivo: ");
+                System.out.println(sql);
+		ConexionBD bd = new ConexionBD();
+		Connection connection = bd.getConnection();
+		ResultSet rs =null;
+		PreparedStatement ps = null;
+		try {
+                    System.out.println("pIdTramiteMasivo: "+pIdTramiteMasivo);
+			ps=connection.prepareStatement(sql);
+			ps.setInt(1, pIdTramiteMasivo);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				regresa = rs.getDouble("COSTO");
+                                System.out.println("EL COSTO:"+regresa);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			bd.close(connection,rs,ps);
+		}
+
+		return regresa;
+
+	}
+        /*----------------------*/
 
 	public GarantiaTO getByID(Integer idInscripcion) {
 		GarantiaTO garantiaTO = null;

@@ -53,6 +53,7 @@ function paso2() {
 	}
 
 	function validaMesesPaso3(){
+            console.log("ENTRA EN ACEPTAR");
 		var descripcionBienes = document.getElementById('descripcion_bien').value;
 		var idArancel = Array;
 		var idtipoTramite;
@@ -74,10 +75,13 @@ function paso2() {
 		}
 
 		path = '<%= request.getContextPath() %>/rs/garantias-pend/verificacion/' + idTramite
+                
+                console.log(path);
 		$.ajax({
 			url: path,
 			success: function(response){
 				idArancel = response
+                                console.log("idArancel: "+idArancel);
 				if(descripcionBienes.length > 0){
 					idtipoTramite = 1
 				}else{
@@ -91,8 +95,11 @@ function paso2() {
 						idtipoTramite = 1
 					}
 				}
+                                console.log(idtipoTramite);
+                                path2 = '<%= request.getContextPath() %>/rs/tipos-tramite/' + idtipoTramite
+                                console.log("path2 : "+path2);
 				$.ajax({
-					url: '<%= request.getContextPath() %>/rs/tipos-tramite/' + idtipoTramite,
+					url: path2,
 					success: function(result) {
 						MaterialDialog.dialog(
 							"El costo de una " + "Inscripcion" + " es de Q. " + (Math.round(result.precio * 100) / 100).toFixed(2) + ", esta seguro que desea continuar?",

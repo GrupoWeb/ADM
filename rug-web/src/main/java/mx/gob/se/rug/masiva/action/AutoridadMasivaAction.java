@@ -246,6 +246,7 @@ public class AutoridadMasivaAction extends RugBaseAction implements
 							ValidateDataType validateDataType = new ValidateDataType();
 							
 							String xmlFromDB = validateDataType.getFileFromDB(masivaProcess.getIdArchivo());
+                                                        System.out.println("validateCargaMasiva de AutoridadMasivaAction");
 							validateDataType.validateCargaMasiva(xmlFromDB, masivaProcess.getIdTipoTramite());
 								
 							switch (idTipoProceso.intValue()) {

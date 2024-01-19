@@ -250,6 +250,41 @@ public class MetodosValidacionImpl implements MetodosValidacion {
 		cargaMasivaPreProcesed.setTotalTramites(contTramites);
 		return cargaMasivaPreProcesed;
 	}
+        
+        public CargaMasivaPreProcesed valida_factoraje(mx.gob.se.rug.masiva.to.string.CargaMasiva cargaMasivaString,CargaMasiva cargaMasiva){
+		
+		cargaMasivaPreProcesed.setCargaMasiva(cargaMasiva);
+		cargaMasivaPreProcesed.setTramiteIncorrectos(new ArrayList<TramiteRes>());
+		
+		List<Inscripcion>inscripcionStr = cargaMasivaString.getFactoraje();
+		List<mx.gob.se.rug.masiva.to.Inscripcion> inscripcion2 = cargaMasiva.getFactoraje();
+		
+		System.out.println("valida-factorajr********************" + inscripcionStr.size());
+                System.out.println("valida-factorajr2********************" + inscripcionStr);
+		
+		for (Inscripcion inscripcionString : inscripcionStr) {
+			contTramites++;
+			mx.gob.se.rug.masiva.to.Inscripcion inscripcion = new mx.gob.se.rug.masiva.to.Inscripcion();
+			
+			try{
+				if(inscripcionString.getPersonaSolicitaAutoridadInstruyeAsiento() != null){
+					inscripcion.setPersonaSolicitaAutoridadInstruyeAsiento(validatePersonaSolicitaAutoridadInstruyeAsiento(inscripcionString.getPersonaSolicitaAutoridadInstruyeAsiento()));
+				}
+				inscripcion.setPartes(validatePartes(inscripcionString.getPartes(),31));
+				inscripcion.setGarantia(validateGarantia(inscripcionString.getGarantia(),31));
+				inscripcion.setVigencia(validateVigencia(inscripcionString.getVigencia()));
+				inscripcion.setIdentificador(validateIdentificador(inscripcionString.getIdentificador()));
+				                        System.out.println("inscripcion Estructura:");
+                                                        System.out.println(inscripcion);
+				inscripcion2.add(inscripcion); // LLenamos el objeto preprocesado
+			}catch (CargaMasivaException e) {
+				e.printStackTrace();
+				cargaMasivaPreProcesed.getTramiteIncorrectos().add(e.getTramiteIncorrecto(inscripcionString.getIdentificador()));
+			}
+		}
+		cargaMasivaPreProcesed.setTotalTramites(contTramites);
+		return cargaMasivaPreProcesed;
+	}
 
 	public CargaMasivaPreProcesed valida_transmision(mx.gob.se.rug.masiva.to.string.CargaMasiva cargaMasivaString,CargaMasiva cargaMasiva){
 		

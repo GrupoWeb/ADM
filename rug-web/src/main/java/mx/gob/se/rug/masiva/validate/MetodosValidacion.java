@@ -17,4 +17,5 @@ public interface MetodosValidacion {
 	public CargaMasivaPreProcesed valida_anotacion_garantia(mx.gob.se.rug.masiva.to.string.CargaMasiva cargaMasivaString,CargaMasiva cargaMasiva);
 	public CargaMasivaPreProcesed valida_acreedores(mx.gob.se.rug.masiva.to.string.CargaMasiva cargaMasivaString,CargaMasiva cargaMasiva);
 	public CargaMasivaPreProcesed valida_traslado(mx.gob.se.rug.masiva.to.string.CargaMasiva cargaMasivaString,CargaMasiva cargaMasiva);
+        public CargaMasivaPreProcesed valida_factoraje(mx.gob.se.rug.masiva.to.string.CargaMasiva cargaMasivaString,CargaMasiva cargaMasiva);
 }

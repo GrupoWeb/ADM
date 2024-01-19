@@ -4,8 +4,11 @@
 
 	<xs:element name="carga-masiva">
         <xs:complexType>
-        	<xs:choice>
-        	 	<xs:sequence maxOccurs="unbounded" minOccurs="0">
+            <xs:choice>
+                <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                    <xs:element ref="factoraje"/>
+                </xs:sequence>
+        	 <xs:sequence maxOccurs="unbounded" minOccurs="0">
                     <xs:element ref="traslado"/>
                 </xs:sequence>
                 <xs:sequence maxOccurs="unbounded" minOccurs="0">
@@ -27,6 +30,17 @@
         </xs:complexType>
     </xs:element>  
     
+     <xs:element name="factoraje">
+        <xs:complexType>
+            <xs:sequence>
+            	<xs:element name="identificador" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            	<xs:element name="vigencia" type="xs:int" minOccurs="1" maxOccurs="1"/>                
+                <xs:element ref="partes" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="garantia" minOccurs="1" maxOccurs="1"/>                                
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
     <xs:element name="traslado">
         <xs:complexType>
             <xs:sequence>
@@ -37,6 +51,7 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+    
     
     <xs:element name="inscripcion">
         <xs:complexType>

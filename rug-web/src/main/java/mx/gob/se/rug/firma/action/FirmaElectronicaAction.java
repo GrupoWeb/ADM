@@ -425,9 +425,13 @@ public class FirmaElectronicaAction extends RugBaseAction {
 		try {
 			Integer idTramiteNuevo = ((Integer) sessionMap.get(Constants.ID_TRAMITE_NUEVO));
 			Integer idGarantiaArancel = ((Integer) sessionMap.get(Constants.ID_GARANTIA_ARANCEL));
-			String esFactoraje = ((String) sessionMap.get("esFactoraje"));
+			//String esFactoraje = ((String) sessionMap.get("esFactoraje"));
+                        
+                        String esFactoraje = (String) sessionMap.get("ID_FACTORAJE");
+                        String esFactoraje2 = (String) Constants.ID_FACTORAJE;
 			MyLogger.Logger.log(Level.INFO, "ID del tramite firmar: " + idTramiteNuevo);
 			MyLogger.Logger.log(Level.INFO, "Tipo factoraje " + esFactoraje);
+                        MyLogger.Logger.log(Level.INFO, "Tipo factoraje2 " + esFactoraje2);
 			MyLogger.Logger.log(Level.INFO, "Tipo Leasing  " + idGarantiaArancel);
                         Date date = new Date();
 			usuarioTO = (UsuarioTO) sessionMap.get(Constants.USUARIO);
@@ -445,13 +449,24 @@ public class FirmaElectronicaAction extends RugBaseAction {
 				 Date date5 = new Date();
 				if(inscripcionService.getSaldoMasivoByUsuario(new Integer(usuarioTO.getPersona().getIdPersona()).toString(),getIdTipoTramite().intValue()-200,new Integer(idTramiteNuevo),tramites.size())) {
                                      Date date6 = new Date();
-					for(Iterator<Integer> it = tramites.iterator(); it.hasNext();) {
+                                     if(esFactoraje=="factoraje" || esFactoraje2=="factoraje"){
+                                         for(Iterator<Integer> it = tramites.iterator(); it.hasNext();) {
+						pagoDAO.firmaTramite2(it.next(),esFactoraje);
+                                                 Date date7 = new Date();
+					}
+                                        
+					//firmo el masivo
+					pagoDAO.firmaTramite2(new Integer(idTramiteNuevo),esFactoraje);
+                                     }else{
+                                         for(Iterator<Integer> it = tramites.iterator(); it.hasNext();) {
 						pagoDAO.firmaTramite(it.next(),esFactoraje);
                                                  Date date7 = new Date();
 					}
                                         
 					//firmo el masivo
 					pagoDAO.firmaTramite(new Integer(idTramiteNuevo),esFactoraje);
+                                     }
+					
                                          Date date8 = new Date();
                         //signatureFile = new RugSignatureImp();
                         //signatureFile.signatureFiles((idTramiteNuevo-1), new Integer(idTramiteNuevo), new Integer(usuarioTO.getPersona().getIdPersona()), 218);

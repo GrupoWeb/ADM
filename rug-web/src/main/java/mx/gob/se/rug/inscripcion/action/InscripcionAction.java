@@ -728,6 +728,7 @@ public class InscripcionAction extends RugBaseAction {
 			}
 			if (idTramite != null) {
 				Integer idGarantia = inscripcionService.getIDGarantiaByIDTramite(idTramite);
+                                System.out.println("idGarantia para inscripción: "+idGarantia);
 				PrivilegiosDAO privilegiosDAO = new PrivilegiosDAO();
 				PrivilegiosTO privilegiosTO = new PrivilegiosTO();
 				privilegiosTO.setIdRecurso(new Integer(6));

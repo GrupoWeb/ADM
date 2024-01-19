@@ -1,0 +1,12 @@
+gt.gob.rgm.adm.annotation
+gt.gob.rgm.adm.constants
+gt.gob.rgm.adm.constants.dao
+gt.gob.rgm.adm.dao
+gt.gob.rgm.adm.domain
+gt.gob.rgm.adm.exception
+gt.gob.rgm.adm.model
+gt.gob.rgm.adm.rs
+gt.gob.rgm.adm
+gt.gob.rgm.adm.service
+gt.gob.rgm.adm.solr
+gt.gob.rgm.adm.util

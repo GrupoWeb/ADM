@@ -252,6 +252,7 @@ public class ModificacionTest {
 			String xmlFromDB = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <car:carga-masiva xmlns:car=\"carga-masiva\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"carga-masiva-string.xsd\"> <car:modificacion> <car:identificador>87400107</car:identificador> <car:id-garantia>284</car:id-garantia> <car:partes> <car:deudor-garante> <car:codigo-nacionalidad>1</car:codigo-nacionalidad> <car:tipo-persona>PF</car:tipo-persona> <car:identificador>101</car:identificador> <car:nit>901</car:nit> <car:nombre>MARTY KEANE 901 Modificada 2a vez</car:nombre> <car:correo-electronico>marty.keane@prueba.com</car:correo-electronico> <car:domicilio>Guatemala</car:domicilio> <car:operacion>2</car:operacion> </car:deudor-garante> </car:partes> <car:garantia> <car:info-general-contrato>Segun Contrato de Aceptacion en Escritura Publica 614 autorizada por la Notaria Monica Maria Barrios Alvarado el 20/12/2018</car:info-general-contrato> </car:garantia> <car:razon-modificacion>Prueba 284</car:razon-modificacion> </car:modificacion> </car:carga-masiva>"; 
 					//validateDataType.getFileFromDB(masivaProcess.getIdArchivo());
 			try {
+                            System.out.println("validateCargaMasiva de ModificacionTest");
 				validateDataType.validateCargaMasiva(xmlFromDB, masivaProcess.getIdTipoTramite());
 			} catch (CargaMasivaException e) {
 				// TODO Auto-generated catch block

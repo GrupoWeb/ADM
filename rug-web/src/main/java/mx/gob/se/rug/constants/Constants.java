@@ -150,6 +150,9 @@ public static final String ID_GARANTIA_ARANCEL="idGarantiaArancel";
 public static final String ID_TRAMITE_ACTUAL="idTramiteActual";
 public static final String USUARIO="usuario";
 
+//Benjamin
+public static  String ID_FACTORAJE="";
+
 //ID_GRUPOS
 public static final Long SUBADMINISTRADOR = 5502L;
 public static final Long SUBUSUARIO = 8L;

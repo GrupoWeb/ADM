@@ -375,6 +375,11 @@ public class MasivaDAO extends BaseRugDao {
 	public PlSql executeAltaBitacoraTramite2(Integer idTramite,
 			Integer idEstatus, Integer idPaso, String fechaCelebracion,
 			String banderaFecha) {
+            System.out.println("executeAltaBitacoraTramite2");
+            System.out.println("executeAltaBitacoraTramite2: idTramite "+idTramite);
+            System.out.println("executeAltaBitacoraTramite2: idPaso "+idPaso);
+            System.out.println("executeAltaBitacoraTramite2: fechaCelebracion "+fechaCelebracion);
+            System.out.println("executeAltaBitacoraTramite2: banderaFecha "+banderaFecha);
 		PlSql regresa = new PlSql();
 		String sql = "{ call RUG.SP_Alta_Bitacora_Tramite2 ( " + " ?, ?, ?,"
 				+ " ?, ?, ?, " + " ?, ?" + " ) }";
@@ -420,6 +425,7 @@ public class MasivaDAO extends BaseRugDao {
 	 */
 	public PlSql executeAltaTramiteIncompleto(Integer idPersona,
 			Integer idTipoTramite) {
+            System.out.println("POR AQUI ES: "+idTipoTramite);
 		PlSql regresa = new PlSql();
 		ConexionBD bd = new ConexionBD();
 		Connection connection = bd.getConnection();
@@ -1484,6 +1490,7 @@ public class MasivaDAO extends BaseRugDao {
 	 */
 	public PlSql executeAltaBitacoraTramite(Tramite tramite) {
 		PlSql regresa = null;
+                System.out.println("executeAltaBitacoraTramite: tramite"+tramite);
 		String sql = "{ call RUG.SP_Alta_Bitacora_Tramite2 ( " + " ?, ?, ?,"
 				+ " ?, ?, ?, " + " ?, ?" + " ) }";
 		ConexionBD bd = new ConexionBD();

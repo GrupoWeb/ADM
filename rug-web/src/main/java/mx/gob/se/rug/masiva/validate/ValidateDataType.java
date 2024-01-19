@@ -60,7 +60,7 @@ public class ValidateDataType {
 	}
 
 	public CargaMasivaPreProcesed parseCargaMasiva(String xmlFromDB,Integer idTipoTramite) throws CargaMasivaException, NoTramiteFound, CargaMasivaExceptionMaxNumber{
-
+                System.out.println("parseCargaMasiva: Para saber si hay inscripciones 1");
 		cargaMasivaPreProcesed.setCargaMasiva(cargaMasiva);
 		
 		try {
@@ -164,6 +164,14 @@ public class ValidateDataType {
 						throw new NoTramiteFound("El Archivo no contiene acreedores");
 					}
 					break;
+                        case 36:
+				if(cargaMasivaString.getInscripcion().size() > 0){
+						validateNMaxTramites(cargaMasivaString.getInscripcion().size());
+						cargaMasivaPreProcesed = mv.valida_inscripcion(cargaMasivaString, cargaMasiva);
+					}else{
+						throw new NoTramiteFound("El Archivo no contiene inscripciones");
+					}
+					break;
 			default:
 					throw new AssertionError("El valor de tramite "+idTipoTramite+" no es valido.");
 			}
@@ -176,11 +184,12 @@ public class ValidateDataType {
 	}
 	
 	public CargaMasivaPreProcesed validateCargaMasiva(String xmlFromDB,Integer idTipoTramite) throws CargaMasivaException, NoTramiteFound, CargaMasivaExceptionMaxNumber{
-
+                System.out.println("validateCargaMasiva: Para saber si hay inscripciones 2 : "+idTipoTramite);
 		cargaMasivaPreProcesed.setCargaMasiva(cargaMasiva);
 		
 		try {
 			InputStream stream = new ByteArrayInputStream(xmlFromDB.getBytes());
+                        
 			cargaMasivaString = unmarshallCargaMasivaString(stream);
 			
 			switch(idTipoTramite){
@@ -188,10 +197,11 @@ public class ValidateDataType {
 					if(cargaMasivaString.getInscripcion().size() > 0){
 						validateNMaxTramites(cargaMasivaString.getInscripcion().size());
 					}else{
-						throw new NoTramiteFound("El Archivo no contiene inscripciones");
+						throw new NoTramiteFound("El Archivo no contiene inscripciones2");
 					}
 					break;
 			case 31:
+                            System.out.println("cargaMasivaString.getTraslado().size(): "+cargaMasivaString.getTraslado().size());
 				if(cargaMasivaString.getTraslado().size() > 0){
 					validateNMaxTramites(cargaMasivaString.getTraslado().size());
 				}else{
@@ -266,6 +276,14 @@ public class ValidateDataType {
 						validateNMaxTramites(cargaMasivaString.getAcreedores().getAcreedorAutoridad().size());
 					}else{
 						throw new NoTramiteFound("El Archivo no contiene acreedores");
+					}
+					break;
+                                        
+                        case 36:
+					if(cargaMasivaString.getInscripcion().size() > 0){
+						validateNMaxTramites(cargaMasivaString.getInscripcion().size());
+					}else{
+						throw new NoTramiteFound("El Archivo no contiene inscripciones2");
 					}
 					break;
 			default:
@@ -652,6 +670,7 @@ public class ValidateDataType {
 	}
 	
 	public String getFileFromDB(Integer idArchivo){
+                System.out.println("ID DEL ARCHIVO: "+idArchivo);
 		String varBLOB = "";
 		InputStream inputStream = null;
 		Blob blob = null;		
