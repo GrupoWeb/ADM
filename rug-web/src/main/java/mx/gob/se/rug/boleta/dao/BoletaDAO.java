@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -487,7 +488,7 @@ public class BoletaDAO extends BaseRugDao{
 	}
 	
 	public void insertBoletaPdf(PdfTO pdfTO,UsuarioTO usuarioTO){
-//                        MyLogger.Logger.log(Level.INFO, "boleta PDF SAVE " + pdfTO.getIdTramite());
+		System.out.println("Firma de documento con QR");
 			ConexionBD bd = new ConexionBD();
 			Connection connection = bd.getConnection();
 			CallableStatement cs = null;		
@@ -502,9 +503,9 @@ public class BoletaDAO extends BaseRugDao{
 				cs.registerOutParameter(5, Types.INTEGER);
 				cs.registerOutParameter(6, Types.VARCHAR);
 				cs.execute();
-				
+				System.out.println("Si envio el dato QR, los valores son: " +  pdfTO.getIdTramite() + " - " + Arrays.toString(pdfTO.getFile()) + " - " + usuarioTO.getPersona().getIdPersona() + " - " + pdfTO.getKey());
 			}catch(Exception e){
-				//e.printStackTrace();
+				e.printStackTrace();
 			}finally{
 				bd.close(connection,null,cs);
 			}

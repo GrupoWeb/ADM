@@ -202,7 +202,6 @@ public class RugSignatureFile extends HttpServlet {
                         
                         try {
                             pdfTO.setFile(file);
-                            System.out.println(" usuario firma File" + usuario.getPersona().getCorreoElectronico() + " otro " + pdfTO.getIdGarantiaTO());
                             String retorno = sendPDF(TimeStampFile(), true, file, usuario.getPersona().getCorreoElectronico(), usuario.getPersona().getIdPersona());
                             while (true) {
                                 if(verifyFiles(retorno) == 1){
