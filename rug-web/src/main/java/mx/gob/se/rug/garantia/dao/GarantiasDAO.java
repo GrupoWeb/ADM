@@ -536,7 +536,7 @@ public class GarantiasDAO extends BaseRugDao {
 	public boolean altaBitacoraTramiteTX(Connection connection,
 			Integer idTramite, Integer idEstatus, Integer idPaso,
 			String fechaCelebracion, String banderaFecha) {
-		System.out.println("Tipo tramite leasing " + idTramite);
+		System.out.println("Tipo tramite leasing ----- " + idTramite);
 		boolean regresa = false;
 		String sql = "{ call RUG.SP_Alta_Bitacora_Tramite2 ( " + " ?, ?, ?,"
 				+ " ?, ?, ?, " + " ?, ?" + " ) }";
@@ -573,7 +573,7 @@ public class GarantiasDAO extends BaseRugDao {
 	public boolean altaBitacoraTramite(Integer idTramite, Integer idEstatus,
 			Integer idPaso, String fechaCelebracion, String banderaFecha) {
 		boolean regresa = false;
-		System.out.println("Parametros: Tramite leasing " + idTramite + "- estado " + idEstatus + "- Paso " + idPaso + "- fecha " + fechaCelebracion + "- Bandera " + banderaFecha);
+		System.out.println("Parametros: Tramite leasing ---- " + idTramite + "- estado " + idEstatus + "- Paso " + idPaso + "- fecha " + fechaCelebracion + "- Bandera " + banderaFecha);
 		String sql = "{ call RUG.SP_Alta_Bitacora_Tramite2 ( " + " ?, ?, ?,"
 				+ " ?, ?, ?, " + " ?, ?" + " ) }";
 		ConexionBD bd = new ConexionBD();
@@ -619,10 +619,13 @@ public class GarantiasDAO extends BaseRugDao {
 			
 			cs.setInt(1, inscripcionTO.getIdPersona());
 			cs.setInt(2, inscripcionTO.getIdInscripcion());
+                        System.out.println("ESTE ME INTERESA 1: "+inscripcionTO.getIdInscripcion());
 			try {
 				Integer tipoGar = Integer.valueOf(inscripcionTO.getGarantiaTO().getIdTipoGarantia());
+                                System.out.println("ESTE ME INTERESA 2: "+tipoGar);
 				cs.setInt(3, tipoGar);
 			} catch(Exception e) {
+                            System.out.println("ESTE ME INTERESA 3: ");
 				cs.setInt(3, 1);// default
 			}
 			setDateCS(cs, garantiaTO.getActoContratoTO().getFechaCelebracion(),	4);

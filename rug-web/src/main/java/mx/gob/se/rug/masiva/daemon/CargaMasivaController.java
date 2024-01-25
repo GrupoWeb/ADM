@@ -183,7 +183,8 @@ public class CargaMasivaController extends Thread{
 		setListaTramitesErrores(new ArrayList<Integer>());
 		inscripcionesErroneas = new ArrayList<mx.gob.se.rug.masiva.resultado.to.TramiteRes>();
 		try{
-			CargaMasiva cm = validamosArchivo(masivaProcess.getIdTipoTramite(),masivaProcess.getIdArchivo());			
+			CargaMasiva cm = validamosArchivo(masivaProcess.getIdTipoTramite(),masivaProcess.getIdArchivo());	
+                        System.out.println("masivaProcess.getIdTipoTramite: TT"+masivaProcess.getIdTipoTramite());
 			if(masivaProcess.getIdTipoTramite()==10 || masivaProcess.getIdTipoTramite()==2 || masivaProcess.getIdTipoTramite()==12){
 				//Tramite de Autoridad
 				regresa = "failed";
@@ -218,11 +219,13 @@ public class CargaMasivaController extends Thread{
 					regresa="resultado";
 				}
 			}else{
-				//Tramite Acreedor				
+				//Tramite Acreedor	
+                                
 				seleccionaProceso(cm);
 				masivaDAO.actualizaProcessCargaIdResumen(masivaProcess);
 				this.setIdArchivoResultado(masivaProcess.getIdArchivo());
 				this.setSizeListaTramites(listaTramites.size());
+                               
 				this.setTramitesErroneos(cargaMasivaPreProcesed.getTramiteIncorrectos().size());				
 			}
 		
@@ -1014,6 +1017,33 @@ public class CargaMasivaController extends Thread{
 						regresa="resultado";
 					}else{
 						setErrorArchivo("El archivo seleccionado no contiene Inscripciones ");
+					}
+					break;
+                                case 36:			
+                                        System.out.println("--- el archivo contiene Factorajes 00 --"+cm.getInscripcion().size());
+					if (cm.getInscripcion().size() > 0) {
+						System.out.println("--- el archivo contiene factorajes if --"+cm);						
+						regresa = cargaMasivaInscripcion(cm,acreedor);
+					} else if(this.cargaMasivaPreProcesed.getTramiteIncorrectos().size()>0){
+                                            System.out.println("--- el archivo contiene Factorajes else --");
+						Resumen resumen = new Resumen();
+						resumen = getResumenFiltroError(cargaMasivaPreProcesed);
+						
+						resultado = new ResultadoCargaMasiva();
+						resultado.setResumen(resumen);
+						Tramites tramites = new  Tramites();
+						tramites.getTramite().addAll(cargaMasivaPreProcesed.getTramiteIncorrectos());
+						resultado.setTramites(tramites);
+						
+						masivaService.generaArchivoResumen(resultado, null, archivoTO, masivaProcess);
+						
+						this.setTotalTramites(String.valueOf(cargaMasivaPreProcesed.getTramiteIncorrectos().size()));
+						this.setTramitesCompletos(0);
+						this.setTramitesErroneos(cargaMasivaPreProcesed.getTramiteIncorrectos().size());
+						this.setInscripcionesErroneas(cargaMasivaPreProcesed.getTramiteIncorrectos());
+						regresa="resultado";
+					}else{
+						setErrorArchivo("El archivo seleccionado no contiene Factoraje ");
 					}
 					break;
 				case 31: // traslado					

@@ -76,7 +76,9 @@ import javax.xml.bind.annotation.XmlType;
     "avisoPreventivo",
     "traslado",
     "ejecucion",
-    "acreedores"
+    "acreedores",
+    "factoraje",
+    
 })
 @XmlRootElement(name = "carga-masiva")
 public class CargaMasiva {
@@ -99,6 +101,10 @@ public class CargaMasiva {
     protected List<Inscripcion> traslado;
     @XmlElement(name = "ejecucion")
     protected List<Ejecucion> ejecucion;
+    
+    @XmlElement(name = "factoraje")
+    protected List<Inscripcion> factoraje;
+    
 
     /**
      * Gets the value of the inscripcion property.
@@ -390,6 +396,14 @@ public class CargaMasiva {
 			traslado = new ArrayList<Inscripcion>();
         }
 		return this.traslado;
+	}
+        
+        
+        public List<Inscripcion> getFactoraje() {
+		if (factoraje == null) {
+			factoraje = new ArrayList<Inscripcion>();
+        }
+		return this.factoraje;
 	}
 
 	public List<Ejecucion> getEjecucion() {

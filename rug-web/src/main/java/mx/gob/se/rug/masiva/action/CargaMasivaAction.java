@@ -160,7 +160,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 	private ArchivoTO archivoTO;
 	private CargaMasivaPreProcesed cargaMasivaPreProcesed = new CargaMasivaPreProcesed();
 	private CargaMasivaProcess masivaProcess;
-	
+	public static  Integer otraId;
 	//idGarantias
 	private String detalleTecnico;
 	
@@ -214,8 +214,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 	public String iniciaCargaMasiva() {
 		String regresa = "failed";
 		try {
-			System.out
-					.println("RugAction::CargaMasivaAction.iniciaCargaMasiva----- se inicia la carga Masiva");
+			System.out.println("RugAction::CargaMasivaAction.iniciaCargaMasiva----- se inicia la carga Masiva 1");
 			UsuarioTO usuario = (UsuarioTO) sessionMap.get(Constants.USUARIO);
 			sessionMap.put(Constants.TRAMITES_ERRONEOS,	new ArrayList<Integer>());
 			sessionMap.put(Constants.TRAMITES, new ArrayList<Integer>());
@@ -315,11 +314,24 @@ public class CargaMasivaAction extends RugBaseAction implements
 					masivaProcess.setIdArchivo(archivoTO.getIdArchivo());
                                         System.out.println("13");
 					masivaProcess.setIdTipoTramite(idListaTramite.intValue());					
-                                        System.out.println("14");
+                                        System.out.println("14: "+ idListaTramite.intValue());                                         
+                                        if(idListaTramite.intValue()== 36){
+                                            System.out.println("ID_FACTORAJE");
+                                            sessionMap.put("ID_FACTORAJE", "factoraje") ; 
+                                            Constants.ID_FACTORAJE = "factoraje";
+                                            System.out.println("BENJAMIN: "+sessionMap.get("ID_FACTORAJE"));
+                                        }else{
+                                            System.out.println("NO_ID_FACTORAJE");
+                                            sessionMap.put("ID_FACTORAJE", "") ;    
+                                        }
+                                        
+                                        this.otraId = idListaTramite.intValue();
+                                        System.out.println("LA OTRA:" + this.otraId);
 					masivaProcess.setIdUsuario(idUsuario);
                                         System.out.println("15");
 					masivaProcess.setIdAcreedor(idUsuario);
                                         System.out.println("16");
+                                        System.out.println("idListaProceso.intValue(): "+ idListaProceso.intValue());
 					if(idListaProceso.intValue() == 1){
                                             System.out.println("17");
 						masivaProcess.setbTipoProceso("A");
@@ -333,7 +345,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 					ValidateDataType validateDataType = new ValidateDataType();
 					System.out.println("21");
 					String xmlFromDB = validateDataType.getFileFromDB(masivaProcess.getIdArchivo());
-                                        System.out.println("22");
+                                        System.out.println("22");                                        
 					validateDataType.validateCargaMasiva(xmlFromDB, masivaProcess.getIdTipoTramite());
 					System.out.println("23");
 					if(idListaProceso.intValue() == 1){
@@ -353,6 +365,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 							this.setIdArchivoResultado(masivaProcess.getIdArchivoResumen());
 						} else {*/
 						//masivaDAO.actualizaProcessCargaIdResumen(masivaProcess);
+                                                System.out.println("masivaProcess.getIdArchivo(): "+masivaProcess.getIdArchivo());
 							this.setIdArchivoResultado(masivaProcess.getIdArchivo());
                                                         System.out.println("28");
 						//}
@@ -392,6 +405,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 	
 	public String obtenResultado() throws CargaMasivaFileLoadException,NoDataFoundException{
 		UsuarioTO usuarioTO= (UsuarioTO) sessionMap.get(Constants.USUARIO);
+                System.out.println("usuarioTO: "+usuarioTO);
 		if (usuarioTO== null){
 			try {
 				
@@ -434,6 +448,7 @@ public class CargaMasivaAction extends RugBaseAction implements
 		ValidateDataType validateDataType = new ValidateDataType();
 		ResultadoCargaMasiva resultadoCargaMasiva = null;
 		idArchivoResDb = masivaDAO.getIdArchivoResDb(idArchivoResultado);
+                System.out.println("masivaDAO.getListaTipoTramite():");
 		String xmlArchivoResultado = validateDataType.getFileFromDB(idArchivoResDb);
 		InputStream stream = new ByteArrayInputStream(xmlArchivoResultado.getBytes());
 		try{
@@ -448,10 +463,18 @@ public class CargaMasivaAction extends RugBaseAction implements
 			this.setTotalTramites(String.valueOf(resultadoCargaMasiva.getTramites().getTramite().size()));			
 		}
 		try {
+                    System.out.println("Va a buscar el costo del tramite");
 			Integer idTramiteFirma = masivaDAO.getIdTramiteFirmaDb(idArchivoResultado);
                         System.out.println("idTramiteFirma: "+idTramiteFirma);
-                        System.out.println("inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma): "+inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma));
-			this.setCostoTramiteMasivo(inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma));
+                                                     
+                        if(this.otraId==1){
+                            System.out.println("inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma): "+inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma));
+                            this.setCostoTramiteMasivo(inscripcionDAO.getCostoByIdTipoTramiteMasivo(idTramiteFirma));
+                        }else if(this.otraId==36){
+                            System.out.println("inscripcionDAO.getCostoByIdTipoTramiteMasivo_N(idTramiteFirma): "+inscripcionDAO.getCostoByIdTipoTramiteMasivo_N(idTramiteFirma));
+                            this.setCostoTramiteMasivo(inscripcionDAO.getCostoByIdTipoTramiteMasivo_N(idTramiteFirma));
+                        }
+                        
 			sessionMap.put(Constants.ID_TRAMITE_NUEVO, idTramiteFirma);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -552,7 +575,36 @@ public class CargaMasivaAction extends RugBaseAction implements
 						setErrorArchivo("El archivo seleccionado no contiene Inscripciones ");
 					}
 					break;
-	
+                                // Inscripcion
+				case 36:                                        
+                                        System.out.println("--- el archivo contiene factoraje 0 --"); 
+					if (cm.getInscripcion().size() > 0) {
+						System.out.println("--- el archivo contiene factoraje --");						
+						regresa = cargaMasivaInscripcion(usuario,cm,acreedor,archivoTO);
+					} else if(this.cargaMasivaPreProcesed.getTramiteIncorrectos().size()>0){
+                                            System.out.println("--- el archivo contiene factoraje 1 --"); 
+						Resumen resumen = new Resumen();
+						resumen = getResumenFiltroError(cargaMasivaPreProcesed);
+						
+						resultado = new ResultadoCargaMasiva();
+						resultado.setResumen(resumen);
+						Tramites tramites = new  Tramites();
+						tramites.getTramite().addAll(cargaMasivaPreProcesed.getTramiteIncorrectos());
+						resultado.setTramites(tramites);
+						
+						
+						masivaService.generaArchivoResumen(resultado, usuario, archivoTO, masivaProcess);
+						
+						
+						this.setTotalTramites(String.valueOf(cargaMasivaPreProcesed.getTramiteIncorrectos().size()));
+						this.setTramitesCompletos(0);
+						this.setTramitesErroneos(cargaMasivaPreProcesed.getTramiteIncorrectos().size());
+						this.setInscripcionesErroneas(cargaMasivaPreProcesed.getTramiteIncorrectos());
+						regresa="resultado";
+					}else{
+						setErrorArchivo("El archivo seleccionado no contiene Inscripciones ");
+					}
+					break;
 				// Cancelacion
 				case 4:
 					if (cm.getCancelacion().size() > 0) {

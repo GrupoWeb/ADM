@@ -87,7 +87,9 @@ public class MasivaDwrAction extends AbstractBaseDwrAction{
 			while (itr.hasNext()) {
 				Map.Entry e = (Map.Entry)itr.next();
 				sb.append("  <option value=\""+Constants.getIdTipoTramite(Integer.valueOf(e.getKey().toString()))+"\"> "+e.getValue()+" </option> ");
+                                
 			}
+                        sb.append("  <option value=\"36\"> Factoraje Multiple </option> ");
 			sb.append("  </select> ");
 			sb.append(" </td> ");
 			sb.append(" </tr> ");

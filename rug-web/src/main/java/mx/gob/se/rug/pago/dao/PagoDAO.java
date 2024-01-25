@@ -171,7 +171,7 @@ public class PagoDAO {
 	}
 	
 	public Boolean firmaTramite(Integer idTipoTramite, String esFactoraje) {
-		MyLogger.Logger.log(Level.WARNING, "factoraje pago  " + esFactoraje );
+		MyLogger.Logger.log(Level.WARNING, "factoraje pago ---  " + esFactoraje );
 		if(esFactoraje == null){
 			esFactoraje = "";
 		}
@@ -228,4 +228,64 @@ public class PagoDAO {
 		
 		return resultado;
 	}
+        
+        public Boolean firmaTramite2(Integer idTipoTramite, String esFactoraje) {
+		MyLogger.Logger.log(Level.WARNING, "factoraje pago 2 ---  " + esFactoraje );
+		if(esFactoraje == null){
+			esFactoraje = "";
+		}
+		ConexionBD bd = new ConexionBD();
+		Connection connection = bd.getConnection();
+		CallableStatement cs =null;
+		Boolean resultado = false;
+		
+		String sql = "{ call RUG.SP_Alta_Bitacora_Tramite3 (" +
+				"?, " +//1
+				"?, " +//2
+				"?, " +//3
+				"?, " +//4
+				"?, " +//5
+				"?, " +//6
+				"?, " +//7
+				"? ) }";//8
+		
+// 1 peIdTramiteTemp           IN RUG_BITAC_TRAMITES.ID_TRAMITE_TEMP%TYPE,
+// 2 peIdStatus                IN RUG_BITAC_TRAMITES.ID_STATUS%TYPE,
+// 3 peIdPaso                  IN RUG_BITAC_TRAMITES.ID_PASO%TYPE,
+// 4 peFechaCreacion           IN TRAMITES.FECHA_CREACION%TYPE,
+// 5 peBanderaFecha            IN CHAR, --BANDERA QUE INDICA SI EL PL PLASMA LA FECHA CON EL SYSDATE O USA LA QUE MANDA EN peFechaCreacion, VALORES POSIBLES V o F
+// 6 psResult                  OUT  INTEGER,
+// 7 psTxResult                OUT  VARCHAR2
+		try {
+			cs = connection.prepareCall(sql);
+			MyLogger.Logger.log(Level.WARNING, "Aca probando el tramite::::"+idTipoTramite);
+			cs.setInt(1, idTipoTramite);
+			cs.setInt(2, 3);
+			cs.setInt(3, 0);
+			cs.setNull(4, Types.NULL);
+			cs.setString(5, "V");
+			cs.setString(6, esFactoraje);
+			cs.registerOutParameter(7, Types.INTEGER);
+			cs.registerOutParameter(8, Types.VARCHAR);
+			cs.execute();
+			MyLogger.Logger.log(Level.INFO, "psResult::"+cs.getString(7));
+			MyLogger.Logger.log(Level.INFO, "psTxResult::"+cs.getString(8));
+			
+			if(cs.getString(7).trim().equalsIgnoreCase("0") || cs.getString(7).trim().equalsIgnoreCase("11")) {
+				resultado = true;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error en sql pagoDao" );
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Error en sql pagoDao 2" );
+			e.printStackTrace();
+		} finally {
+			bd.close(connection,null,cs);
+		}
+		
+		return resultado;
+	}
+
 }
