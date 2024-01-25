@@ -93,6 +93,7 @@ function iniciaSoyAcreedor(idPersona){
 	displayLoader(true);
 	showStuff('tabs-5');
 	elementOperacion="Acreedores";
+	console.log("Id Persona ", idPersona)
 	OperacionesDwrAction.getAcreedores(idPersona,'',showSoyAcreedor);
 }
 
