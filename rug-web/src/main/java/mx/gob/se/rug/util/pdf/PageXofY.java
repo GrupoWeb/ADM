@@ -29,7 +29,7 @@ public class PageXofY implements IEventHandler {
         qrCode = new BarcodeQRCode("placeholder");
         Constants constants = new Constants();
 		String server = constants.getParamValue(Constants.URL_SERVER);
-		qrCode.setCode(server + "/Rug/rs/home/validar?token=" + pKey);
+		qrCode.setCode(server + "/rs/home/validar?token=" + pKey);
 		
     }
     @Override
@@ -38,7 +38,7 @@ public class PageXofY implements IEventHandler {
         PdfDocument pdf = docEvent.getDocument();
         
         qrCodeAsImage = new Image(qrCode.createFormXObject(pdf));
-        qrCodeAsImage.scaleAbsolute(75, 75);
+        qrCodeAsImage.scaleAbsolute(100, 100);
 		qrCodeAsImage.setHorizontalAlignment(HorizontalAlignment.RIGHT);
 		
 		PdfPage page = docEvent.getPage();

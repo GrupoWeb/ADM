@@ -44,7 +44,7 @@ public class QRCodeTagWorker implements ITagWorker {
         qrCode = new BarcodeQRCode("placeholder",hints);
         Constants constants = new Constants();
 		String server = constants.getParamValue(Constants.URL_SERVER);
-		qrCode.setCode(server + "/Rug/rs/home/validar?token=" + Random.generateRandom(100000));
+		qrCode.setCode(server + "/rs/home/validar?token=" + Random.generateRandom(100000));
  
     }
  

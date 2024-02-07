@@ -543,6 +543,7 @@ public class BoletaServiceImpl {
 		
 		//pdfTO.setValue("[*tiposBienes*]", detalleTO.getGarantiaTO().getTipoBienes());	
 		pdfTO.setValue("[*noGarantia*]", detalleTO.getGarantiaTO().getIdGarantia());
+		pdfTO.setIdGarantiaTO(Integer.valueOf(detalleTO.getGarantiaTO().getIdGarantia()));
 		pdfTO.setValue("[*vigencia*]", detalleTO.getGarantiaTO().getVigencia());
 		/*pdfTO.setValue("[*nombreCargo*]", detalleTO.getGarantiaTO().getJuezAnotacion());
 		pdfTO.setValue("[*contResolucion*]", detalleTO.getGarantiaTO().getContenidoResolucion());

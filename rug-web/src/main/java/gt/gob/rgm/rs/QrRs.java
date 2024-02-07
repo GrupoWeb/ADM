@@ -22,6 +22,7 @@ public class QrRs {
 	public Response validarBoletar(@QueryParam(value="token") String token) throws URISyntaxException {
 		
 		try {
+
 			BoletaDAO boletaDao = new BoletaDAO();
 			BoletaCertificacionTO resultado = boletaDao.findBoletaByToken(token);
 			if(resultado!=null) {

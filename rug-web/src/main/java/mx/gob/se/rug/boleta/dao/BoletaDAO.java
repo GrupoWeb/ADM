@@ -488,28 +488,26 @@ public class BoletaDAO extends BaseRugDao{
 	}
 	
 	public void insertBoletaPdf(PdfTO pdfTO,UsuarioTO usuarioTO){
-		System.out.println("Firma de documento con QR");
 			ConexionBD bd = new ConexionBD();
 			Connection connection = bd.getConnection();
 			CallableStatement cs = null;		
-			String sql ="{call RUG.SP_Alta_Boleta (?,?,?,?,?,? ) }";		
+			String sql ="{call RUG.SP_Alta_Boleta (?,?,?,?,?,?,? ) }";
 			try{
 				cs = connection.prepareCall(sql);
 				cs.setInt(1, pdfTO.getIdTramite());
 				cs.setBytes(2, pdfTO.getFile());
-				//MyLogger.Logger.log(Level.INFO, "file::"+ pdfTO.getFile().toString());
 				cs.setInt(3, usuarioTO.getPersona().getIdPersona());
 				cs.setString(4, pdfTO.getKey());
-				cs.registerOutParameter(5, Types.INTEGER);
-				cs.registerOutParameter(6, Types.VARCHAR);
+				cs.setInt(5,pdfTO.getIdGarantiaTO());
+				cs.registerOutParameter(6, Types.INTEGER);
+				cs.registerOutParameter(7, Types.VARCHAR);
 				cs.execute();
-				System.out.println("Si envio el dato QR, los valores son: " +  pdfTO.getIdTramite() + " - " + Arrays.toString(pdfTO.getFile()) + " - " + usuarioTO.getPersona().getIdPersona() + " - " + pdfTO.getKey());
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
 				bd.close(connection,null,cs);
 			}
-			}
+	}
 
 	public BoletaCertificacionTO findBoletaByToken(String pToken) {
 		BoletaCertificacionTO boleta = null;
@@ -760,8 +758,7 @@ public class BoletaDAO extends BaseRugDao{
 			ps.setInt(2, idParte);
 			rs =ps.executeQuery();
 			while(rs.next()){
-				System.out.println("Nombre " + rs.getString("NOMBRE_PARTE") + " RFC " + rs.getString("RFC") + " CURP " + rs.getString("CURP") + " EMAIL " + rs.getString("E_MAIL") + " TELEFONO " + rs.getString("TELEFONO") + " EXTENSION " + rs.getString("EXTENSION") +
-						" FOLIO " + rs.getString("FOLIO_ELECTRONICO") +  " PER " + rs.getString("PER_JURIDICA") + " DOMICILIO " + rs.getString("DOMICILIO") + " OTORGANTE " + rs.getString("OTORGANTE_IGUAL_DEUDOR"));
+
 				PersonaTO personaTO= new PersonaTO();
 				personaTO.setNombre(rs.getString("NOMBRE_PARTE"));
 				personaTO.setRfc(rs.getString("RFC"));

@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
@@ -191,6 +192,7 @@ public class BoletaAction extends RugBaseAction {
                 }
                 PdfTO pdfTOInfo = null;
                 BoletaServices boletaServices = new BoletaServices();
+                    System.out.println("dato de tramites " + idTipoTramiteVar);
                 switch (idTipoTramiteVar) {
                     case 1:// Inscripcion
                         mx.gob.se.rug.boleta.to.DetalleTO detalleTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -200,7 +202,6 @@ public class BoletaAction extends RugBaseAction {
                         pdfTO.setIdTramite(detalleTO.getIdTramite());
                         pdfTO.setHtml("[*cert*]", "");
                         pdfTO.setHtml("[*fechaCert*]", "");
-
                         break;
                     case 31:// Migracion Inscripcion
                         mx.gob.se.rug.boleta.to.DetalleTO detalleMiTO = new mx.gob.se.rug.boleta.to.DetalleTO();
@@ -235,6 +236,7 @@ public class BoletaAction extends RugBaseAction {
                         detallecancelaTO.setIdTramite(boletaDAO.getIdTramitebyIdTramiteNuevo(idTramiteVar));
                         detallecancelaTO.setIdTipoTramite(idTipoTramiteVar);
                         mx.gob.se.rug.boleta.to.DetalleTO detallecancelaTOF = boletaDAO.getDetalleGarantiaTramite(detallecancelaTO);
+                        System.out.println("ID Garantia No. 4 " + detallecancelaTOF.getIdGarantia());
                         pdfTO = boletaServiceImpl.getBoletaCancelacion(detallecancelaTOF);
                         pdfTO.setIdTramite(detallecancelaTO.getIdTramite());
                         pdfTO.setValue("[*operacion*]", "Cancelaci\u00f3n");
@@ -481,7 +483,6 @@ public class BoletaAction extends RugBaseAction {
                     case 18:// Firma masiva
                         InscripcionService inscripcionService = new InscripcionServiceImpl();
                         int idEstatus = new FirmaMasivaDAO().getEstatusByTramiteTemporal(idTramiteVar);
-                        System.out.println("idEstatus: "+idEstatus);
                         MasivaDAO masivaDAO = new MasivaDAO();
                         setIdTipoTramiteMasiva(masivaDAO.getIdTipoTramiteMasiva(idTramiteVar));
                         
@@ -618,14 +619,11 @@ public class BoletaAction extends RugBaseAction {
                 AccesoDAO udao = new AccesoDAO();
 
                 User user = homeService.getUser(principal.getUserPrincipal().toString());
-                MyLogger.Logger.log(Level.INFO, "IMPIRME EL NOMBRE 001========================================== : "
-                        + user.getProfile().getNombre());
                 u.setNombre(principal.getUserPrincipal().toString());
 
                 logger.debug(sessionMap);
 
                 if (principal.getUserPrincipal().toString().equals(u.getNombre())) {
-                    MyLogger.Logger.log(Level.INFO, " logeado ");
                     PersonaFisica personaFisica = udao.getIdPersona(u.getNombre());
 
                     persona.setIdPersona(personaFisica.getIdPersona());
@@ -633,9 +631,7 @@ public class BoletaAction extends RugBaseAction {
 
                     u.setPersona(persona);
                     sessionMap.put(mx.gob.se.rug.constants.Constants.USUARIO, u);
-                    MyLogger.Logger.log(Level.INFO,
-                            "IMPRIME NOMBE 4::::::::::::::::::::::::::::::. " + persona.getIdPersona());
-                    MyLogger.Logger.log(Level.INFO, "IMPRIME NOMBE 6::::::::::::::::::::::::........ " + u.getNombre());
+
 
                     user.getProfile().setEmail(u.getNombre());
                     sessionMap.put(mx.gob.se.rug.common.constants.Constants.SESSION_USER, user);
@@ -976,7 +972,6 @@ public class BoletaAction extends RugBaseAction {
                         pdfTO.setValue("[*tipoTramite*]", "Rectificaci�n por Error");
                         break;
                     case 7:// Modification
-                        MyLogger.Logger.log(Level.INFO, "Modificacion ");
                         mx.gob.se.rug.boleta.to.DetalleTO detalleModificaTO = new mx.gob.se.rug.boleta.to.DetalleTO();
                         detalleModificaTO.setIdTramite(boletaDAO
                                 .getIdTramitebyIdTramiteNuevo(idTramiteVar));

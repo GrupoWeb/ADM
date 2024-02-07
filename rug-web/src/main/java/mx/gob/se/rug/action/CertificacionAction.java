@@ -17,6 +17,8 @@ import mx.gob.se.rug.pago.dao.PagoDAO;
 import mx.gob.se.rug.to.UsuarioTO;
 import mx.gob.se.rug.util.MyLogger;
 
+import javax.servlet.ServletContext;
+
 public class CertificacionAction extends RugBaseAction {
 	private static final long serialVersionUID = 1L;
 	private Integer idTramite;
@@ -34,7 +36,6 @@ public class CertificacionAction extends RugBaseAction {
 		Integer idGarantiaVar = (Integer) sessionMap.get(Constants.ID_GARANTIA);
 		setIdGarantia(idGarantiaVar);
 		setIdTramite(idTramiteVar);
-		System.out.println("Inicia " + usuarioTO);
 
 		try {
 			DetalleServiceImpl detserv = new DetalleServiceImpl();
@@ -48,6 +49,8 @@ public class CertificacionAction extends RugBaseAction {
 
 		return regresa;
 	}
+
+
 
 	public String certificacionTramite() {
 		// MyLogger.Logger.log(Level.INFO, "--Inicia Certificacion--");

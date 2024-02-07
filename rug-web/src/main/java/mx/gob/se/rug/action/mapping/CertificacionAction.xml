@@ -8,17 +8,11 @@
 		<action name="certificaTramite" method="certificacionTramite" class="certificacionAction">
                 <result type="tiles">certificacion.pdf.home</result>
                 <result name="success" type="redirectAction">
-            	<param name="actionName">boletaSignature</param>
-            	<param name="namespace">/home</param>
-            	<param name="idTramite">${idTramite}</param>
-            	<param name="idTipoTramite">${idTipoTramite}</param>
-<!--			    <result name="success" type="redirectAction">-->
-<!--            	<param name="actionName">boleta</param>-->
-<!--            	<param name="namespace">/home</param>-->
-<!--            	<param name="idTramite">${idTramite}</param>-->
-<!--            	<param name="idTipoTramite">${idTipoTramite}</param>-->
-            	
-            </result>
+					<param name="actionName">boletaSignature</param>
+					<param name="namespace">/home</param>
+					<param name="idTramite">${idTramite}</param>
+					<param name="idTipoTramite">${idTipoTramite}</param>
+            	</result>
 			<result name="failed" type="tiles">certificacion.home</result>
 			<result name="nosaldo" type="tiles">confirmacion.home</result>
 		</action>
@@ -37,7 +31,5 @@
             </result>
 			<result name="failed" type="tiles">certificacion.home</result>
 		</action>
-		
-		
 	</package>
 </struts>

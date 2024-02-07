@@ -22,6 +22,7 @@ public class CertificacionDAO {
 
 	
 	public Integer setCertificacion(Integer idTramiteCert,Integer idTramite, Integer idTipoTramite, Integer idGarantia, Integer idPersona) {
+		System.out.println("ID garantia certificacion " + idGarantia);
 		Integer regresa = new Integer(0);
 		ConexionBD bd = new ConexionBD();
 		Connection connection = bd.getConnection();

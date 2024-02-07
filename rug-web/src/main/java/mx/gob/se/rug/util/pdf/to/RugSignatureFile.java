@@ -55,7 +55,6 @@ public class RugSignatureFile extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             
             throws ServletException, IOException {
-        System.out.println("doGet RUGSIgnature");
         processRequest(req, resp);
     }
 
@@ -72,6 +71,8 @@ public class RugSignatureFile extends HttpServlet {
 
     private void signatureFiles(HttpServletRequest req, HttpServletResponse resp){
         HttpSession session = req.getSession(false);
+//        HttpServletRequest request = ServletActionContext.getRequest();
+//        String idTramite3 = request.getParameter("idTramite");
         byte file[] = null;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         if (session.getAttribute("Consulta") != null && (Integer) session.getAttribute("Consulta") == 1) {
@@ -88,7 +89,16 @@ public class RugSignatureFile extends HttpServlet {
                 e.printStackTrace();
             }
         }else {
-            Integer idTramite = (Integer) session.getAttribute(Constants.ID_TRAMITE_NUEVO);
+            Integer idTramite;
+
+            if (session.getAttribute(Constants.ID_TRAMITE_NUEVO) != null) {
+                idTramite = (Integer) session.getAttribute(Constants.ID_TRAMITE_NUEVO);
+                System.out.println("Tramite 1" + idTramite);
+            } else {
+                idTramite = Integer.valueOf(req.getParameter("idTramite"));
+                System.out.println("Tramite 2" + idTramite);
+            }
+
             UsuarioTO usuario = (UsuarioTO) session.getAttribute(Constants.USUARIO);
             PdfTO pdfTO = (PdfTO) session.getAttribute("pdfTO");
             try {
@@ -195,9 +205,9 @@ public class RugSignatureFile extends HttpServlet {
                         doc.close();
                         file = os.toByteArray();
                         BoletaDAO boleta = new BoletaDAO();
-                        boleta.insertBoletaPdf(pdfTO, usuario);
 
-                        String archivoNombre = "Consulta";
+
+                        String archivoNombre = "Consulta_Rug_SignatureFile";
                         Integer idGarantiaTO = 0;
                         
                         try {
@@ -214,6 +224,8 @@ public class RugSignatureFile extends HttpServlet {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        boleta.insertBoletaPdf(pdfTO, usuario);
+
                     }
                 }
             } catch (Exception e) {
@@ -274,7 +286,6 @@ public class RugSignatureFile extends HttpServlet {
     }
 
     private String changePath(String Constant_path, String env){
-        System.out.println("Variables de entorno "+ Constant_path + " env " + env + " path " + Constants.SIGN_BASE_PROD);
         if(env.equals("prod")){
             String url = Constants.SIGN_BASE_PROD  + Constant_path;
             return url;
@@ -294,7 +305,6 @@ public class RugSignatureFile extends HttpServlet {
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(changePath(Constants.SIGN_URL, Constants.ENV));
         String fileName = pIdGarantia;
-        System.out.println("Garantia " + fileName);
 
         String pageNumber = Integer.toString(countPage(files));
 
@@ -315,7 +325,6 @@ public class RugSignatureFile extends HttpServlet {
 
         HttpResponse response = httpclient.execute(httpPost);
         String data = new BasicResponseHandler().handleResponse(response);
-        System.out.println("Respuesta desde RUG " + data);
         return fileName;
 
     }

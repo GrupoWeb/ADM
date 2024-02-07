@@ -686,7 +686,7 @@ public class RugSignatureImp implements RugSignature {
                                             // BoletaDAO boleta = new BoletaDAO();
                                             // boleta.insertBoletaPdf(pdfTO, usuario);
 
-                                            String archivoNombre = "Consulta";
+                                            String archivoNombre = "Consulta_Rug_SignatureImp";
                                             Integer idGarantiaTO = 0;
                                             
                                             try {

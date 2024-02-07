@@ -170,7 +170,7 @@ public class BoletasAction extends RugBaseAction implements ServletRequestAware{
 					if(i!=0) garantias.append(",");
 					garantias.append(detalleTO.getIdgarantia());					
 					i++;
-				}		
+				}
 				setGarantias(garantias.toString());
 				setOperacion(detalles.get(0).getDescripcionTramite() + (detalles.size()>1?" Masivas":""));
 				setFecha(detalles.get(0).getDescripcionGarantia());
