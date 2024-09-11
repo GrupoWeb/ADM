@@ -226,11 +226,11 @@
 			<version>2.6</version>
 		 <type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>net.bull.javamelody</groupId>
-			<artifactId>javamelody-core</artifactId>
-			<version>1.42.0</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>net.bull.javamelody</groupId>-->
+<!--			<artifactId>javamelody-core</artifactId>-->
+<!--			<version>1.42.0</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>oro</groupId>
 			<artifactId>oro</artifactId>

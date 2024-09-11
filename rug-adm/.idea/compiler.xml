@@ -9,8 +9,5 @@
         <module name="rug-adm" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="rug-adm" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

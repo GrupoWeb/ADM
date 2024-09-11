@@ -1,4 +1,4 @@
-FROM jjolon/rgm:1.0.0
+FROM jjolon/rgm:1.0.2
 
 USER root
 

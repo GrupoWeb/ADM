@@ -123,7 +123,7 @@ public class TransactionsServiceImp {
 
             try {
                 for (RugRelTramPartes parte : partes) {
-                    System.out.println(parte.getPerJuridica());
+                    System.out.println("ids = " + (parte.getPersonaH()));
                     System.out.println("partes : " + parte.getId().getIdPersona());
 //
 //                    System.out.println(

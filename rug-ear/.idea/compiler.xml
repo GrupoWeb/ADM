@@ -9,8 +9,5 @@
         <module name="rug-ear" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="rug-ear" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
 </project>
