@@ -434,12 +434,50 @@ function modificaParteBien(elementId, idTramite, tipoBien, tipoId, ident, desc, 
 	//$('#frmBien').modal('close');
 }
 
+function updateFEL(elementId, idTramite, tipoBien, tipoId, ident, desc){
+	elementIDBien = elementId;
+	displayLoader(true);
+	$("#mdDescripcion").value = desc;
+	if (x=='Factura'){
+		$('#invoiceSection').css('display', 'block');
+		$('#vinSection').css('display', 'block');
+		let componente =  $('#mdBienEspecial');
+		let boton =  $('#formBienButton');
+		componente.val(2)
+		const resultado = extraerDatos(desc);
+		$('#nitContribuyente').val(resultado.emitidoPor);
+		$('#mdInvoiceDate').val(resultado.fecha);
+		$('#mdDescription').val(resultado.descripcion);
+		$('#mdFacturaElectronica').val(ident);
+		boton.html('Modificar');
+	}
+
+	boton.onclick = function(){
+
+		var m_mdDescripcion = document.getElementById("mdDescripcion").value;
+		var m_idTipo = document.getElementById("mdBienEspecial").value;
+		var m_mdIdentificador = document.getElementById("mdIdentificador").value;
+		var m_mdIdentificador1 = document.getElementById("mdIdentificador1").value;
+		var m_mdIdentificador2 = document.getElementById("mdIdentificador2").value;
+		var m_mdIdentificador3 = document.getElementById("mdIdentificador3").value  ;
+
+		if (m_mdIdentificador3.length>0)
+			m_mdDescripcion = 'Emitido por: ' + document.getElementById("mdFactura1").value + " Serie: " +m_mdIdentificador3 + " Fecha: " + document.getElementById("mdFactura2").value + " " + m_mdDescripcion ;
+		else
+			m_mdDescripcion = 'Emitido por: ' + document.getElementById("mdFactura1").value + " Fecha: " + document.getElementById("mdFactura2").value + " " + m_mdDescripcion  ;
+
+		// ParteDwrAction.modificaParteBien(elementId, idTramite, m_mdDescripcion, m_idTipo, m_mdIdentificador, m_mdIdentificador1, m_mdIdentificador2, m_mdIdentificador3, idTramiteGar, showParteBienes);
+		ParteDwrAction.modificaParteBienFactoraje(elementId, idTramite, m_mdDescripcion, m_idTipo, m_mdIdentificador, m_mdIdentificador1, m_mdIdentificador2, idTramiteGar,m_mdIdentificador3, showParteBienes);
+		$('#frmBien').modal('close');
+	}
+	$('#frmBien').modal('open');
+
+}
+
 function modificaParteBienFactoraje(elementId, idTramite, tipoBien, tipoId, ident, desc, idTramiteGar, serie){
 	elementIDBien = elementId;
 	displayLoader(true);	
-	
-        console.log("X .", tipoBien, " Y .", tipoId);
-        
+
 	var x = tipoBien;
 	var y = tipoId;	
 	  
@@ -449,11 +487,10 @@ function modificaParteBienFactoraje(elementId, idTramite, tipoBien, tipoId, iden
 		  document.getElementById("mdIdentificador1").value = veh[1];
 		  document.getElementById("mdIdentificador2").value = '';
 	  } else {
-		  document.getElementById("mdIdentificador2").value = ident;
-                  document.getElementById("mdIdentificador3").value = serie;
-                  
+		  $("#mdFacturaElectronica").value = ident;
 	  }
-	document.getElementById("mdDescripcion").value = desc;
+
+		$("#mdDescripcion").value = desc;
 	  
 	if(x=='Vehiculo'){		  	
 		  document.getElementById("secId1").style.display = 'block'; 
@@ -467,64 +504,23 @@ function modificaParteBienFactoraje(elementId, idTramite, tipoBien, tipoId, iden
 		  document.getElementById("mdBienEspecial").value = 1;
 		  		  
 	  } else if (x=='Factura'){
-                  console.log('Se metio por esta parte para ver las facturas');
-		  document.getElementById("secId1").style.display = 'none'; 
-		  document.getElementById("secId2").style.display = 'none';
-		  document.getElementById("secId3").style.display = 'block';	
-		  document.getElementById("secId4").style.display = 'none';		  
-		  
-		  document.getElementById("lblMdIdentificador2").innerHTML = 'No. Factura';
-		  document.getElementById("lblMdIdentificador3").innerHTML = 'Serie';
-		  document.getElementById("lblMdDescripcion").innerHTML = 'Emitido Por';
-		  
-		  document.getElementById("mdBienEspecial").value = 2;
-                  
-                  console.log('aqui debo hacer el calculo chapucero2 ' +document.getElementById("mdDescripcion").value );
-                   var observaciones =  document.getElementById("mdDescripcion").value;
-                  
-                  if (observaciones.includes('Serie')){
-                      var por  = observaciones.lastIndexOf("por: ") + 5;
-                      var serie  = observaciones.lastIndexOf("Serie: ") ;
-                      var nit = observaciones.substring(por,serie).trim();
-                      var fecha = observaciones.lastIndexOf("Fecha: ")+ 7;
-                      var mi_fecha = observaciones.substring(fecha,fecha + 10);
-                      console.log("La fecha que le voy a meter es : " + mi_fecha);
-                      var observaciones_generales = observaciones.substring(fecha + 10,observaciones.length );
-                      
-                      $("#mdFactura1").val(nit );
-                      $("#mdFactura2").val(mi_fecha );
-                      $("#mdDescripcion").val(observaciones_generales );
-                      
-                  }
-                  else{
-                       var por  = observaciones.lastIndexOf("por: ") + 5;
-                      //var serie  = observaciones.lastIndexOf("Serie: ") ;
-                      var fecha_inicio = observaciones.lastIndexOf("Fecha: ");
-                      var fecha = observaciones.lastIndexOf("Fecha: ")+ 7;
-                      var nit = observaciones.substring(por,fecha_inicio).trim();
-                      
-                      var mi_fecha = observaciones.substring(fecha,fecha + 10);
-                      console.log("La fecha que le voy a meter es : " + mi_fecha);
-                      var observaciones_generales = observaciones.substring(fecha + 10,observaciones.length );
-                      
-                      $("#mdFactura1").val(nit );
-                      $("#mdFactura2").val(mi_fecha );
-                      $("#mdIdentificador3").val("" );
-                      $("#mdDescripcion").val(observaciones_generales );
-                      
-                  }
-            
-                   
-                  
-                  
-                  
-                  
-                  cambiaBienesEspeciales();
+		$('#invoiceSection').css('display', 'block');
+		$('#vinSection').css('display', 'block');
+		let componente =  $('#mdBienEspecial');
+		componente.val(2)
+		const resultado = extraerDatos(desc);
+		$('#nitContribuyente').val(resultado.emitidoPor);
+		$('#mdInvoiceDate').val(resultado.fecha);
+		$('#mdDescription').val(resultado.descripcion);
+		$('#mdFacturaElectronica').val(ident);
+
+		$("#formBienButton").html('Modificar');
+
 	  } else {
-		  document.getElementById("secId1").style.display = 'none'; 
+		  document.getElementById("secId1").style.display = 'none';
 		  document.getElementById("secId2").style.display = 'none';
 		  document.getElementById("secId3").style.display = 'block';
-		  document.getElementById("secId4").style.display = 'none';		  
+		  document.getElementById("secId4").style.display = 'none';
 		  
 		  document.getElementById("lblMdIdentificador2").innerHTML = 'No. Serie';
 		  document.getElementById("lblMdDescripcion").innerHTML = 'Descripci&oacute;n del bien';
@@ -533,9 +529,10 @@ function modificaParteBienFactoraje(elementId, idTramite, tipoBien, tipoId, iden
 	
 	document.getElementById("secId5").style.display = 'none';
 	document.getElementById("secId6").style.display = 'block';
+
 	document.getElementById("formBienButton").innerHTML = 'Modificar';
 	document.getElementById("formBienButton").onclick = function(){
-		
+
 	     var m_mdDescripcion = document.getElementById("mdDescripcion").value;
 	     var m_idTipo = document.getElementById("mdBienEspecial").value;
 	     var m_mdIdentificador = document.getElementById("mdIdentificador").value;
@@ -554,10 +551,26 @@ function modificaParteBienFactoraje(elementId, idTramite, tipoBien, tipoId, iden
 		ParteDwrAction.modificaParteBienFactoraje(elementId, idTramite, m_mdDescripcion, m_idTipo, m_mdIdentificador, m_mdIdentificador1, m_mdIdentificador2, idTramiteGar,m_mdIdentificador3, showParteBienes);
 		$('#frmBien').modal('close');
 	}
-	
+
 	$('#frmBien').modal('open');
 	Materialize.updateTextFields();
 	//$('#frmBien').modal('close');
+}
+
+function extraerDatos(texto) {
+	const emitidoPorRegex = /Emitido por:\s*(\d+)/;
+	const fechaRegex = /Fecha:\s*([\d\/]+)/;
+	const descripcionRegex = /Fecha:\s*[\d\/]+\s*(.*)/;
+
+	const emitidoPor = texto.match(emitidoPorRegex) ? texto.match(emitidoPorRegex)[1] : null;
+	const fecha = texto.match(fechaRegex) ? texto.match(fechaRegex)[1] : null;
+	const descripcion = texto.match(descripcionRegex) ? texto.match(descripcionRegex)[1] : null;
+
+	return {
+		emitidoPor,
+		fecha,
+		descripcion
+	};
 }
 
 function eliminaParteDeudor(elementId, idTramite, idPersona,
@@ -1737,8 +1750,8 @@ function usarDatos(nit,nombre,ema,zon,dir,nc,col,tipo,opcion) {
                         '<table style="width:100%;">' +
                         '<tr><td><b>NIT:</b></td><td style="text-align: right;">'+nit+'</td></tr>' +
                         '<tr><td><b>Nombre:</b></td><td style="text-align: right;">'+newText+'</td></tr>' +
-                        '<tr><td><b>Correo electrónico:</b></td><td style="text-align: right;">'+ema.toLowerCase()+'</td></tr>' +
-                        '<tr><td><b>Dirección:</b></td><td style="text-align: right;">'+dire+'</td></tr>' +
+                        '<tr><td><b>Correo electrï¿½nico:</b></td><td style="text-align: right;">'+ema.toLowerCase()+'</td></tr>' +
+                        '<tr><td><b>Direcciï¿½n:</b></td><td style="text-align: right;">'+dire+'</td></tr>' +
                         '</table>',
 				{				
 					//title:'<table><tr><td width="10%"><i class="medium icon-green material-icons">check_circle</i></td><td style="vertical-align: middle; text-align:left;">Confirmar</td></tr></table>', // Modal title
@@ -3784,7 +3797,7 @@ function mailTextShow(arrayMails) {
 				+ "</tr>";
 	}
 	x += "</table>";
-	document.getElementById('correosExtra').innerHTML = x;
+	// document.getElementById('correosExtra').innerHTML = x;
 	if (arrayMails.length < 5) {
 		mostrarAgregarMas();
 	} else {

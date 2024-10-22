@@ -295,8 +295,6 @@ public class InscripcionDAO {
 			cs.setInt(3, bienEspecialTO.getTipoIdentificadorInt());
 			cs.setString(4, bienEspecialTO.getIdentificador());
 			cs.setString(5, bienEspecialTO.getDescripcion());
-                        //corellana: agregar serie al modificar un item ajustes para hector
-                        
 			cs.setString(6, bienEspecialTO.getSerie());
 			cs.registerOutParameter(7, Types.INTEGER);
 			cs.registerOutParameter(8, Types.VARCHAR);
@@ -304,8 +302,6 @@ public class InscripcionDAO {
 			regresa = cs.getString(8);
 			MyLogger.Logger.log(Level.INFO, "InscripcionDAO update bienEspecialTO: Integer Result  = "
 					+ cs.getInt(7));
-//			MyLogger.Logger.log(Level.INFO, "InscripcionDAO update bienEspecialTO: Varchar Result  = "
-//					+ cs.getString(8));
 			cs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

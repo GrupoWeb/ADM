@@ -308,9 +308,6 @@ public class RugSignatureFile extends HttpServlet {
 
         String pageNumber = Integer.toString(countPage(files));
 
-
-
-
         ContentBody cd = new InputStreamBody(new ByteArrayInputStream(files), "files.pdf");
         MultipartEntity reqEntity = new MultipartEntity();
         reqEntity.addPart("file", cd);

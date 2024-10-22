@@ -155,18 +155,15 @@ public class FactorajeAction extends RugBaseAction {
 	}
 
 	public String inicia() {
-		MyLogger.Logger.log(Level.INFO, "RUG FACTORAJES inicia");
-		MyLogger.Logger.log(Level.INFO,
-				"RUG-EspecialesAction>>iniciaInscripcionFormEspecias:::--entro a iniciaEspecial");
-		response.setHeader("Cache-Control", "no-cache"); // Forces caches to obtain a new copy of the page from the
-															// origin server
-		response.setHeader("Cache-Control", "no-store"); // Directs caches not to store the page under any circumstance
-		response.setDateHeader("Expires", 0); // Causes the proxy cache to see the page as "stale"
-		response.setHeader("Pragma", "no-cache"); // HTTP 1.0 backward compatibility
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Cache-Control", "no-store");
+		response.setDateHeader("Expires", 0);
+		response.setHeader("Pragma", "no-cache");
 
 		String regresa = Constants.FAILED;
 
 		try {
+			System.out.println("Id del tipo garantia " + idTipoGarantia);
 			UsuarioTO usuario = (UsuarioTO) sessionMap.get(Constants.USUARIO);
 			String idTipoGarantia = ServletActionContext.getRequest().getParameter(Constants.ID_TIPO_GARANTIA);
 
@@ -376,45 +373,26 @@ public class FactorajeAction extends RugBaseAction {
 		return regresa;
 	}
 
+	private TipoTo crearTipo(String idTipo, String desTipo) {
+		TipoTo tipo = new TipoTo();
+		tipo.setIdTipo(idTipo);
+		tipo.setDesTipo(desTipo);
+		return tipo;
+	}
+
 	public void cargarBienesEspeciales(Integer tipoGarantia) {
-		MyLogger.Logger.log(Level.INFO, "RUG FACTORAJES cargaBienesEspeciales");
-		listaBienEspecial = new ArrayList<TipoTo>();
+		listaBienEspecial = new ArrayList<>();
 
-		TipoTo tipo0 = new TipoTo();
-		tipo0.setIdTipo("0");
-		tipo0.setDesTipo("Seleccione");
-		listaBienEspecial.add(tipo0);
+		listaBienEspecial.add(crearTipo("0", "Seleccione"));
 
 		if (tipoGarantia != 2) {
-			TipoTo tipo1 = new TipoTo();
-			tipo1.setIdTipo("1");
-			tipo1.setDesTipo("Veh\u00edculos");
-			listaBienEspecial.add(tipo1);
+			listaBienEspecial.add(crearTipo("1", "Vehículos"));
+			listaBienEspecial.add(crearTipo("3", "Otros"));
 		}
 
-		TipoTo tipo2 = new TipoTo();
-		tipo2.setIdTipo("2");
-		tipo2.setDesTipo("Facturas");
-		listaBienEspecial.add(tipo2);
-
-		TipoTo tipo4 = new TipoTo();
-		tipo4.setIdTipo("5");
-		tipo4.setDesTipo("Veh\u00edculos de 2 y 3 ruedas");
-		TipoTo tipo5 = new TipoTo();
-		tipo5.setIdTipo("6");
-		tipo5.setDesTipo("Derecho de Cr\u00e9dito (no facturas)");
-
-		listaBienEspecial.add(tipo4);
-		listaBienEspecial.add(tipo5);
-
-		if (tipoGarantia != 2) {
-			TipoTo tipo3 = new TipoTo();
-			tipo3.setIdTipo("3");
-			tipo3.setDesTipo("Otros");
-			listaBienEspecial.add(tipo3);
-		}
-
-
+		listaBienEspecial.add(crearTipo("2", "Facturas"));
+		listaBienEspecial.add(crearTipo("5", "Veh\u00edculos de 2 y 3 ruedas"));
+		listaBienEspecial.add(crearTipo("6", "Derecho de Cr\u00e9dito (no facturas)"));
 
 		cargaUsos();
 	}

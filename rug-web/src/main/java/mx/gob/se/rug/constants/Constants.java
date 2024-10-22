@@ -65,8 +65,6 @@ public static final Integer N_MAX_TRAMITES = 9999;
 //ContextPath
 public static String contextPath=null;
 
-
-
 public static String getContextPath() throws InfrastructureException {
 	if(contextPath==null){
 		throw new InfrastructureException("No se cargo el contextPath");
@@ -79,7 +77,6 @@ public static void setContextPath(String contextPath) {
 		Constants.contextPath = new String(contextPath);
 	}
 }
-
 
 public static Integer conexionesAbiertas = 0;
 //Correos
@@ -239,6 +236,10 @@ public static final String FS_BASEPATH = "fsBasePath";
  public static final String SIGN_LOCAL = "SIGN_LOCAL";
  public static final String SIGN_ZIP_URL = "SIGN_ZIP_URL";
  public static final String SIGN_PDF_URL = "SIGN_PDF_URL";
+
+ public static final String SAT_FACTORAJE_URL = "https://api.desa.sat.gob.gt/v2/EstadoFactura/BloqueoAnulacion/RGM";
+ public static final String SAT_FACTORAJE_USER = "RegGaranMob";
+ public static final String SAT_FACTORAJE_PASS = "YnZKdk9iajJNd2RoUUNwaVNLcXE1Sk1ocDNVZmU0Z2F6WmpObEVmNUpZcz0=";
 
 //Privielgios VS tipoTramite
 public static Map<Integer, Integer> mapTipoTramite;
