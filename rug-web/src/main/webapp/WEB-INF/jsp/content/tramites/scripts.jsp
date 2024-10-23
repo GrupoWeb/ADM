@@ -29,6 +29,8 @@
         cargaParteOtorgante('divParteDWRxx4', idTramite, idPersona, '0', '1');
         cargaParteBienes('divParteDWRBienes', idTramite);
 
+
+
         //escondePartes();
     });
 
@@ -146,6 +148,9 @@
 
         $('#invoiceSection').css('display', 'block');
         $('#vinSection').css('display', 'block');
+        let boton =  $('#formBienButton');
+        boton.html('Aceptar');
+        boton.replaceWith('<a id="formBienButton" class="modal-action modal-close btn teal lighten-1" onclick="sendFormData();">Aceptar</a>');
 
     }
 
@@ -157,12 +162,45 @@
         $('#mdFacturaElectronica').val('');
     }
 
+    function loadFormDataToTable() {
+        const storedData = JSON.parse(localStorage.getItem('formData')) || [];
+        const tableBody = document.getElementById('dataTableBody'); // Asegúrate de tener una tabla en tu HTML con este ID
+
+        // Limpiar la tabla antes de llenarla
+        tableBody.innerHTML = '';
+
+        // Iterar sobre los datos almacenados y crear filas en la tabla
+        storedData.forEach((data, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${data.nitContribuyente}</td>
+            <td>${data.mdInvoiceDate}</td>
+            <td>${data.mdDescription}</td>
+            <td>${data.mdFacturaElectronica}</td>
+        `;
+            tableBody.appendChild(row);
+        });
+    }
+
     function sendFormData() {
         const idTramite = document.getElementById("refInscripcion").value;
         const idTipo = 2;
         const nitContribuyente = document.getElementById('nitContribuyente').value;
         const mdDescripcion = 'Emitido por: ' + document.getElementById('nitContribuyente').value + ' Fecha: ' + document.getElementById('mdInvoiceDate').value + ' ' +  document.getElementById('mdDescription').value
         const mdFacturaElectronica = document.getElementById('mdFacturaElectronica').value;
+
+        const formData = {
+            nitContribuyente,
+            mdInvoiceDate: document.getElementById('mdInvoiceDate').value,
+            mdDescription: document.getElementById('mdDescription').value,
+            mdFacturaElectronica
+        };
+
+        let storedData = JSON.parse(localStorage.getItem('formData')) || [];
+        storedData.push(formData);
+
+        localStorage.setItem('formData', JSON.stringify(storedData));
 
         ParteDwrAction.registrarFacturasSat(
             'divParteDWRBienes',
@@ -172,6 +210,12 @@
             mdFacturaElectronica,
             nitContribuyente,
             showParteBienes);
+
+        clearForm();
+    }
+
+    function habilitarFacturas(facturaElectronica, nitContribuyente){
+        ParteDwrAction.consumirApi(facturaElectronica, nitContribuyente, false)
     }
 
     function updateFEL(elementId, idTramite, tipoBien, tipoId, ident, desc, idTramiteGar){
@@ -206,9 +250,19 @@
                 showParteBienes);
 
             $('#frmBien').modal('close');
+
+
         })
         $('#frmBien').modal('open');
 
+    }
+
+    function eliminaParteBienFactoraje(elementId, idTramite,desc, ident, idTramiteGar) {
+        elementIDBien = elementId;
+        const resultado = extraerDatos(desc);
+        displayLoader(true);
+        ParteDwrAction.eliminaParteBienFactoraje(elementId, idTramite, idTramiteGar, resultado.emitidoPor,ident, showParteBienes);
+        localStorage.removeItem('formData');
     }
 
 
@@ -338,7 +392,6 @@
                         correcto = 1;
                     }
                 } else if (idTipo == '2') { //Facturas
-                    console.log("facturas ......... convirtiendo a excel");
                     if (colIndex == 0) {
                         if (cellValue.length > 25) {
                             cellValue = 'Valor invalido';
@@ -349,7 +402,6 @@
                     }
                     if (colIndex == 1) {
                         var patt = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[\/]\d{4}$/;
-                        console.log(cellValue);
                         if (!patt.test(cellValue)) {
                             cellValue = 'Valor invalido';
                             correcto = 1;
@@ -389,7 +441,6 @@
                     }
                     //orellana: Carga de facturas
                     if (colIndex > 4) {
-                        console.log("aqui estoy invalidando la carga");
                         correcto = 1;
                     }
                 } else if (idTipo == '3') {
@@ -450,7 +501,6 @@
     }
 
     function ExportToTable() {
-        console.log("Exportando a Table xls ");
         document.getElementById("exceltable").innerHTML = '<table id="exceltable"></table> ';
 
         var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xlsx|.xls)$/;
@@ -504,7 +554,6 @@
 
     function cambiaBienesEspecialesFile() {
         var x = document.getElementById("mdBienEspecial2").value;
-        console.log("EL VALOR DE X ==> " + x);
         if (x == '1') {
             document.getElementById("txtspan").innerHTML = 'Los campos del excel son: '
                 + '<p><b>Tipo Identificador</b>, 1 si es Placa y 2 si es VIN<p>'
@@ -578,7 +627,6 @@
         document.getElementById("divParteDWRxx4").disabled = false;
         document.getElementById("divParteDWRBienes").disabled = false;
         document.getElementById("modotrosgarantia").disabled = false;
-        console.log('Mi funcion.........................');
     }
 
     function confirmar() {
@@ -590,9 +638,8 @@
         $('.btn').hide();
     }
 
-    function mi_funcion222222() {
+    function registrar_factoraje() {
         mi_funcion_editar();
-        console.log('Mi funcion.........................');
         inscripcionFactoraje();
     }
 
@@ -728,8 +775,7 @@ if (onlyPunto){
 		var dia = new Date();
 		var bandera = true;
         const resultFacturas = 0;
-        console.log("Modificacion ",idTramite)
-		
+
 		if(document.getElementById('tableDeudores')==null){
 			alertMaterialize('No se puede continuar sin un Deudor');
 			return false;
@@ -752,7 +798,6 @@ if (onlyPunto){
                 $.ajax({
                     url: path,
                     success: function(response){
-                        console.log("Tipo de Garantia ", data[0])
                         if(data[0] == 16){
                             idtipoTramite = 44
                         } else if(data[0] == 2){
@@ -791,7 +836,6 @@ if (onlyPunto){
                                 this.resultFacturas = response.data[0]
                                 const costos = '<%= request.getContextPath() %>/rs/tipos-tramite/' + idtipoTramite
                                 axios.get(costos).then(responseTwo => {
-                                    console.log("formulario nuevo " , responseTwo)
                                     MaterialDialog.dialog(
                                         "El costo de una " + "modificación" + " es de Q. " + Math.round((responseTwo.data.precio * 100) / 100).toFixed(2) + ", esta seguro que desea continuar?",
                                         {
@@ -1004,8 +1048,7 @@ if (onlyPunto){
 		var bandera = true;		
 		var rows = 0; 
 		var costo = 0;
-        console.log("Tipo de Garantia ", tipoGarantia)
-		
+
 		if(tipoGarantia==2) {						
 			if(document.getElementById('bienes')==null){			
 				MaterialDialog.alert(

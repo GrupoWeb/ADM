@@ -163,7 +163,6 @@ public class FactorajeAction extends RugBaseAction {
 		String regresa = Constants.FAILED;
 
 		try {
-			System.out.println("Id del tipo garantia " + idTipoGarantia);
 			UsuarioTO usuario = (UsuarioTO) sessionMap.get(Constants.USUARIO);
 			String idTipoGarantia = ServletActionContext.getRequest().getParameter(Constants.ID_TIPO_GARANTIA);
 

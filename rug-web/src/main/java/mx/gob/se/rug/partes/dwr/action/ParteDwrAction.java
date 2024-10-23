@@ -219,14 +219,28 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
                 throw new IllegalArgumentException("El idTramite o idTipo no pueden ser nulos o vacíos");
             }
 
-            BienEspecialTO bienEspecialTO = new BienEspecialTO();
-            bienEspecialTO.setIdTramite(Integer.parseInt(idTramite));
-            bienEspecialTO.setDescripcion(mdDescripcion);
-            bienEspecialTO.setTipoBien(Integer.parseInt(idTipo));
-            bienEspecialTO.setIdentificador(mdFacturaElectronica);
-            bienEspecialTO.setTipoIdentificador(3);
-            bienEspecialTO.setSerie(null);
-            inscripcionService.registrarBien(bienEspecialTO);
+            String respuesta = consumirApi(mdFacturaElectronica, nitContribuyente, true);
+            JSONObject jsonResponse = new JSONObject(respuesta);
+
+            boolean existeError = jsonResponse.getBoolean("existeError");
+
+            if (!existeError) {
+                BienEspecialTO bienEspecialTO = new BienEspecialTO();
+                bienEspecialTO.setIdTramite(Integer.parseInt(idTramite));
+                bienEspecialTO.setDescripcion(mdDescripcion);
+                bienEspecialTO.setTipoBien(Integer.parseInt(idTipo));
+                bienEspecialTO.setIdentificador(mdFacturaElectronica);
+                bienEspecialTO.setTipoIdentificador(3);
+                bienEspecialTO.setSerie(null);
+                inscripcionService.registrarBien(bienEspecialTO);
+            } else {
+                String msnError = jsonResponse.getString("msnError");
+                int codError = jsonResponse.getInt("codError");
+
+                MyLogger.Logger.log(Level.WARNING, "Error en el consumo de la API: " + msnError + " (Código de error: " + codError + ")");
+
+                dwr.setMessage("Error al registrar: " + msnError);
+            }
 
             dwr = getParteBienes(elementId, idTramite);
         } catch (NumberFormatException e) {
@@ -261,6 +275,7 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
         HttpResponse response = httpClient.execute(httpPost);
 
         String data = new BasicResponseHandler().handleResponse(response);
+        System.out.println("SAT " + data);
 
         httpClient.getConnectionManager().shutdown();
 
@@ -2618,6 +2633,20 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
         return dwr;
     }
 
+    public MessageDwr eliminaParteBienFactoraje(String elementId, String idTramite, String idTramiteGar, String nit, String factura) {
+        MessageDwr dwr = new MessageDwr();
+        try {
+            String respuesta = consumirApi(factura, nit, false);
+            JSONObject jsonResponse = new JSONObject(respuesta);
+            inscripcionService.eliminarBien(new Integer(idTramiteGar));
+            dwr = getParteBienes(elementId, idTramite);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return dwr;
+    }
+
     public MessageDwr modificaParteBien(String elementId, String idTramite, String mdDescripcion, String idTipo, String mdIdentificador,
                                         String mdIdentificador1, String mdIdentificador2, String idTramiteGar) {
         MessageDwr dwr = new MessageDwr();
@@ -3756,10 +3785,14 @@ public class ParteDwrAction extends AbstractBaseDwrAction {
             sb.append("<td>" + bienEspecialTO.getTipoBien() + "</td>");
             sb.append("<td>" + notNull(bienEspecialTO.getIdentificador()) + "</td>");
             sb.append("<td>" + notNull(bienEspecialTO.getDescripcion()) + "</td>");
-            sb.append("<td> <a class=\"btn waves-effect red darken-4\" onclick=\"eliminaParteBien('"
+            sb.append("<td> <a class=\"btn waves-effect red darken-4\" onclick=\"eliminaParteBienFactoraje('"
                     + elementID
                     + "','"
                     + idTramite
+                    + "','"
+                    + notNull(bienEspecialTO.getDescripcion())
+                    + "','"
+                    + notNull(bienEspecialTO.getIdentificador())
                     + "','"
                     + bienEspecialTO.getIdTramiteGarantia() + "')\"><i class=\"material-icons\">delete</i></a>");
             sb.append(" <a class=\"btn waves-effect indigo darken-4\" onclick=\"updateFEL('"

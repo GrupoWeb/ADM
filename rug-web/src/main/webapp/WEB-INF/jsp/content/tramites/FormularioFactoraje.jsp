@@ -38,9 +38,7 @@
                                    value="<s:property value='idTramite'/>"/>
                             <input type="hidden" name="reftipogarantia" id="reftipogarantia" value="<s:property value='idTipoGarantia'/>"/>
                             <div class="row note_tabs light-blue darken-4">
-
                                 <span class="white-text"><s:property value="%{textosFormulario.get(1)}"/></span>
-
                             </div>
                             <div class="row">
                                 <div id="divParteDWRxx2"></div>
@@ -114,9 +112,7 @@
                                            onclick="habilitar_continuar();"/>
                                     <input type="button" id="bFirmar" name="button"
                                            class="btn btn-large waves-effect indigo state2" value="Aceptar"
-                                           onclick="mi_funcion222222();"/>
-
-
+                                           onclick="registrar_factoraje();"/>
                                 </div>
                             </center>
                         </form>
@@ -269,6 +265,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('keydown', function (event) {
+        if (event.key === 'F5') {
+            event.preventDefault();
+            let storedData = JSON.parse(localStorage.getItem('formData')) || [];
+            if (storedData.length > 0) {
+                storedData.forEach((entry, index) => {
+                    habilitarFacturas(entry.mdFacturaElectronica,entry.nitContribuyente)
+                });
+                localStorage.removeItem('formData');
+                window.location.reload();
+            } else {
+                console.log('No hay datos en localStorage.');
+            }
+        }
+    });
+</script>
 
 
 
